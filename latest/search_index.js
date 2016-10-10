@@ -66,23 +66,39 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#",
-    "page": "Reading data",
-    "title": "Reading data",
+    "page": "Accessing the Datat Cube",
+    "title": "Accessing the Datat Cube",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "cube_access.html#Reading-data-1",
-    "page": "Reading data",
-    "title": "Reading data",
+    "location": "cube_access.html#Accessing-the-Datat-Cube-1",
+    "page": "Accessing the Datat Cube",
+    "title": "Accessing the Datat Cube",
     "category": "section",
-    "text": "some information on how to open a cube and select datasets"
+    "text": ""
+},
+
+{
+    "location": "cube_access.html#Open-a-datacube-1",
+    "page": "Accessing the Datat Cube",
+    "title": "Open a datacube",
+    "category": "section",
+    "text": "Before one can read data from a cube, it has to be opened. To open a data cube which is accesible through the file system, use the Cube constructor:using CABLAB\nc = Cube(\"/patch/to/cube\")CABLAB data cube at /Net/Groups/BGI/scratch/DataCube/v0.2.0/high-res/\nSpatial resolution:  4320x2160 at 0.083333 degrees.\nTemporal resolution: 2001-01-01T00:00:00 to 2012-01-01T00:00:00 at 8daily time steps\nVariables:           aerosol_optical_thickness_1610 aerosol_optical_thickness_550 aerosol_optical_thickness_555 aerosol_optical_thickness_659 aerosol_optical_thickness_865 air_temperature_2m bare_soil_evaporation black_sky_albedo burnt_area c_emissions country_mask evaporation evaporative_stress fractional_snow_cover gross_primary_productivity interception_loss land_surface_temperature latent_energy net_ecosystem_exchange open_water_evaporation ozone potential_evaporation precipitation root_moisture sensible_heat snow_sublimation snow_water_equivalent soil_moisture surface_moisture terrestrial_ecosystem_respiration transpiration water_mask water_vapour white_sky_albedoThis returns a Cube object that contains some basics information about the cube which is printed on the screen."
+},
+
+{
+    "location": "cube_access.html#Getting-a-data-handle-1",
+    "page": "Accessing the Datat Cube",
+    "title": "Getting a data handle",
+    "category": "section",
+    "text": ""
 },
 
 {
     "location": "cube_access.html#Cube-Types-1",
-    "page": "Reading data",
+    "page": "Accessing the Datat Cube",
     "title": "Cube Types",
     "category": "section",
     "text": ""
@@ -90,7 +106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Cube-Axes-1",
-    "page": "Reading data",
+    "page": "Accessing the Datat Cube",
     "title": "Cube Axes",
     "category": "section",
     "text": "Modules = [CABLAB.Cubes.Axes]\nPrivate = false"
@@ -98,7 +114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Cube-Masks-1",
-    "page": "Reading data",
+    "page": "Accessing the Datat Cube",
     "title": "Cube Masks",
     "category": "section",
     "text": "Modules = [CABLAB.CubeAPI.Mask]\nPrivate = false"
@@ -197,7 +213,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Plotting",
     "category": "page",
-    "text": ""
+    "text": "#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB # hide\nimport Documenter\nds=RemoteCube() # hide"
 },
 
 {
@@ -213,7 +229,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "CABLAB.Plot.plotMAP",
     "category": "Function",
-    "text": "plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)\n\nMap plotting tool for cube objects, can be called on any type of cube data\n\nKeyword arguments\n\ndmin, dmax\n Minimum and maximum value to be used for color transformation\ncolorm\n colormap to be used. Find a list of colormaps in the \nColors.jl\n package\noceancol\n color to fill the ocean with, defaults to \ncolorant\"darkblue\"\nmisscol\n color to represent missing values, defaults to \ncolorant\"gray\"\ndim=value\n can set other dimensions to certain values, for example \nvar=\"air_temperature_2m\"\n will fix the variable for the resulting plot\n\nIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
+    "text": "plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)\n\nMap plotting tool for cube objects, can be called on any type of cube data\n\nKeyword arguments\n\ndmin, dmax Minimum and maximum value to be used for color transformation\ncolorm colormap to be used. Find a list of colormaps in the Colors.jl package\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plot\n\nIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
 },
 
 {
@@ -221,7 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Plot geographical maps",
     "category": "section",
-    "text": "plotMAP"
+    "text": "Map plotting is generally done using the plotMAP function:plotMAPHere is an example on how to plot a map. The keyword arguments specify the time step (time=1) and the variable (var=1).\ncdata=getCubeData(ds,variable=[\"air_temperature_2m\",\"gross_primary_productivity\"])\nplotMAP(cdata,time=1,var=1)Inside a Jupyter notebook, the keyword arguments can be omitted and sliders or dropdown menus will be shown to select the desired values."
 },
 
 {
@@ -229,7 +245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "CABLAB.Plot.plotXY",
     "category": "Function",
-    "text": "plotXY(cube::AbstractCubeData; group=0, xaxis=-1, kwargs...)\n\nGeneric plotting tool for cube objects, can be called on any type of cube data.\n\nKeyword arguments\n\nxaxis\n which axis is to be used as x axis. Can be either an axis Datatype or a string. Short versions of axes names are possible as long as the axis can be uniquely determined.\ngroup\n it is possible to group the plot by a categorical axis. Can be either an axis data type or a string.\ndim=value\n can set other dimensions to certain values, for example \nlon=51.5\n will fix the longitude for the resulting plot\n\nIf a dimension is not the x axis or group variable and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
+    "text": "plotXY(cube::AbstractCubeData; group=0, xaxis=-1, kwargs...)\n\nGeneric plotting tool for cube objects, can be called on any type of cube data.\n\nKeyword arguments\n\nxaxis which axis is to be used as x axis. Can be either an axis Datatype or a string. Short versions of axes names are possible as long as the axis can be uniquely determined.\ngroup it is possible to group the plot by a categorical axis. Can be either an axis data type or a string.\ndim=value can set other dimensions to certain values, for example lon=51.5 will fix the longitude for the resulting plot\n\nIf a dimension is not the x axis or group variable and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
 },
 
 {
@@ -237,15 +253,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Other plots",
     "category": "section",
-    "text": "plotXY"
-},
-
-{
-    "location": "plotting.html#Examples-1",
-    "page": "Plotting",
-    "title": "Examples",
-    "category": "section",
-    "text": "using Patchwork\nusing Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using Vega\nusing Documenterusing Vega\nusing Documenter\na=lineplot(x=1:10,y=1:10);\nb=IOBuffer()\nwritemime(b,MIME\"text/html\"(),a)\nDocumenter.Documents.RawHTML(bytestring(b.data))\nnothing"
+    "text": "Generating x-y type plots is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
@@ -269,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "registerDATFunction",
     "category": "section",
-    "text": "It is possible for the user to register their own functions into the data cube so that they can easily be applied through the mapCube function as if it was a built-in function.First of all one needs to define the function that is supposed to be applied on the cube. In general, it should have the following signature: f(x_out,m_out,x_in,m_in,addargs...), where x_out is the output array, m_mout the output mask, x_in is the input array and m_in the input mask. This can be followed by an arbitrary number of additional arguments addargs.You can read about cube masks here Cube Masks. In case you don't want to treat the cube's mask individually, you can leave out the m_out arguments and have missing values treated through DataArrays or using NaNs. Once you have defined your function, you can register it whith registerDATFunctionIn most processing frameworks of this kind, you have some kind of apply function that you pass your function to and specify the dimension number of your array that you want to slice. Here we take a different approach. Our datacubes have named axes and usually a function is supposed to be applied on slices of a certain axis type. For example, a time series decomposition will always be applied along the time dimension. So we register the function once so that the system knows which named dimension the function is applied to, and the apply function will work on cubes of any shape, as long as they contain a time dimension. The same works for combinations of dimensions. Lets suppose you want to apply a multivariate event detection method on all multivariate time series in a cube and your function happens to need a Variable x Time Matrix as an input. You can specify this in registerDATFunction and then the system will automatically read slices of the cube efficiently (transposed if necessary). The only limitation currently is that a slice of data that needs to be processed must fit in memory. It is not (yet) possible to perform operations requiring random array access on the whole cube. The signature of registerDATFunction is the following:registerDATFunction"
+    "text": "It is possible for the user to register their own functions into the data cube so that they can easily be applied through the mapCube function as if it was a built-in function.First of all one needs to define the function that is supposed to be applied on the cube. In general, it should have the following signature: f(x_out,m_out,x_in,m_in,addargs...), where x_out is the output array, m_mout the output mask, x_in is the input array and m_in the input mask. This can be followed by an arbitrary number of additional arguments addargs.You can read about cube masks here Cube Masks. In case you don't want to treat the cube's mask individually, you can leave out the m_out arguments and have missing values treated through NullableArrays or using NaNs. Once you have defined your function, you can register it whith registerDATFunctionIn most processing frameworks of this kind, you have some kind of apply function that you pass your function to and specify the dimension number of your array that you want to slice. Here we take a different approach. Our datacubes have named axes and usually a function is supposed to be applied on slices of a certain axis type. For example, a time series decomposition will always be applied along the time dimension. So we register the function once so that the system knows which named dimension the function is applied to, and the apply function will work on cubes of any shape, as long as they contain a time dimension. The same works for combinations of dimensions. Lets suppose you want to apply a multivariate event detection method on all multivariate time series in a cube and your function happens to need a Variable x Time Matrix as an input. You can specify this in registerDATFunction and then the system will automatically read slices of the cube efficiently (transposed if necessary). The only limitation currently is that a slice of data that needs to be processed must fit in memory. It is not (yet) possible to perform operations requiring random array access on the whole cube. The signature of registerDATFunction is the following:registerDATFunction"
 },
 
 {
@@ -293,7 +301,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "Using Data Arrays for missing data",
     "category": "section",
-    "text": "In the next example we assume want to register a function that calculates the time variance of a variable. Internally we want to use the StatsBase methods to calculate the variance in the presence of missing data. To do this, the input data is best represented as a DataArray. We register the function in the following way:using CABLAB # hide\nusing DataArrays\nfunction timeVariance{T}(xout::DataArray{T,0}, xin::DataVector)\n  xout[1]=var(xin)\nend\n\ninAxes  = (TimeAxis,)\n\nregisterDATFunction(timeVariance, inAxes, (), inmissing=(:dataarray,), outmissing=:dataarray, no_ocean=1);Here, the only input axis is again the time axis. However, the output axis is an empty tuple, which means that a single value is returned by the function and written to the 0-dimensional array xout. The optional argument inmissing is a tuple of symbols, here it is length one because there is only a single input cube. When :dataarray is chosen, missing values in the cube will be converted to NAs in the function's input array. The same hold true for the outmissing argument. Any NA value in the output array will be converted to a missing value in the resulting cube's mask.There is one additional optional argument set, no_ocean=1. This tells the kernel to check the landsea mask if a certain value is an ocean point and not enter the calculation for these points, but to just set the resulting mask to OCEAN."
+    "text": "In the next example we assume want to register a function that calculates the time variance of a variable. Internally we want to use the StatsBase methods to calculate the variance in the presence of missing data. To do this, the input data is best represented as a NullableArray. We register the function in the following way:using CABLAB # hide\nusing NullableArrays\nfunction timeVariance{T}(xout::NullableArray{T,0}, xin::NullableVector)\n  xout[1]=var(xin)\nend\n\ninAxes  = (TimeAxis,)\n\nregisterDATFunction(timeVariance, inAxes, (), inmissing=(:nullable,), outmissing=:nullable, no_ocean=1);Here, the only input axis is again the time axis. However, the output axis is an empty tuple, which means that a single value is returned by the function and written to the 0-dimensional array xout. The optional argument inmissing is a tuple of symbols, here it is length one because there is only a single input cube. When :nullable is chosen, missing values in the cube will be converted to nulls in the function's input array. The same hold true for the outmissing argument. Any null value in the output array will be converted to a missing value in the resulting cube's mask.There is one additional optional argument set, no_ocean=1. This tells the kernel to check the landsea mask if a certain value is an ocean point and not enter the calculation for these points, but to just set the resulting mask to OCEAN."
 },
 
 {
@@ -325,7 +333,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "Even Axes are cubes",
     "category": "section",
-    "text": "In some cases one needs to have access to the value of an axis, for example when one wants to calculate a spatial Aggregation, the latitudes are important to determine grid cell weights. To do this, one can pass a cube axis to mapCube as if it was a cube having only one dimension.using CABLAB # hide\nfunction spatialAggregation{T}(xout::Array{T,0}, xin::Matrix, latitudes::AbstractVector)\n  #code goes here\nend\n\ninAxes=((LonAxis, LatAxis), (LatAxis,))\noutAxes=()\nregisterDATFunction(spatialAggregation, inAxes, outAxes, inmissing=(:dataarray,:nan), outmissing=:dataarray);Here, the function will operate on a lon x lat matrix and one has access to the latitude values inside the function. For the second input cube the input axis we extract the latitude axis from the first user-supplied cube and pass it to the calculation as a second input cube. So we apply the function using: mapCube(spatialAggregation, (cubedata, CABLAB.DAT.getAxis(LatAxis, cubedata))."
+    "text": "In some cases one needs to have access to the value of an axis, for example when one wants to calculate a spatial Aggregation, the latitudes are important to determine grid cell weights. To do this, one can pass a cube axis to mapCube as if it was a cube having only one dimension.using CABLAB # hide\nfunction spatialAggregation{T}(xout::Array{T,0}, xin::Matrix, latitudes::AbstractVector)\n  #code goes here\nend\n\ninAxes=((LonAxis, LatAxis), (LatAxis,))\noutAxes=()\nregisterDATFunction(spatialAggregation, inAxes, outAxes, inmissing=(:nullable,:nan), outmissing=:nullable);Here, the function will operate on a lon x lat matrix and one has access to the latitude values inside the function. For the second input cube the input axis we extract the latitude axis from the first user-supplied cube and pass it to the calculation as a second input cube. So we apply the function using: mapCube(spatialAggregation, (cubedata, CABLAB.DAT.getAxis(LatAxis, cubedata))."
 },
 
 {
