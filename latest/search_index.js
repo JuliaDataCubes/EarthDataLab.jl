@@ -181,7 +181,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Datat Cube",
     "title": "Cube Masks",
     "category": "section",
-    "text": "Every data cube type in CABLAB contains has a representation for the mask, which has the primary purpose of describing missing values and the reason for missingness. CABLAB masks are represented as UInt8-arrays, where each value can be one of the following:VALID a regular data entry\nMISSING classical missing value\nOCEAN masked out by the land-sea mask\nOUTOFPERIOD current time step is not inside the measurement period\nFILLED does not count as missing, but still denotes that the value is gap filled and not measuredThese names can be imported by using CABLAB.Mask. The user can decide if he wants to use the masks in his analyses or rather wants to refer to a different representation with NullableArrays or just representing missings with NaNs. See registerDATFunction for details. "
+    "text": "Every data cube type in CABLAB contains has a representation for the mask, which has the primary purpose of describing missing values and the reason for missingness. CABLAB masks are represented as UInt8-arrays, where each value can be one of the following:VALID a regular data entry\nMISSING classical missing value\nOCEAN masked out by the land-sea mask\nOUTOFPERIOD current time step is not inside the measurement period\nFILLED does not count as missing, but still denotes that the value is gap filled and not measuredThese names can be imported by using CABLAB.Mask. The user can decide if he wants to use the masks in his analyses or rather wants to refer to a different representation with NullableArrays or just representing missings with NaNs. See registerDATFunction for details."
+},
+
+{
+    "location": "cube_access.html#CABLAB.CubeAPI.RemoteCube",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.CubeAPI.RemoteCube",
+    "category": "Type",
+    "text": "Represents a remote data cube accessible through THREDDS. The default constructor is\n\nRemoteCube(base_url)\n\nwhere base_url is the datacube's base url.\n\nFields\n\nbase_url the cube parent directory\nvar_name_to_var_index basically the inverse of dataset_files\ndataset_files a list of datasets in the cube\ndataset_paths a list of urls pointing to the different data sets\nconfig the cube's static configuration CubeConfig\n\nusing CABLAB\nds=remoteCube()\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#Opening-Remote-Data-Cubes-1",
+    "page": "Accessing the Datat Cube",
+    "title": "Opening Remote Data Cubes",
+    "category": "section",
+    "text": "If you just want to try the CABLAB data cube and don't have access to the full data set, you can open a remote cube through a THREDDS server. All you need is a working internet connection to do this:RemoteCubeThis will open the remote cube and calling getCubeData will return a cube view that you can process.Important In order to avoid unnecessary traffic, be nice to our servers. Please use this only for testing the cube software for very limited amount of data (reading maps at single time steps) or time series in lon-lat boxes of size 1degx1deg. "
 },
 
 {
@@ -193,27 +209,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "analysis.html#CABLAB.DAT.mapCube",
+    "page": "Analysis",
+    "title": "CABLAB.DAT.mapCube",
+    "category": "Function",
+    "text": "mapCube(fun, cube, addargs...;kwargs)\n\nMap a given function fun over slices of the data cube cube.\n\nKeyword arguments\n\nmax_cache=1e7 maximum size of blocks that are read into memory, defaults to approx 10Mb\noutfolder folder to write output to if a TempCube is created, defaults to joinpath(CABLABdir(),\"tmp\",SomeRandomName)\nouttype::DataType output data type of the operation\nindims::Tuple{Tuple{Vararg{CubeAxis}}} List of input axis types for each input data cube\noutdims::Tuple List of output axes, can be either an axis type that has a default constructor or an instance of a CubeAxis\ninmissing::Tuple How to treat missing values in input data for each input cube. Possible values are :nullable :mask :nan or a value that is inserted for missing data, defaults to :mask\noutmissing How are missing values written to the output array, possible values are :nullable, :mask, :nan, defaults to :mask\nno_ocean should values containing ocean data be omitted\ninplace does the function write to an output array inplace or return a single value> defaults to true\nkwargs additional keyword arguments passed to the inner function\n\nThe first argument is always the function to be applied, the second is the input cube or a tuple input cubes if needed. If the function to be applied is registered (either as part of CABLAB or through registerDATFunction), all of the keyword arguments have reasonable defaults and don't need to be supplied. Some of the function still need additional arguments or keyword arguments as is stated in the documentation.\n\nIf you want to call mapCube directly on an unregistered function, please have a look at Applying custom functions to get an idea about the usage of the input and output dimensions etc.\n\n\n\n"
+},
+
+{
     "location": "analysis.html#Analysis-1",
     "page": "Analysis",
     "title": "Analysis",
     "category": "section",
-    "text": ""
+    "text": "The CABLAB package comes with a list of predefined methods for statistical analysis. The functions are defined to work on specific axes, for example a function that removes the mean annual cycle will alway work an the time axis. It does not matter which other axes are defined in the input cube, the function will simply loop over these. All the functions are called using the mapCube function.mapCubeThe function will then be applied to the whole cube in a memory-efficient way, which means that chunks of data are read, processed and then saved in the output cube. Whether the output cube is a TempCube or a CubeMem is decided by the system, depending on if the calculation is parallel, and how large the output cube is.Here follows a list of analysis function included in this package. If you have implemented or wrapped a method that might be of interest to a broader community, please feel free to open a pull request."
 },
 
 {
-    "location": "analysis.html#Apply-functions-1",
+    "location": "analysis.html#CABLAB.Proc.MSC.gapFillMSC-Tuple{AbstractArray,AbstractArray{UInt8,N},AbstractArray,AbstractArray{UInt8,N},Integer,Any,Any}",
     "page": "Analysis",
-    "title": "Apply functions",
-    "category": "section",
-    "text": ""
-},
-
-{
-    "location": "analysis.html#List-of-functions-1",
-    "page": "Analysis",
-    "title": "List of functions",
-    "category": "section",
-    "text": ""
+    "title": "CABLAB.Proc.MSC.gapFillMSC",
+    "category": "Method",
+    "text": "gapFillMSC\n\nFills missing values of each time series with the mean annual cycle.\n\nCall signature\n\nmapCube(gapFillMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
 },
 
 {
@@ -221,7 +237,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "CABLAB.Proc.MSC.getMSC",
     "category": "Function",
-    "text": "Calculate the mean seasonal cycle of xin and write the output to xout.\n\n\n\n"
+    "text": "getMSC\n\nReturns the mean annual cycle from each time series.\n\nCall signature\n\nmapCube(getMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
 },
 
 {
@@ -229,7 +245,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "CABLAB.Proc.MSC.getMedSC",
     "category": "Method",
-    "text": "Calculate the median seasonal cycle of xin and write the output to xout.\n\n\n\n"
+    "text": "getMedMSC\n\nReturns the median annual cycle from each time series.\n\nCall signature\n\nmapCube(getMedMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
 },
 
 {
@@ -265,11 +281,43 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "analysis.html#CABLAB.DAT.reduceCube",
+    "page": "Analysis",
+    "title": "CABLAB.DAT.reduceCube",
+    "category": "Function",
+    "text": "reduceCube(f::Function, cube, dim::Type{T<:CubeAxis};kwargs...)\n\nApply a reduction function f on slices of the cube cube. The dimension(s) are specified through dim, which is either an Axis type or a tuple of axis types. Keyword arguments are passed to mapCube or, if unknown passed again to f. It is assumed that f takes an array input and returns a single value.\n\n\n\n"
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.Stats.normalizeTS-Tuple{AbstractArray{T,1},AbstractArray{T,1}}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.Stats.normalizeTS",
+    "category": "Method",
+    "text": "normalizeTS\n\nNormalize a time series to zeros mean and unit variance\n\nCall signature\n\nmapCube(normalizeTS, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes TimeAxis\n\nOutput Axes TimeAxis\n\n\n\n"
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.Stats.timespacequantiles-Tuple{AbstractArray{T,1},AbstractArray,AbstractArray{T,1},Any}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.Stats.timespacequantiles",
+    "category": "Method",
+    "text": "timespacequantiles\n\nCalculate quantiles from a space time data cube. This is usually called on a subset of data returned by sampleLandPoints.\n\nCall signature\n\nmapCube(timespacequantiles, cube, quantiles)\n\ncube data cube with a axes: TimeAxis, SpatialPointAxis\nquantiles a vector of quantile values to calculate\n\nInput Axes TimeAxis, SpatialPointAxis\n\nOutput Axes QuantileAxis\n\nCalculating exact quantiles from data that don't fit into memory is quite a problem. One solution we provide here is to simply subsample your data and then get the quantiles from a smaller dataset.\n\nFor an example on how to apply this function, see this notebook.\n\n\n\n"
+},
+
+{
     "location": "analysis.html#Simple-Statistics-1",
     "page": "Analysis",
     "title": "Simple Statistics",
     "category": "section",
-    "text": "Modules = [CABLAB.Proc.Stats]\nPrivate = false"
+    "text": "Another typcial use case is the application of basic statistics like sum, mean and std. We provide a convenience function reduceCube  reduceCubeAdditional simple statistics functions are:Modules = [CABLAB.Proc.Stats]\nPrivate = false"
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.TSDecomposition.filterTSFFT-Tuple{Array{T<:Real,2},Array{T<:Real,1},Number}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.TSDecomposition.filterTSFFT",
+    "category": "Method",
+    "text": "filterTSFFT\n\nFilter each time series using a Fourier filter and return the decomposed series in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)\n\nCall signature\n\nmapCube(filterTSFFT, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis, TimeScaleaxis\n\n\n\n"
 },
 
 {
