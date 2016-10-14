@@ -97,11 +97,75 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "cube_access.html#CABLAB.Cubes.AbstractCubeData",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.AbstractCubeData",
+    "category": "Type",
+    "text": "AbstractCubeData{T,N}\n\nSupertype of all cubes. T is the data type of the cube and N the number of dimensions. Beware that an AbstractCubeData does not implement the AbstractArray interface. However, the CABLAB functions mapCube, reduceCube, readCubeData, plotMAP and plotXY will work on any subtype of AbstractCubeData\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.Cubes.CubeMem",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.CubeMem",
+    "category": "Type",
+    "text": "CubeMem{T,N} <: AbstractCubeMem{T,N}\n\nAn in-memory data cube. It is returned by applying mapCube when the output cube is small enough to fit in memory or by explicitly calling readCubeData on any type of cube.\n\nFields\n\naxes a Vector{CubeAxis} containing the Axes of the Cube\ndata N-D array containing the data\nmask N-D array containgin the mask\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.CubeAPI.SubCube",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.CubeAPI.SubCube",
+    "category": "Type",
+    "text": "immutable SubCube{T,C} <: AbstractCubeData{T,4}\n\nA view into the data cube of a single variable. Is the type returned by the mapCube function.\n\nFields\n\ncube::C Parent cube\nvariable selected variable\nsub_grid representation of the subgrid indices\nsub_times representation of the selected time steps\nlonAxis\nlatAxis\ntimeAxis\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.CubeAPI.SubCubeV",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.CubeAPI.SubCubeV",
+    "category": "Type",
+    "text": "immutable SubCubeV{T, C} <: AbstractCubeData{T,4}\n\nA view into the data cube with multiple variables. Returned by the mapCube function.\n\nFields\n\ncube::C Parent cube\nvariable list of selected variables\nsub_grid representation of the subgrid indices\nsub_times representation of the selected time steps\nlonAxis\nlatAxis\ntimeAxis\nvarAxis\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.Cubes.TempCubes.TempCube",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.TempCubes.TempCube",
+    "category": "Type",
+    "text": "type TempCube{T,N} <: AbstractCubeData{T,N}\n\nThe main data structure for storing temporary results from cube operations. Is usually returned by mapCube, if the result is larger than max_cache\n\nFields\n\naxes a vector of CubeAxis containing the axes\nfolder folder containing the data\nblock_size dimension of the files that the cube is split into\n\nEach TempCube is stored in a single folder, but can contain several files. The rule is that one file is small enough to be read into memory and the block_size determines the size and shape of each sub-file. This data structure is quite convenient for parrallel access, because different processes can write their results at the same time.\n\n\n\n"
+},
+
+{
     "location": "cube_access.html#Cube-Types-1",
     "page": "Accessing the Datat Cube",
     "title": "Cube Types",
     "category": "section",
-    "text": "CurrentModule=Main.CABLAB.CubesAbstractCubeDataCubeMemCurrentModule=Main.CABLAB.CubeAPISubCubeSubCubeVCurrentModule=Main.CABLAB.Cubes.TempCubesTempCube"
+    "text": "In CABLAB, you willCABLAB.Cubes.AbstractCubeDataCABLAB.Cubes.CubeMemCABLAB.CubeAPI.SubCubeCABLAB.CubeAPI.SubCubeVCABLAB.Cubes.TempCubes.TempCube"
+},
+
+{
+    "location": "cube_access.html#CABLAB.Cubes.Axes.CubeAxis",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.Axes.CubeAxis",
+    "category": "Type",
+    "text": "abstract CubeAxis{T} <: AbstractCubeData{T,1}\n\nSupertype of all axes. Every CubeAxis is 1D Cube itself and can be passed to mapCube operationes. Although all cube axes are instances of the parametric typealias CategoricalAxis and RangeAxis, there are some typealiases defined to provide shorter and more convenient names for commonly used cube axes. Here is a list of the aliases:\n\nCategorical Axes\n\nVariableAxis represents different variables\nSpatialPointAxis represents a list of coordinates\nCountryAxis countries\nTimeScaleAxis time scasles after time series decomposition\n\nCotinuous Axes\n\nLonAxis longitudes\nLatAxis latitudes\nTimeAxis time\nMSCAxis time step inside a year (for seasonal statistics)\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.Cubes.Axes.CategoricalAxis",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.Axes.CategoricalAxis",
+    "category": "Type",
+    "text": "CategoricalAxis{T,S}\n\nTo represent axes that are categorical, where T is the element type. The type parameter S denotes the axis name (a symbol). The default constructor is:\n\nCategoricalAxis(axname::String,values::Vector{T})\n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#CABLAB.Cubes.Axes.RangeAxis",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Cubes.Axes.RangeAxis",
+    "category": "Type",
+    "text": "RangeAxis{T,S,R}\n\nTo represent axes that are categorical, where T is the element type. The type parameter S denotes the axis name (a symbol) and R the type of the range which is used to represent the axis values. The default constructor is:\n\nRangeAxis(axname::String,values::Range{T})\n\n\n\n"
 },
 
 {
@@ -109,7 +173,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Datat Cube",
     "title": "Cube Axes",
     "category": "section",
-    "text": "Modules = [CABLAB.Cubes.Axes]\nPrivate = false"
+    "text": "Axes are an essential part of each Cube in CABLAB. Every dimension that a cube has is associated with an axis that stores the values of the dimension. For example, a LatitudeAxis will contains a field values representing the chosen latitudes. Similarly, a VariableAxis will contain a list of Variable names. Axes types are divided in categorical axes and axes represented by ranges. All of them are subtypes of the abstract type CubeAxis.CABLAB.Cubes.Axes.CubeAxisCABLAB.Cubes.Axes.CategoricalAxisCABLAB.Cubes.Axes.RangeAxis"
 },
 
 {
@@ -117,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Datat Cube",
     "title": "Cube Masks",
     "category": "section",
-    "text": "Modules = [CABLAB.CubeAPI.Mask]\nPrivate = false"
+    "text": "Every data cube type in CABLAB contains has a representation for the mask, which has the primary purpose of describing missing values and the reason for missingness. CABLAB masks are represented as UInt8-arrays, where each value can be one of the following:VALID a regular data entry\nMISSING classical missing value\nOCEAN masked out by the land-sea mask\nOUTOFPERIOD current time step is not inside the measurement period\nFILLED does not count as missing, but still denotes that the value is gap filled and not measuredThese names can be imported by using CABLAB.Mask. The user can decide if he wants to use the masks in his analyses or rather wants to refer to a different representation with NullableArrays or just representing missings with NaNs. See registerDATFunction for details. "
 },
 
 {
@@ -169,11 +233,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "analysis.html#CABLAB.Proc.MSC.removeMSC-Tuple{AbstractArray,AbstractArray{UInt8,N},AbstractArray,AbstractArray{UInt8,N},Integer,Any,Any}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.MSC.removeMSC",
+    "category": "Method",
+    "text": "removeMSC\n\nRemoves the mean annual cycle from each time series.\n\nCall signature\n\nmapCube(removeMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
+},
+
+{
     "location": "analysis.html#Seasonal-cycles-1",
     "page": "Analysis",
     "title": "Seasonal cycles",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.MSC]\nPrivate = false"
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.Outlier.DAT_detectAnomalies!-Tuple{AbstractArray,AbstractArray,MultivariateAnomalies.PARAMS}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.Outlier.DAT_detectAnomalies!",
+    "category": "Method",
+    "text": "DAT_detectAnomalies!\n\nA simple wrapper around the function detectAnomalies! from the MultivariateAnomalies package.\n\nCall signature\n\nmapCube(DAT_detectAnomalies!, cube, methods, trainArray)\n\ncube data cube with a axes: TimeAxis, VariableAxis\nmethods vector of methods to be applied, choose from: KDE,T2,REC,KNN-Gamma,KNN-Delta,SVDD,KNFST\ntrainArray a matrix of nsample x nvar, to estimate the training parameters for the model. Ideally does not contain any extreme values\n\nInput Axes TimeAxis, Variableaxis\n\nOutput Axes TimeAxis, Methodaxis\n\nFor an example on how to apply this function, see this notebook.\n\n\n\n"
 },
 
 {
@@ -297,11 +377,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "adding_new.html#Using-Data-Arrays-for-missing-data-1",
+    "location": "adding_new.html#Using-Nullable-Arrays-for-missing-data-1",
     "page": "Applying custom functions",
-    "title": "Using Data Arrays for missing data",
+    "title": "Using Nullable Arrays for missing data",
     "category": "section",
-    "text": "In the next example we assume want to register a function that calculates the time variance of a variable. Internally we want to use the StatsBase methods to calculate the variance in the presence of missing data. To do this, the input data is best represented as a NullableArray. We register the function in the following way:using CABLAB # hide\nusing NullableArrays\nfunction timeVariance{T}(xout::NullableArray{T,0}, xin::NullableVector)\n  xout[1]=var(xin)\nend\n\ninAxes  = (TimeAxis,)\n\nregisterDATFunction(timeVariance, inAxes, (), inmissing=(:nullable,), outmissing=:nullable, no_ocean=1);Here, the only input axis is again the time axis. However, the output axis is an empty tuple, which means that a single value is returned by the function and written to the 0-dimensional array xout. The optional argument inmissing is a tuple of symbols, here it is length one because there is only a single input cube. When :nullable is chosen, missing values in the cube will be converted to nulls in the function's input array. The same hold true for the outmissing argument. Any null value in the output array will be converted to a missing value in the resulting cube's mask.There is one additional optional argument set, no_ocean=1. This tells the kernel to check the landsea mask if a certain value is an ocean point and not enter the calculation for these points, but to just set the resulting mask to OCEAN."
+    "text": "In the next example we assume want to register a function that calculates the time variance of a variable. Internally we want to use the StatsBase methods to calculate the variance in the presence of missing data. To do this, the input data is best represented as a NullableArray. We register the function in the following way:using CABLAB # hide\nusing NullableArrays\nfunction timeVariance{T}(xout::NullableArray{T,0}, xin::NullableVector)\n  xout[1]=var(xin)\nend\n\ninAxes  = (TimeAxis,)\n\nregisterDATFunction(timeVariance, inAxes, (), inmissing=(:nullable,), outmissing=:nullable, no_ocean=1);Here, the only input axis is again the time axis. However, the output axis is an empty tuple, which means that a single value is returned by the function and written to the 0-dimensional array xout. The optional argument inmissing is a tuple of symbols, here it is length one because there is only a single input cube. When :nullable is chosen, missing values in the cube will be converted to nulls in the function's input array. The same hold true for the outmissing argument. Any null value in the output array will be converted to a missing value in the resulting cube's mask.There is one additional optional argument set, no_ocean=1. This tells the kernel to check the landsea mask if a certain value is an ocean point and not enter the calculation for these points, but to just set the resulting mask to OCEAN. Please notice also that simple statistics can be done more conveniently using the reduceCube function."
 },
 
 {
@@ -341,7 +421,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "Determine output axis from cube properties",
     "category": "section",
-    "text": "For some calculations the output axis does not equal any of the input axis, but has to be generated before the cube calculation starts. You can probably guess that this will happen through callback functions again, which have the same form as in the other examples. In this example we want to register a function that does a polynomial regression between time series of two variables. The result of this calculation are the regression parameters, so the output axis will be a newly created ParameterAxis. For the axis we define a default constructor which names the fitting parameters. In this example we create a ParameterAxis for a quadratic regression.using CABLAB # hide\nimmutable ParameterAxis{T} <: CategoricalAxis{T}\n  values::Vector{T}\nend\nfunction ParameterAxis(order::Integer)\n  order > 0 || error(\"Regression must be at least linear\")\n  ParameterAxis([\"offset\";[\"p$i\" for i=1:order]])\nend\nParameterAxis(2)Now we can go and register the function, while we specify the output axis with a function calling the Axis constructor.using CABLAB # hide\nimmutable ParameterAxis{T} <: CategoricalAxis{T} # hide\n  values::Vector{T} # hide\nend\nfunction ParameterAxis(order::Integer) # hide\n  order > 0 || error(\"Regression must be at least linear\") # hide\n  ParameterAxis([\"offset\";[\"p$i\" for i=1:order]]) # hide\nend # hide\nParameterAxis(2) # hide\nfunction polyRegression(xout::Vector, xin::Matrix, order::Integer)\n  #code here\nend\n\ninAxes=(TimeAxis,)\noutAxes=((cube,pargs)->ParameterAxis(pargs[1]),)\nregisterDATFunction(polyRegression, inAxes, outAxes, inmissing=(:nan,), outmissing=:nan);The user can apply the function now using mapCube(polyRegression, cubedata, regOrdeer) where regOrder is the order of the Regression."
+    "text": "For some calculations the output axis does not equal any of the input axis, but has to be generated before the cube calculation starts. You can probably guess that this will happen through callback functions again, which have the same form as in the other examples. In this example we want to register a function that does a polynomial regression between time series of two variables. The result of this calculation are the regression parameters, so the output axis will be a newly created Parameter-axis (see Cube Axes). For the axis we define a default constructor which names the fitting parameters. In this example we create a ParameterAxis for a quadratic regression.using CABLAB # hide\nfunction ParameterAxis(order::Integer)\n  order > 0 || error(\"Regression must be at least linear\")\n  CategoricalAxis(\"Parameter\",[\"offset\";[\"p$i\" for i=1:order]])\nend\nParameterAxis(2)Now we can go and register the function, while we specify the output axis with a function calling the Axis constructor.using CABLAB # hide\nfunction ParameterAxis(order::Integer) # hide\n  order > 0 || error(\"Regression must be at least linear\") # hide\n  ParameterAxis([\"offset\";[\"p$i\" for i=1:order]]) # hide\nend # hide\nfunction polyRegression(xout::Vector, xin::Matrix, order::Integer)\n  #code here\nend\n\ninAxes=(TimeAxis,)\noutAxes=((cube,pargs)->ParameterAxis(pargs[1]),)\nregisterDATFunction(polyRegression, inAxes, outAxes, inmissing=(:nan,), outmissing=:nan);The user can apply the function now using mapCube(polyRegression, cubedata, regOrdeer) where regOrder is the order of the Regression."
 },
 
 ]}
