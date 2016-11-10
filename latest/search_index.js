@@ -197,7 +197,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Datat Cube",
     "title": "Opening Remote Data Cubes",
     "category": "section",
-    "text": "If you just want to try the CABLAB data cube and don't have access to the full data set, you can open a remote cube through a THREDDS server. All you need is a working internet connection to do this:RemoteCubeThis will open the remote cube and calling getCubeData will return a cube view that you can process.Important In order to avoid unnecessary traffic, be nice to our servers. Please use this only for testing the cube software for very limited amount of data (reading maps at single time steps) or time series in lon-lat boxes of size 1degx1deg. "
+    "text": "If you just want to try the CABLAB data cube and don't have access to the full data set, you can open a remote cube through a THREDDS server. All you need is a working internet connection to do this:RemoteCubeThis will open the remote cube and calling getCubeData will return a cube view that you can process.Important In order to avoid unnecessary traffic, be nice to our servers. Please use this only for testing the cube software for very limited amount of data (reading maps at single time steps) or time series in lon-lat boxes of size 1degx1deg."
+},
+
+{
+    "location": "cube_access.html#CABLAB.Proc.CubeIO.sampleLandPoints",
+    "page": "Accessing the Datat Cube",
+    "title": "CABLAB.Proc.CubeIO.sampleLandPoints",
+    "category": "Function",
+    "text": "sampleLandPoints(cube, nsample;nomissing=false)\n\nGet an area-weighted sample from all non-ocean grid cells. This will return a new Cube where the LonAxis and LatAxis are condensed into a single SpatialPointAxis of length nsample. If nomissing=true only grid cells will be selected which don't contain any missing values. This makes sense for gap-filled cubes to make sure that grid cells with systematic seasonal gaps are not selected in the sample. \n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#Point-wise-access-1",
+    "page": "Accessing the Datat Cube",
+    "title": "Point-wise access",
+    "category": "section",
+    "text": "sampleLandPoints"
 },
 
 {
@@ -309,7 +325,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "Simple Statistics",
     "category": "section",
-    "text": "Another typcial use case is the application of basic statistics like sum, mean and std. We provide a convenience function reduceCube  reduceCubeAdditional simple statistics functions are:Modules = [CABLAB.Proc.Stats]\nPrivate = false"
+    "text": "Another typcial use case is the application of basic statistics like sum, mean and std. We provide a convenience function reduceCube  reduceCubeApplying these functions makes sense if the slices one wants to reduce fit in memory. However, if one wants to calculate some statistics on e.g. a timelonlat cube, one would preferably call one of the OnlineStats methods.  Additional simple statistics functions are:Modules = [CABLAB.Proc.Stats]\nPrivate = false"
 },
 
 {
@@ -329,11 +345,27 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "analysis.html#CABLAB.Proc.CubeIO.sampleLandPoints",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.CubeIO.sampleLandPoints",
+    "category": "Function",
+    "text": "sampleLandPoints(cube, nsample;nomissing=false)\n\nGet an area-weighted sample from all non-ocean grid cells. This will return a new Cube where the LonAxis and LatAxis are condensed into a single SpatialPointAxis of length nsample. If nomissing=true only grid cells will be selected which don't contain any missing values. This makes sense for gap-filled cubes to make sure that grid cells with systematic seasonal gaps are not selected in the sample. \n\n\n\n"
+},
+
+{
     "location": "analysis.html#Cube-transformations-1",
     "page": "Analysis",
     "title": "Cube transformations",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.CubeIO]\nPrivate = false"
+},
+
+{
+    "location": "analysis.html#OnlineStats-1",
+    "page": "Analysis",
+    "title": "OnlineStats",
+    "category": "section",
+    "text": "It is possible to directly apply statistics included in the OnlineStats.jl package on the data cube. This makes it possible to calculate statistics on data too big to fit into memory. The general syntax ismapCube(f ,cube; by=CubeAxis[], cfun=identity, outAxis=nothing,kwargs...)where f is an OnlineStat data type and cube is the cube you want to apply the statistics to. By default this function will reduce all values over all axes of the cube, so if you want to do statistics by a certain axis, it has to be specified using the by keyword argument. by accepts a vector of axes types and up to one datacube that can serve as a mask. If such a data cube is supplied, the statistics are split by the unique values in the mask. One can pass a function cfun that transforms the mask values into an index in the range 1..N that defines the    index where the new value is going to be put to. If a mask is supplied, one also needs to supply an outAxis argument that describes the resulting output axis.This all gets clearer with a little example. suppose we want to calculate the mean of GPP, NEE and TER under the condition that Tair<280K and Tair>280K over all time steps and grid cells. This is achieved through the following lines of code:import OnlineStats\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)                            # Define the classification function\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])  # A two-length output axis, because there are two possible values\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis) # Of course we want to split by variable, too\n\nplotXY(mT,xaxis=\"var\",group=\"tempclass\")#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB\nimport OnlineStats\nimport Documenter\nds    = RemoteCube()\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis)\n\np=plotXY(mT,xaxis=\"var\",group=\"tempclass\")\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
@@ -381,7 +413,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Other plots",
     "category": "section",
-    "text": "Generating x-y type plots is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
+    "text": "Generating x-y type plots is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nplotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
