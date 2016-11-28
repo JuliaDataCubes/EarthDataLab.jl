@@ -61,7 +61,7 @@ var documenterSearchIndex = {"docs": [
     "page": "The CABLAB Data Cube",
     "title": "The CABLAB Data Cube",
     "category": "section",
-    "text": "short description of the cube should go here"
+    "text": "(Image: The CABLAB data cube)The Earth System data cube is a collection of land surface and atmospheric Eart observation data sets on a common spatial resolution of 5min and a common temporal resolution of 8 days in the time range from 2001 to 2011. See the Product Handbook for more information. "
 },
 
 {
