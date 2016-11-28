@@ -29,7 +29,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Example Notebooks",
     "category": "section",
-    "text": ""
+    "text": "You can find some example Jupyter Notebooks that using CABLAB.jl here"
 },
 
 {
@@ -61,28 +61,28 @@ var documenterSearchIndex = {"docs": [
     "page": "The CABLAB Data Cube",
     "title": "The CABLAB Data Cube",
     "category": "section",
-    "text": "(Image: The CABLAB data cube)The Earth System data cube is a collection of land surface and atmospheric Eart observation data sets on a common spatial resolution of 5min and a common temporal resolution of 8 days in the time range from 2001 to 2011. See the Product Handbook for more information. "
+    "text": "(Image: The CABLAB data cube)The Earth System data cube is a collection of land surface and atmospheric Eart observation data sets on a common spatial resolution of 5min and a common temporal resolution of 8 days in the time range from 2001 to 2011. See the Product Handbook for more information."
 },
 
 {
     "location": "cube_access.html#",
-    "page": "Accessing the Datat Cube",
-    "title": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
+    "title": "Accessing the Data Cube",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "cube_access.html#Accessing-the-Datat-Cube-1",
-    "page": "Accessing the Datat Cube",
-    "title": "Accessing the Datat Cube",
+    "location": "cube_access.html#Accessing-the-Data-Cube-1",
+    "page": "Accessing the Data Cube",
+    "title": "Accessing the Data Cube",
     "category": "section",
     "text": ""
 },
 
 {
     "location": "cube_access.html#Open-a-datacube-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Open a datacube",
     "category": "section",
     "text": "Before one can read data from a cube, it has to be opened. To open a data cube which is accesible through the file system, use the Cube constructor:using CABLAB\nc = Cube(\"/patch/to/cube\")CABLAB data cube at /Net/Groups/BGI/scratch/DataCube/v0.2.0/high-res/\nSpatial resolution:  4320x2160 at 0.083333 degrees.\nTemporal resolution: 2001-01-01T00:00:00 to 2012-01-01T00:00:00 at 8daily time steps\nVariables:           aerosol_optical_thickness_1610 aerosol_optical_thickness_550 aerosol_optical_thickness_555 aerosol_optical_thickness_659 aerosol_optical_thickness_865 air_temperature_2m bare_soil_evaporation black_sky_albedo burnt_area c_emissions country_mask evaporation evaporative_stress fractional_snow_cover gross_primary_productivity interception_loss land_surface_temperature latent_energy net_ecosystem_exchange open_water_evaporation ozone potential_evaporation precipitation root_moisture sensible_heat snow_sublimation snow_water_equivalent soil_moisture surface_moisture terrestrial_ecosystem_respiration transpiration water_mask water_vapour white_sky_albedoThis returns a Cube object that contains some basics information about the cube which is printed on the screen."
@@ -90,7 +90,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Getting-a-data-handle-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Getting a data handle",
     "category": "section",
     "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view No data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
@@ -98,7 +98,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.AbstractCubeData",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.AbstractCubeData",
     "category": "Type",
     "text": "AbstractCubeData{T,N}\n\nSupertype of all cubes. T is the data type of the cube and N the number of dimensions. Beware that an AbstractCubeData does not implement the AbstractArray interface. However, the CABLAB functions mapCube, reduceCube, readCubeData, plotMAP and plotXY will work on any subtype of AbstractCubeData\n\n\n\n"
@@ -106,7 +106,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.CubeMem",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.CubeMem",
     "category": "Type",
     "text": "CubeMem{T,N} <: AbstractCubeMem{T,N}\n\nAn in-memory data cube. It is returned by applying mapCube when the output cube is small enough to fit in memory or by explicitly calling readCubeData on any type of cube.\n\nFields\n\naxes a Vector{CubeAxis} containing the Axes of the Cube\ndata N-D array containing the data\nmask N-D array containgin the mask\n\n\n\n"
@@ -114,7 +114,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.CubeAPI.SubCube",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.CubeAPI.SubCube",
     "category": "Type",
     "text": "immutable SubCube{T,C} <: AbstractCubeData{T,4}\n\nA view into the data cube of a single variable. Is the type returned by the mapCube function.\n\nFields\n\ncube::C Parent cube\nvariable selected variable\nsub_grid representation of the subgrid indices\nsub_times representation of the selected time steps\nlonAxis\nlatAxis\ntimeAxis\n\n\n\n"
@@ -122,7 +122,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.CubeAPI.SubCubeV",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.CubeAPI.SubCubeV",
     "category": "Type",
     "text": "immutable SubCubeV{T, C} <: AbstractCubeData{T,4}\n\nA view into the data cube with multiple variables. Returned by the mapCube function.\n\nFields\n\ncube::C Parent cube\nvariable list of selected variables\nsub_grid representation of the subgrid indices\nsub_times representation of the selected time steps\nlonAxis\nlatAxis\ntimeAxis\nvarAxis\n\n\n\n"
@@ -130,7 +130,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.TempCubes.TempCube",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.TempCubes.TempCube",
     "category": "Type",
     "text": "type TempCube{T,N} <: AbstractCubeData{T,N}\n\nThe main data structure for storing temporary results from cube operations. Is usually returned by mapCube, if the result is larger than max_cache\n\nFields\n\naxes a vector of CubeAxis containing the axes\nfolder folder containing the data\nblock_size dimension of the files that the cube is split into\n\nEach TempCube is stored in a single folder, but can contain several files. The rule is that one file is small enough to be read into memory and the block_size determines the size and shape of each sub-file. This data structure is quite convenient for parrallel access, because different processes can write their results at the same time.\n\n\n\n"
@@ -138,7 +138,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Cube-Types-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Cube Types",
     "category": "section",
     "text": "In CABLAB, you willCABLAB.Cubes.AbstractCubeDataCABLAB.Cubes.CubeMemCABLAB.CubeAPI.SubCubeCABLAB.CubeAPI.SubCubeVCABLAB.Cubes.TempCubes.TempCube"
@@ -146,7 +146,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.Axes.CubeAxis",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.Axes.CubeAxis",
     "category": "Type",
     "text": "abstract CubeAxis{T} <: AbstractCubeData{T,1}\n\nSupertype of all axes. Every CubeAxis is 1D Cube itself and can be passed to mapCube operationes. Although all cube axes are instances of the parametric typealias CategoricalAxis and RangeAxis, there are some typealiases defined to provide shorter and more convenient names for commonly used cube axes. Here is a list of the aliases:\n\nCategorical Axes\n\nVariableAxis represents different variables\nSpatialPointAxis represents a list of coordinates\nCountryAxis countries\nTimeScaleAxis time scales after time series decomposition\nQuantileAxis represents different quantiles\n\nCotinuous Axes\n\nLonAxis longitudes\nLatAxis latitudes\nTimeAxis time\nMSCAxis time step inside a year (for seasonal statistics)\n\n\n\n"
@@ -154,7 +154,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.Axes.CategoricalAxis",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.Axes.CategoricalAxis",
     "category": "Type",
     "text": "CategoricalAxis{T,S}\n\nTo represent axes that are categorical, where T is the element type. The type parameter S denotes the axis name (a symbol). The default constructor is:\n\nCategoricalAxis(axname::String,values::Vector{T})\n\n\n\n"
@@ -162,7 +162,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Cubes.Axes.RangeAxis",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Cubes.Axes.RangeAxis",
     "category": "Type",
     "text": "RangeAxis{T,S,R}\n\nTo represent axes that are categorical, where T is the element type. The type parameter S denotes the axis name (a symbol) and R the type of the range which is used to represent the axis values. The default constructor is:\n\nRangeAxis(axname::String,values::Range{T})\n\n\n\n"
@@ -170,7 +170,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Cube-Axes-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Cube Axes",
     "category": "section",
     "text": "Axes are an essential part of each Cube in CABLAB. Every dimension that a cube has is associated with an axis that stores the values of the dimension. For example, a LatitudeAxis will contains a field values representing the chosen latitudes. Similarly, a VariableAxis will contain a list of Variable names. Axes types are divided in categorical axes and axes represented by ranges. All of them are subtypes of the abstract type CubeAxis.CABLAB.Cubes.Axes.CubeAxisCABLAB.Cubes.Axes.CategoricalAxisCABLAB.Cubes.Axes.RangeAxis"
@@ -178,7 +178,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Cube-Masks-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Cube Masks",
     "category": "section",
     "text": "Every data cube type in CABLAB contains has a representation for the mask, which has the primary purpose of describing missing values and the reason for missingness. CABLAB masks are represented as UInt8-arrays, where each value can be one of the following:VALID a regular data entry\nMISSING classical missing value\nOCEAN masked out by the land-sea mask\nOUTOFPERIOD current time step is not inside the measurement period\nFILLED does not count as missing, but still denotes that the value is gap filled and not measuredThese names can be imported by using CABLAB.Mask. The user can decide if he wants to use the masks in his analyses or rather wants to refer to a different representation with NullableArrays or just representing missings with NaNs. See registerDATFunction for details."
@@ -186,7 +186,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.CubeAPI.RemoteCube",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.CubeAPI.RemoteCube",
     "category": "Type",
     "text": "Represents a remote data cube accessible through THREDDS. The default constructor is\n\nRemoteCube(base_url)\n\nwhere base_url is the datacube's base url.\n\nFields\n\nbase_url the cube parent directory\nvar_name_to_var_index basically the inverse of dataset_files\ndataset_files a list of datasets in the cube\ndataset_paths a list of urls pointing to the different data sets\nconfig the cube's static configuration CubeConfig\n\nusing CABLAB\nds=remoteCube()\n\n\n\n"
@@ -194,7 +194,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Opening-Remote-Data-Cubes-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Opening Remote Data Cubes",
     "category": "section",
     "text": "If you just want to try the CABLAB data cube and don't have access to the full data set, you can open a remote cube through a THREDDS server. All you need is a working internet connection to do this:RemoteCubeThis will open the remote cube and calling getCubeData will return a cube view that you can process.Important In order to avoid unnecessary traffic, be nice to our servers. Please use this only for testing the cube software for very limited amount of data (reading maps at single time steps) or time series in lon-lat boxes of size 1degx1deg."
@@ -202,7 +202,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#CABLAB.Proc.CubeIO.sampleLandPoints",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "CABLAB.Proc.CubeIO.sampleLandPoints",
     "category": "Function",
     "text": "sampleLandPoints(cube, nsample;nomissing=false)\n\nGet an area-weighted sample from all non-ocean grid cells. This will return a new Cube where the LonAxis and LatAxis are condensed into a single SpatialPointAxis of length nsample. If nomissing=true only grid cells will be selected which don't contain any missing values. This makes sense for gap-filled cubes to make sure that grid cells with systematic seasonal gaps are not selected in the sample. \n\n\n\n"
@@ -210,7 +210,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "cube_access.html#Point-wise-access-1",
-    "page": "Accessing the Datat Cube",
+    "page": "Accessing the Data Cube",
     "title": "Point-wise access",
     "category": "section",
     "text": "sampleLandPoints"
