@@ -401,6 +401,14 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "plotting.html#Other-plots-1",
+    "page": "Plotting",
+    "title": "Other plots",
+    "category": "section",
+    "text": ""
+},
+
+{
     "location": "plotting.html#CABLAB.Plot.plotXY",
     "page": "Plotting",
     "title": "CABLAB.Plot.plotXY",
@@ -409,11 +417,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "plotting.html#Other-plots-1",
+    "location": "plotting.html#XY-plots-1",
     "page": "Plotting",
-    "title": "Other plots",
+    "title": "XY plots",
     "category": "section",
-    "text": "Generating x-y type plots is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nplotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
+    "text": "Generating x-y type plots where the x axis is one of the cube axes and the y axis is the corresponding cube value is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nplotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
+},
+
+{
+    "location": "plotting.html#Scatter-plots-1",
+    "page": "Plotting",
+    "title": "Scatter plots",
+    "category": "section",
+    "text": "In order to do scatter plots, i.e. plotting variable A against variable B one can use the plotScatter function.plotScatterA short example is shown here:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=1,yaxis=2,group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=1,yaxis=2,group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
