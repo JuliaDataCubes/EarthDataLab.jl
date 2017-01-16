@@ -93,7 +93,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "Getting a data handle",
     "category": "section",
-    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view No data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
+    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view No data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
+},
+
+{
+    "location": "cube_access.html#CABLAB.Proc.CubeIO.extractLonLats",
+    "page": "Accessing the Data Cube",
+    "title": "CABLAB.Proc.CubeIO.extractLonLats",
+    "category": "Function",
+    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations. \n\n\n\n"
+},
+
+{
+    "location": "cube_access.html#Extracting-a-list-of-lon/lat-coordinates-from-a-data-cube-1",
+    "page": "Accessing the Data Cube",
+    "title": "Extracting a list of lon/lat coordinates from a data cube",
+    "category": "section",
+    "text": "There are situations in which only a certain list of longitude/latitude pairs is needed for the analysis. One can extract such a list by first creating a cube view containing all the needed variables and then apply the extractLonLats function.CABLAB.Proc.CubeIO.extractLonLatsHere is an example how to apply the function:cubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)\nll       = [30.1 50.2;\n            30.5 51.1;\n            30.7 51.1] #Lon/Lats to be extracted\ncubenew  = extractLonLats(cubedata,ll)"
 },
 
 {
@@ -342,6 +358,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Time series decomposition",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.TSDecomposition]\nPrivate = false"
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.CubeIO.extractLonLats-Tuple{CABLAB.Cubes.AbstractCubeData,Array{T,2}}",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.CubeIO.extractLonLats",
+    "category": "Method",
+    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations. \n\n\n\n"
 },
 
 {
