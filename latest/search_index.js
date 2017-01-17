@@ -89,11 +89,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "cube_access.html#CABLAB.CubeAPI.getCubeData",
+    "page": "Accessing the Data Cube",
+    "title": "CABLAB.CubeAPI.getCubeData",
+    "category": "Function",
+    "text": "getCubeData(cube::Cube;variable,time,latitude,longitude)\n\nReturns a view into the data cube. The following keyword arguments are accepted:\n\nvariable: an variable index or name or an iterable returning multiple of these (var1, var2, ...)\ntime: a single datetime.datetime object or a 2-element iterable (time_start, time_end)\nlatitude: a single latitude value or a 2-element iterable (latitude_start, latitude_end)\nlongitude: a single longitude value or a 2-element iterable (longitude_start, longitude_end)\nregion: specify a country or SREX region by name or ISO_A3 code. Type ?CABLAB.known_regions to see a list of pre-defined areas\n\nReturns a SubCube object which represents a view into the original data cube.\n\n\n\n"
+},
+
+{
     "location": "cube_access.html#Getting-a-data-handle-1",
     "page": "Accessing the Data Cube",
     "title": "Getting a data handle",
     "category": "section",
-    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view No data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
+    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view into the whole data cube.CABLAB.CubeAPI.getCubeDataNo data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
 },
 
 {
@@ -230,6 +238,14 @@ var documenterSearchIndex = {"docs": [
     "title": "Point-wise access",
     "category": "section",
     "text": "sampleLandPoints"
+},
+
+{
+    "location": "cube_access.html#List-of-known-regions-1",
+    "page": "Accessing the Data Cube",
+    "title": "List of known regions",
+    "category": "section",
+    "text": "```@docs CABLAB.CubeAPI.known_regions"
 },
 
 {
@@ -413,7 +429,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "CABLAB.Plot.plotMAP",
     "category": "Function",
-    "text": "plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)\n\nMap plotting tool for cube objects, can be called on any type of cube data\n\nKeyword arguments\n\ndmin, dmax Minimum and maximum value to be used for color transformation\ncolorm colormap to be used. Find a list of colormaps in the Colors.jl package\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plot\n\nIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
+    "text": "plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)\n\nMap plotting tool for cube objects, can be called on any type of cube data\n\nKeyword arguments\n\ndmin, dmax Minimum and maximum value to be used for color transformation\ncolorm colormap to be used. Find a list of colormaps in the Colors.jl package\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\nsymmetric make the color scale symmetric around zero\nlabels given a list of labels this will create a plot with a non-continouous color scale where integer cube values [1..N] are mapped to the given labels.\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plot\n\nIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
 },
 
 {
