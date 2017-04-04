@@ -37,7 +37,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Home",
     "title": "Manual Outline",
     "category": "section",
-    "text": "Pages = [\n    \"thecube.md\",\n    \"cube_access.md\",\n    \"plotting.md\",\n    \"analysis.md\",\n    \"adding_new.md\",\n]\nDepth = 1"
+    "text": "Pages = [\n    \"thecube.md\",\n    \"cube_access.md\",\n    \"plotting.md\",\n    \"analysis.md\",\n    \"adding_new.md\",\n    \"iotools.md\",\n]\nDepth = 1"
+},
+
+{
+    "location": "index.html#Acknowledgements-1",
+    "page": "Home",
+    "title": "Acknowledgements",
+    "category": "section",
+    "text": "The development of this package was funded by ESA STSE and implemented by the Max-Planck-Institute for Biogeochemistry."
 },
 
 {
@@ -93,7 +101,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "CABLAB.CubeAPI.getCubeData",
     "category": "Function",
-    "text": "getCubeData(cube::Cube;variable,time,latitude,longitude)\n\nReturns a view into the data cube. The following keyword arguments are accepted:\n\nvariable: an variable index or name or an iterable returning multiple of these (var1, var2, ...)\ntime: a single datetime.datetime object or a 2-element iterable (time_start, time_end)\nlatitude: a single latitude value or a 2-element iterable (latitude_start, latitude_end)\nlongitude: a single longitude value or a 2-element iterable (longitude_start, longitude_end)\nregion: specify a country or SREX region by name or ISO_A3 code. Type ?CABLAB.known_regions to see a list of pre-defined areas\n\nReturns a SubCube object which represents a view into the original data cube.\n\n\n\n"
+    "text": "getCubeData(cube::Cube;variable,time,latitude,longitude)\n\nReturns a view into the data cube. The following keyword arguments are accepted:\n\nvariable: an variable index or name or an iterable returning multiple of these (var1, var2, ...)\ntime: a single Date object or a 2-element iterable (time_start, time_end)\nlatitude: a single latitude value or a 2-element iterable (latitude_start, latitude_end)\nlongitude: a single longitude value or a 2-element iterable (longitude_start, longitude_end)\nregion: specify a country or SREX region by name or ISO_A3 code. Type ?CABLAB.known_regions to see a list of pre-defined areas\n\nReturns a SubCube object which represents a view into the original data cube.\n\n\n\n"
 },
 
 {
@@ -101,7 +109,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "Getting a data handle",
     "category": "section",
-    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(DateTime(\"2001-01-01\"),DateTime(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view into the whole data cube.CABLAB.CubeAPI.getCubeDataNo data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
+    "text": "using CABLAB\nc=RemoteCube()var=[\"c_emissions\",\"air_temperature_2m\"]\ntime=(Date(\"2001-01-01\"),Date(\"2001-12-31\"))\ncubedata = getCubeData(c,longitude=(30,31),latitude=(50,51),time=time,variable=var)This returns a view into the Data Cube, on which further calculations can be applied. All keyword arguments default to the full range, so calling getCubeData without keyword arguments will return a view into the whole data cube.CABLAB.CubeAPI.getCubeDataNo data is read yet. Here you can start to do some calculations on your sub-cube, see either Analysis for a list of methods provided by this framework or Applying custom functions to apply your own functions on the cube. If you just want to visualize the cube see this section Plotting."
 },
 
 {
@@ -241,11 +249,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
+    "location": "cube_access.html#CABLAB.CubeAPI.known_regions",
+    "page": "Accessing the Data Cube",
+    "title": "CABLAB.CubeAPI.known_regions",
+    "category": "Constant",
+    "text": "List of Continents\n\nAfrica\nAsia\nAustralia\nEurope\nNorth America\nSouth America\n\nList of SREX regions\n\nShort Name Long Name\nALA Alaska/N.W. Canada\nAMZ Amazon\nCAM Central America/Mexico\nCAR small islands regions Caribbean\nCAS Central Asia\nCEU Central Europe\nCGI Canada/Greenland/Iceland\nCNA Central North America\nEAF East Africa\nEAS East Asia\nENA East North America\nMED South Europe/Mediterranean\nNAS North Asia\nNAU North Australia\nNEB North-East Brazil\nNEU North Europe\nSAF Southern Africa\nSAH Sahara\nSAS South Asia\nSAU South Australia/New Zealand\nSEA Southeast Asia\nSSA Southeastern South America\nTIB Tibetan Plateau\nWAF West Africa\nWAS West Asia\nWNA West North America\nWSA West Coast South America\nANT Antarctica\nARC Arctic\nNTP Pacific Islands region\nSTP Southern Topical Pacific\nETP Pacific Islands region\nWIO West Indian Ocean\n\nList of countries\n\nShort Name Long Name\nABW Aruba\nAFG Afghanistan\nAGO Angola\nAIA Anguilla\nALB Albania\nALA Aland\nAND Andorra\nARE United Arab Emirates\nARG Argentina\nARM Armenia\nASM American Samoa\nATA Antarctica\nAshm Ashmore and Cartier Is.\nATF Fr. S. and Antarctic Lands\nATG Antigua and Barb.\nAUS Australia\nAUT Austria\nAZE Azerbaijan\nBDI Burundi\nBEL Belgium\nBEN Benin\nBFA Burkina Faso\nBGD Bangladesh\nBGR Bulgaria\nBHR Bahrain\nBHS Bahamas\nBIH Bosnia and Herz.\nBLM St. Barthelemy\nBLR Belarus\nBLZ Belize\nBMU Bermuda\nBOL Bolivia\nBRA Brazil\nBRB Barbados\nBRN Brunei\nBTN Bhutan\nBWA Botswana\nCAF Central African Rep.\nCAN Canada\nCHE Switzerland\nCHL Chile\nCHN China\nCIV Ivory Coast\nCLP Clipperton I.\nCMR Cameroon\nCNM \nCOD Congo (Kinshasa)\nCOG Congo (Brazzaville)\nCOK Cook Is.\nCOL Colombia\nCOM Comoros\nCPV Cape Verde\nCRI Costa Rica\nCSI Coral Sea Is.\nCUB Cuba\nCUW Curacao\nCYM Cayman Is.\nCYN N. Cyprus\nCYP Cyprus\nCZE Czech Rep.\nDEU Germany\nDJI Djibouti\nDMA Dominica\nDNK Denmark\nDOM Dominican Rep.\nDZA Algeria\nECU Ecuador\nEGY Egypt\nERI Eritrea\nESB Dhekelia\nESP Spain\nEST Estonia\nETH Ethiopia\nFIN Finland\nFJI Fiji\nFLK Falkland Is.\nFRA France\nFRO Faroe Is.\nFSM Micronesia\nGAB Gabon\nGaza Gaza\nGBR United Kingdom\nGEO Georgia\nGGY Guernsey\nGHA Ghana\nGIB Gibraltar\nGIN Guinea\nGMB Gambia\nGNB Guinea Bissau\nGNQ Eq. Guinea\nGRC Greece\nGRD Grenada\nGRL Greenland\nGTM Guatemala\nGUM Guam\nGUY Guyana\nHKG Hong Kong\nHMD Heard I. and McDonald Is.\nHND Honduras\nHRV Croatia\nHTI Haiti\nHUN Hungary\nIDN Indonesia\nIMN Isle of Man\nIND India\nIOA Indian Ocean Ter.\nIOT Br. Indian Ocean Ter.\nIRL Ireland\nIRN Iran\nIRQ Iraq\nISL Iceland\nISR Israel\nITA Italy\nJAM Jamaica\nJEY Jersey\nJOR Jordan\nJPN Japan\nKAB Baykonur\nKAS \nKAZ Kazakhstan\nKEN Kenya\nKGZ Kyrgyzstan\nKHM Cambodia\nKIR Kiribati\nKNA St. Kitts and Nevis\nKNM \nKOR S. Korea\nKOS Kosovo\nKWT Kuwait\nLAO Laos\nLBN Lebanon\nLBR Liberia\nLBY Libya\nLCA Saint Lucia\nLIE Liechtenstein\nLKA Sri Lanka\nLSO Lesotho\nLTU Lithuania\nLUX Luxembourg\nLVA Latvia\nMAC Macau\nMAF St. Martin\nMAR Morocco\nMCO Monaco\nMDA Moldova\nMDG Madagascar\nMDV Maldives\nMEX Mexico\nMHL Marshall Is.\nMKD Macedonia\nMLI Mali\nMLT Malta\nMMR Myanmar\nMNE Montenegro\nMNG Mongolia\nMNP N. Mariana Is.\nMOZ Mozambique\nMRT Mauritania\nMSR Montserrat\nMUS Mauritius\nMWI Malawi\nMYS Malaysia\nNAM Namibia\nNCL New Caledonia\nNER Niger\nNFK Norfolk Island\nNGA Nigeria\nNIC Nicaragua\nNIU Niue\nNLD Netherlands\nNOR Norway\nNPL Nepal\nNRU Nauru\nNZL New Zealand\nOMN Oman\nPAK Pakistan\nPAN Panama\nPCN Pitcairn Is.\nPER Peru\nPHL Philippines\nPLW Palau\nPNG Papua New Guinea\nPOL Poland\nPRI Puerto Rico\nPRK N. Korea\nPRT Portugal\nPRY Paraguay\nPYF Fr. Polynesia\nQAT Qatar\nROU Romania\nRUS Russia\nRWA Rwanda\nSAH W. Sahara\nSAU Saudi Arabia\nSDN Sudan\nSDS S. Sudan\nSEN Senegal\nSGP Singapore\nSGS S. Geo. and S. Sandw. Is.\nSHN Saint Helena\nSLB Solomon Is.\nSLE Sierra Leone\nSLV El Salvador\nSMR San Marino\nSOL Somaliland\nSOM Somalia\nSPM St. Pierre and Miquelon\nSRB Serbia\nSTP Sao Tome and Principe\nSUR Suriname\nSVK Slovakia\nSVN Slovenia\nSWE Sweden\nSWZ Swaziland\nSXM Sint Maarten\nSYC Seychelles\nSYR Syria\nTCA Turks and Caicos Is.\nTCD Chad\nTGO Togo\nTHA Thailand\nTJK Tajikistan\nTKM Turkmenistan\nTLS East Timor\nTON Tonga\nTTO Trinidad and Tobago\nTUN Tunisia\nTUR Turkey\nTUV Tuvalu\nTWN Taiwan\nTZA Tanzania\nUGA Uganda\nUKR Ukraine\nUMI U.S. Minor Outlying Is.\nURY Uruguay\nUSA United States\nUSG Guantanamo Bay USNB\nUZB Uzbekistan\nVAT Vatican\nVCT St. Vin. and Gren.\nVEN Venezuela\nVGB British Virgin Is.\nVIR U.S. Virgin Is.\nVNM Vietnam\nVUT Vanuatu\nPSE West Bank\nWLF Wallis and Futuna\nWSB Akrotiri\nWSM Samoa\nYEM Yemen\nZAF South Africa\nZMB Zambia\nZWE Zimbabwe\n\n\n\n"
+},
+
+{
     "location": "cube_access.html#List-of-known-regions-1",
     "page": "Accessing the Data Cube",
     "title": "List of known regions",
     "category": "section",
-    "text": "```@docs CABLAB.CubeAPI.known_regions"
+    "text": "CABLAB.CubeAPI.known_regions"
 },
 
 {
@@ -261,7 +277,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "CABLAB.DAT.mapCube",
     "category": "Function",
-    "text": "mapCube(fun, cube, addargs...;kwargs)\n\nMap a given function fun over slices of the data cube cube.\n\nKeyword arguments\n\nmax_cache=1e7 maximum size of blocks that are read into memory, defaults to approx 10Mb\nouttype::DataType output data type of the operation\nindims::Tuple{Tuple{Vararg{CubeAxis}}} List of input axis types for each input data cube\noutdims::Tuple List of output axes, can be either an axis type that has a default constructor or an instance of a CubeAxis\ninmissing::Tuple How to treat missing values in input data for each input cube. Possible values are :nullable :mask :nan or a value that is inserted for missing data, defaults to :mask\noutmissing How are missing values written to the output array, possible values are :nullable, :mask, :nan, defaults to :mask\nno_ocean should values containing ocean data be omitted\ninplace does the function write to an output array inplace or return a single value> defaults to true\nkwargs additional keyword arguments passed to the inner function\n\nThe first argument is always the function to be applied, the second is the input cube or a tuple input cubes if needed. If the function to be applied is registered (either as part of CABLAB or through registerDATFunction), all of the keyword arguments have reasonable defaults and don't need to be supplied. Some of the function still need additional arguments or keyword arguments as is stated in the documentation.\n\nIf you want to call mapCube directly on an unregistered function, please have a look at Applying custom functions to get an idea about the usage of the input and output dimensions etc.\n\n\n\n"
+    "text": "mapCube(fun, cube, addargs...;kwargs)\n\nMap a given function fun over slices of the data cube cube.\n\nKeyword arguments\n\nmax_cache=1e7 maximum size of blocks that are read into memory, defaults to approx 10Mb\nouttype::DataType output data type of the operation\nindims::Tuple{Tuple{Vararg{CubeAxis}}} List of input axis types for each input data cube\noutdims::Tuple List of output axes, can be either an axis type that has a default constructor or an instance of a CubeAxis\ninmissing::Tuple How to treat missing values in input data for each input cube. Possible values are :nullable :mask :nan or a value that is inserted for missing data, defaults to :mask\noutmissing How are missing values written to the output array, possible values are :nullable, :mask, :nan, defaults to :mask\nno_ocean should values containing ocean data be omitted, an integer specifying the cube whose input mask is used to determine land-sea points.\ninplace does the function write to an output array inplace or return a single value> defaults to true\nispar boolean to determine if parallelisation should be applied, defaults to true if workers are available.\nkwargs additional keyword arguments passed to the inner function\n\nThe first argument is always the function to be applied, the second is the input cube or a tuple input cubes if needed. If the function to be applied is registered (either as part of CABLAB or through registerDATFunction), all of the keyword arguments have reasonable defaults and don't need to be supplied. Some of the function still need additional arguments or keyword arguments as is stated in the documentation.\n\nIf you want to call mapCube directly on an unregistered function, please have a look at Applying custom functions to get an idea about the usage of the input and output dimensions etc.\n\n\n\n"
 },
 
 {
@@ -405,7 +421,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "OnlineStats",
     "category": "section",
-    "text": "It is possible to directly apply statistics included in the OnlineStats.jl package on the data cube. This makes it possible to calculate statistics on data too big to fit into memory. The general syntax ismapCube(f ,cube; by=CubeAxis[], cfun=identity, outAxis=nothing,kwargs...)where f is an OnlineStat data type and cube is the cube you want to apply the statistics to. By default this function will reduce all values over all axes of the cube, so if you want to do statistics by a certain axis, it has to be specified using the by keyword argument. by accepts a vector of axes types and up to one datacube that can serve as a mask. If such a data cube is supplied, the statistics are split by the unique values in the mask. One can pass a function cfun that transforms the mask values into an index in the range 1..N that defines the    index where the new value is going to be put to. If a mask is supplied, it must have either a labels property, which is a Dict{T,String} mapping the numerical mask value to the value name. Alternatively on can supply an outAxis argument that describes the resulting output axis.This all gets clearer with two small examples. suppose we want to calculate the mean of GPP, NEE and TER under the condition that Tair<280K and Tair>280K over all time steps and grid cells. This is achieved through the following lines of code:import OnlineStats\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)                            # Define the classification function\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])  # A two-length output axis, because there are two possible values\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis) # Of course we want to split by variable, too\n\nplotXY(mT,xaxis=\"var\",group=\"tempclass\")#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB\nimport OnlineStats\nimport Documenter\nds    = RemoteCube()\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis)\n\np=plotXY(mT,xaxis=\"var\",group=\"tempclass\")\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))A second example would be that we want to calculate averages of the fluxes according to a country mask.import OnlineStats\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nm     = getCubeData(ds,variable=\"country_mask\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nmT    = mapCube(OnlineStats.Mean,cube,by=[m,VariableAxis], cfun=splitTemp, outAxis=outAxis)This will split the cube by country and variable and compute averages over the input variables."
+    "text": "It is possible to directly apply statistics included in the OnlineStats.jl package on the data cube. This makes it possible to calculate statistics on data too big to fit into memory. The general syntax ismapCube(f ,cube; by=CubeAxis[], cfun=identity, outAxis=nothing,kwargs...)where f is an OnlineStat data type and cube is the cube you want to apply the statistics to. By default this function will reduce all values over all axes of the cube, so if you want to do statistics by a certain axis, it has to be specified using the by keyword argument. by accepts a vector of axes types and up to one datacube that can serve as a mask. If such a data cube is supplied, the statistics are split by the unique values in the mask. One can pass a function cfun that transforms the mask values into an index in the range 1..N that defines the    index where the new value is going to be put to. If a mask is supplied, it must have either a labels property, which is a Dict{T,String} mapping the numerical mask value to the value name. Alternatively on can supply an outAxis argument that describes the resulting output axis.This all gets clearer with two small examples. suppose we want to calculate the mean of GPP, NEE and TER under the condition that Tair<280K and Tair>280K over all time steps and grid cells. This is achieved through the following lines of code:import OnlineStats\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)                            # Define the classification function\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])  # A two-length output axis, because there are two possible values\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis) # Of course we want to split by variable, too\n\nusing CABLABPlots\nplotXY(mT,xaxis=\"var\",group=\"tempclass\")#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB\nimport OnlineStats\nimport Documenter\nds    = RemoteCube()\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis)\n\nusing CABLABPlots\ngr()\np=plotXY(mT,xaxis=\"var\",group=\"tempclass\")\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))A second example would be that we want to calculate averages of the fluxes according to a country mask.import OnlineStats\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nm     = getCubeData(ds,variable=\"country_mask\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nmT    = mapCube(OnlineStats.Mean,cube,by=[m,VariableAxis], cfun=splitTemp, outAxis=outAxis)This will split the cube by country and variable and compute averages over the input variables."
+},
+
+{
+    "location": "analysis.html#CABLAB.Proc.DATOnlineStats.cubePCA",
+    "page": "Analysis",
+    "title": "CABLAB.Proc.DATOnlineStats.cubePCA",
+    "category": "Function",
+    "text": "cubePCA(cube::AbstractCubeData)\n\nPerforms a PCA based on a covariance matrix which is estimated through an online algorithm. Returns an OnlinePCA object from which explained_variance and the rotation can be extracted, or which can be used to perform the projection on a dataset.\n\nKeyword arguments\n\nMDAxis specifies the axes that is reduced through the PCA\nby a vector of axes types or masks denoting if several PCAs should be performed. If provided, several PCAs will be performed.\nnoutdims number of output dimensions, how many PCs are estimated\n\n\n\n"
+},
+
+{
+    "location": "analysis.html#Online-PCA-1",
+    "page": "Analysis",
+    "title": "Online PCA",
+    "category": "section",
+    "text": "It is possible to compute a principal component analysis based on a covariance matrix obtained through an online algorithm. The package provides a convenient way to achieve this with the cubePCA function.cubePCAFor example, if one wants to calculate a PCA over the time dimension, you could use the following code:"
 },
 
 {
@@ -413,7 +445,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Plotting",
     "category": "page",
-    "text": "#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB # hide\nimport Documenter\nds=RemoteCube() # hide"
+    "text": "#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB # hide\nusing CABLABPlots\nimport Documenter\nds=RemoteCube() # hide"
 },
 
 {
@@ -421,15 +453,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Plotting",
     "category": "section",
-    "text": "CurrentModule = CABLAB.Plot"
-},
-
-{
-    "location": "plotting.html#CABLAB.Plot.plotMAP",
-    "page": "Plotting",
-    "title": "CABLAB.Plot.plotMAP",
-    "category": "Function",
-    "text": "plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)\n\nMap plotting tool for cube objects, can be called on any type of cube data\n\nKeyword arguments\n\ndmin, dmax Minimum and maximum value to be used for color transformation\ncolorm colormap to be used. Find a list of colormaps in the Colors.jl package\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\nsymmetric make the color scale symmetric around zero\nlabels given a list of labels this will create a plot with a non-continouous color scale where integer cube values [1..N] are mapped to the given labels.\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plot\n\nIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
+    "text": "CurrentModule = Main.CABLABPlots"
 },
 
 {
@@ -437,7 +461,31 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Plot geographical maps",
     "category": "section",
-    "text": "Map plotting is generally done using the plotMAP function:plotMAPHere is an example on how to plot a map. The keyword arguments specify the time step (time=1) and the variable (var=1).\ncdata=getCubeData(ds,variable=[\"air_temperature_2m\",\"gross_primary_productivity\"])\nplotMAP(cdata,time=1,var=1)Inside a Jupyter notebook, the keyword arguments can be omitted and sliders or dropdown menus will be shown to select the desired values."
+    "text": "Map plotting is generally done using the plotMAP function:plotMAP(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)Map plotting tool for cube objects, can be called on any type of cube data"
+},
+
+{
+    "location": "plotting.html#Keyword-arguments-1",
+    "page": "Plotting",
+    "title": "Keyword arguments",
+    "category": "section",
+    "text": "dmin, dmax Minimum and maximum value to be used for color transformation\ncolorm colormap to be used. Find a list of colormaps in the Colors.jl package\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\nsymmetric make the color scale symmetric around zero\nlabels given a list of labels this will create a plot with a non-continouous color scale where integer cube values [1..N] are mapped to the given labels.\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plotIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.Here is an example on how to plot a map. The keyword arguments specify the time step (time=1) and the variable (var=1).\ncdata=getCubeData(ds,variable=[\"air_temperature_2m\",\"gross_primary_productivity\"])\nplotMAP(cdata,time=1,var=1)Inside a Jupyter notebook, the keyword arguments can be omitted and sliders or dropdown menus will be shown to select the desired values."
+},
+
+{
+    "location": "plotting.html#RGB-Maps-1",
+    "page": "Plotting",
+    "title": "RGB Maps",
+    "category": "section",
+    "text": "A common method to plot several variables at once in a single map is an RGB map. This is possible through the plotMAPRGB function.plotMAPRGB(cube::AbstractCubeData; dmin=datamin, dmax=datamax, colorm=colormap(\"oranges\"), oceancol=colorant\"darkblue\", misscol=colorant\"gray\", kwargs...)Map plotting tool for colored plots that use up to 3 variables as input into the several color channels. Several color representations from the Colortypes.jl package are supported, so that besides RGB (XYZ)-plots one can create HSL, HSI, HSV or Lab and Luv plots."
+},
+
+{
+    "location": "plotting.html#Keyword-arguments-2",
+    "page": "Plotting",
+    "title": "Keyword arguments",
+    "category": "section",
+    "text": "dmin, dmax Minimum and maximum value to be used for color transformation, can be either a single value or a tuple, when min/max values are given for each channel\nrgbAxis which axis should be used to select RGB channels from\noceancol color to fill the ocean with, defaults to colorant\"darkblue\"\nmisscol color to represent missing values, defaults to colorant\"gray\"\nlabels given a list of labels this will create a plot with a non-continouous color scale where integer cube values [1..N] are mapped to the given labels.\ncType ColorType to use for the color representation. Can be one of RGB, XYZ, Lab, Luv, HSV, HSI, HSL\ndim=value can set other dimensions to certain values, for example var=\"air_temperature_2m\" will fix the variable for the resulting plotIf a dimension is neither longitude or latitude and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.For example, if we want to plot GPP, NEE and TER as an RGB map for South America, we can do the following:d=getCubeData(ds,variable=\"Biosphere\",region=\"South America\")\nusing ColorTypes\nplotMAPRGB(d,c1=\"gross_primary_productivity\",\n             c2=\"net_ecosystem_exchange\",\n             c3=\"terrestrial_ecosystem_respiration\",\n             cType=Lab,\n             time=100)"
 },
 
 {
@@ -449,19 +497,11 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "plotting.html#CABLAB.Plot.plotXY",
-    "page": "Plotting",
-    "title": "CABLAB.Plot.plotXY",
-    "category": "Function",
-    "text": "plotXY(cube::AbstractCubeData; group=0, xaxis=-1, kwargs...)\n\nGeneric plotting tool for cube objects, can be called on any type of cube data.\n\nKeyword arguments\n\nxaxis which axis is to be used as x axis. Can be either an axis Datatype or a string. Short versions of axes names are possible as long as the axis can be uniquely determined.\ngroup it is possible to group the plot by a categorical axis. Can be either an axis data type or a string.\ndim=value can set other dimensions to certain values, for example lon=51.5 will fix the longitude for the resulting plot\n\nIf a dimension is not the x axis or group variable and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.\n\n\n\n"
-},
-
-{
     "location": "plotting.html#XY-plots-1",
     "page": "Plotting",
     "title": "XY plots",
     "category": "section",
-    "text": "Generating x-y type plots where the x axis is one of the cube axes and the y axis is the corresponding cube value is done with the generic plotXY function.plotXYHere are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nplotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nnothing # hideusing CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
+    "text": "Generating x-y type plots where the x axis is one of the cube axes and the y axis is the corresponding cube value is done with the generic plotXY function.`plotXY(cube::AbstractCubeData; group=0, xaxis=-1, kwargs...)`\n\nGeneric plotting tool for cube objects, can be called on any type of cube data.\n\n### Keyword arguments\n\n* `xaxis` which axis is to be used as x axis. Can be either an axis Datatype or a string. Short versions of axes names are possible as long as the axis can be uniquely determined.\n* `group` it is possible to group the plot by a categorical axis. Can be either an axis data type or a string.\n* `dim=value` can set other dimensions to certain values, for example `lon=51.5` will fix the longitude for the resulting plot\n\nIf a dimension is not the x axis or group variable and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.Here are two examples for using this function:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nplotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nnothing # hideusing CABLAB # hide\nusing CABLABPlots\ngr()\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotXY(cdata,xaxis=\"time\",group=\"variable\",lon=31,lat=51)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))This is a time series plot, grouped by variables for a specific longitude/latitude.m=reduceCube(mean,cdata,TimeAxis)\nplotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)using CABLAB # hide\nusing CABLABPlots\ngr()\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\nm=reduceCube(mean,cdata,TimeAxis, max_cache=1e8)\np=plotXY(m,xaxis=\"variable\",group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
@@ -469,7 +509,15 @@ var documenterSearchIndex = {"docs": [
     "page": "Plotting",
     "title": "Scatter plots",
     "category": "section",
-    "text": "In order to do scatter plots, i.e. plotting variable A against variable B one can use the plotScatter function.plotScatterA short example is shown here:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=1,yaxis=2,group=\"lat\",lon=30)using CABLAB # hide\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=1,yaxis=2,group=\"lat\",lon=30)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
+    "text": "In order to do scatter plots, i.e. plotting variable A against variable B one can use the plotScatter function.plotScatter(cube::AbstractCubeData; vsaxis=VariableAxis, alongaxis=0, group=0, xaxis=0, yaxis=0, kwargs...)Generic plotting tool for cube objects to generate scatter plots, like variable A against variable B. Can be called on any type of cube data."
+},
+
+{
+    "location": "plotting.html#Keyword-arguments-3",
+    "page": "Plotting",
+    "title": "Keyword arguments",
+    "category": "section",
+    "text": "vsaxis determines the axis from which the x and y variables are drawn.\nalongaxis determines the axis along which the variables are plotted. E.g. if you choose TimeAxis, a dot will be plotted for each time step.\nxaxis index or value of the variable to plot on the x axis\nyaxis index or value of the variable to plot on the y axis\ngroup it is possible to group the plot by an axis. Can be either an axis data type or a string. Caution: This will increase the number of plotted data points\ndim=value can set other dimensions to certain values, for example lon=51.5 will fix the longitude for the resulting plotIf a dimension is not the vsaxis or alongaxis or group and is not fixed through an additional keyword, a slider or dropdown menu will appear to select the axis value.A short example is shown here:cdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=1,yaxis=2,group=\"lat\",lon=30)using CABLAB # hide\nusing CABLABPlots\ngr()\nimport Documenter # hide\nds=RemoteCube() # hide\ncdata=getCubeData(ds,variable=[\"net_ecosystem_exchange\",\"gross_primary_productivity\",\"terrestrial_ecosystem_respiration\"],\nlongitude=(30.0,30.0),latitude=(50.0,52.0))\np=plotScatter(cdata,alongaxis=TimeAxis,xaxis=\"net_ecosystem_exchange\",yaxis=\"gross_primary_productivity\",group=\"lat\",lon=30.0)\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))"
 },
 
 {
@@ -558,6 +606,46 @@ var documenterSearchIndex = {"docs": [
     "title": "Determine output axis from cube properties",
     "category": "section",
     "text": "For some calculations the output axis does not equal any of the input axis, but has to be generated before the cube calculation starts. You can probably guess that this will happen through callback functions again, which have the same form as in the other examples. In this example we want to register a function that does a polynomial regression between time series of two variables. The result of this calculation are the regression parameters, so the output axis will be a newly created Parameter-axis (see Cube Axes). For the axis we define a default constructor which names the fitting parameters. In this example we create a ParameterAxis for a quadratic regression.using CABLAB # hide\nfunction ParameterAxis(order::Integer)\n  order > 0 || error(\"Regression must be at least linear\")\n  CategoricalAxis(\"Parameter\",[\"offset\";[\"p$i\" for i=1:order]])\nend\nParameterAxis(2)Now we can go and register the function, while we specify the output axis with a function calling the Axis constructor.using CABLAB # hide\nfunction ParameterAxis(order::Integer) # hide\n  order > 0 || error(\"Regression must be at least linear\") # hide\n  ParameterAxis([\"offset\";[\"p$i\" for i=1:order]]) # hide\nend # hide\nfunction polyRegression(xout::Vector, xin::Matrix, order::Integer)\n  #code here\nend\n\ninAxes=(TimeAxis,)\noutAxes=((cube,pargs)->ParameterAxis(pargs[1]),)\nregisterDATFunction(polyRegression, inAxes, outAxes, inmissing=(:nan,), outmissing=:nan);The user can apply the function now using mapCube(polyRegression, cubedata, regOrdeer) where regOrder is the order of the Regression."
+},
+
+{
+    "location": "iotools.html#",
+    "page": "Loading and saving results",
+    "title": "Loading and saving results",
+    "category": "page",
+    "text": ""
+},
+
+{
+    "location": "iotools.html#CABLAB.Cubes.TempCubes.saveCube",
+    "page": "Loading and saving results",
+    "title": "CABLAB.Cubes.TempCubes.saveCube",
+    "category": "Function",
+    "text": "saveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the CABLAB working directory.\n\nSee also loadCube, CABLABdir\n\n\n\n"
+},
+
+{
+    "location": "iotools.html#CABLAB.Cubes.TempCubes.loadCube",
+    "page": "Loading and saving results",
+    "title": "CABLAB.Cubes.TempCubes.loadCube",
+    "category": "Function",
+    "text": "loadCube(name::String)\n\nLoads a cube that was previously saved with saveCube. Returns a TempCube object.\n\n\n\n"
+},
+
+{
+    "location": "iotools.html#CABLAB.CABLABTools.@loadOrGenerate",
+    "page": "Loading and saving results",
+    "title": "CABLAB.CABLABTools.@loadOrGenerate",
+    "category": "Macro",
+    "text": "macro loadOrGenerate(x...,expression)\n\nTakes a list of variablename=>\"Storage Name\" pairs. Checks if all datasets can be found on disk and loads them. If not, the datasets will be regenerated by evaluating the given expression.\n\nTo force recalculation, call CABLAB.recalculate(true) before evaluating the macro.\n\nExample\n\nThe following lines will check if cubes with the names \"Filled\" and \"Normalized\" exist on disk, load them and assign the variable names cube_filled and cube_norm. If the datasets to not exist on disk, they are generated and saved under the given names.\n\n@loadOrGenerate cube_filled=>\"Filled\" cube_norm=>\"Normalized\" begin\ncube_filled = mapCube(gapFillMSC,d)\ncube_norm   = mapCube(normalize_TS,d)\nend\n\n\n\n\n"
+},
+
+{
+    "location": "iotools.html#Loading-and-saving-results-1",
+    "page": "Loading and saving results",
+    "title": "Loading and saving results",
+    "category": "section",
+    "text": "CurrentModule = CABLAB.Cubes.TempCubessaveCubeloadCubeCurrentModule = CABLAB.CABLABTools@loadOrGenerate"
 },
 
 ]}
