@@ -621,7 +621,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Loading and saving results",
     "title": "CABLAB.Cubes.TempCubes.saveCube",
     "category": "Function",
-    "text": "saveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the CABLAB working directory.\n\nSee also loadCube, CABLABdir\n\n\n\n"
+    "text": "saveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the CABLAB working directory.\n\nSee also loadCube, CABLABdir\n\n\n\nsaveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\n"
 },
 
 {
