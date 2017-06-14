@@ -117,7 +117,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "CABLAB.Proc.CubeIO.extractLonLats",
     "category": "Function",
-    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations. \n\n\n\n"
+    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations.\n\n\n\n"
 },
 
 {
@@ -397,7 +397,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "CABLAB.Proc.CubeIO.extractLonLats",
     "category": "Method",
-    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations. \n\n\n\n"
+    "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations.\n\n\n\n"
 },
 
 {
@@ -621,7 +621,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Loading and saving results",
     "title": "CABLAB.Cubes.TempCubes.saveCube",
     "category": "Function",
-    "text": "saveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the CABLAB working directory.\n\nSee also loadCube, CABLABdir\n\n\n\nsaveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\n"
+    "text": "saveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the CABLAB working directory.\n\nSee also loadCube, CABLABdir\n\n\n\n"
 },
 
 {
