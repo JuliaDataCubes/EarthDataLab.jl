@@ -266,15 +266,23 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#",
-    "page": "Analysis",
-    "title": "Analysis",
+    "page": "Elementwise calculations",
+    "title": "Elementwise calculations",
     "category": "page",
     "text": ""
 },
 
 {
+    "location": "analysis.html#Elementwise-calculations-1",
+    "page": "Elementwise calculations",
+    "title": "Elementwise calculations",
+    "category": "section",
+    "text": "Doing elementwise calculations on the cube is generally done using the map function. So, if you want to multiply each single element of a data cube with 2, you could call newcube = map(x->2*x, oldcube). This will not execute the computation immediately but on the fly during the next computation or plotting. Functions with multiple arguments can also be applied like in: sumcube = map((x,y)->x+y, incube1, incube2). Which would calculate the sum of two data cubes.We have also overloaded a list of commonly used operators (+,-,*,/, max,min) and functions (sin,cos,exp,log, log10) to apply on datacubes directly. So newCube = (abs(cube1-cube2)) would work as expected."
+},
+
+{
     "location": "analysis.html#CABLAB.DAT.mapCube",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.DAT.mapCube",
     "category": "Function",
     "text": "mapCube(fun, cube, addargs...;kwargs)\n\nMap a given function fun over slices of the data cube cube.\n\nKeyword arguments\n\nmax_cache=1e7 maximum size of blocks that are read into memory, defaults to approx 10Mb\nouttype::DataType output data type of the operation\nindims::Tuple{Tuple{Vararg{CubeAxis}}} List of input axis types for each input data cube\noutdims::Tuple List of output axes, can be either an axis type that has a default constructor or an instance of a CubeAxis\ninmissing::Tuple How to treat missing values in input data for each input cube. Possible values are :nullable :mask :nan or a value that is inserted for missing data, defaults to :mask\noutmissing How are missing values written to the output array, possible values are :nullable, :mask, :nan, defaults to :mask\nno_ocean should values containing ocean data be omitted, an integer specifying the cube whose input mask is used to determine land-sea points.\ninplace does the function write to an output array inplace or return a single value> defaults to true\nispar boolean to determine if parallelisation should be applied, defaults to true if workers are available.\nkwargs additional keyword arguments passed to the inner function\n\nThe first argument is always the function to be applied, the second is the input cube or a tuple input cubes if needed. If the function to be applied is registered (either as part of CABLAB or through registerDATFunction), all of the keyword arguments have reasonable defaults and don't need to be supplied. Some of the function still need additional arguments or keyword arguments as is stated in the documentation.\n\nIf you want to call mapCube directly on an unregistered function, please have a look at Applying custom functions to get an idea about the usage of the input and output dimensions etc.\n\n\n\n"
@@ -282,7 +290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Analysis-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Analysis",
     "category": "section",
     "text": "The CABLAB package comes with a list of predefined methods for statistical analysis. The functions are defined to work on specific axes, for example a function that removes the mean annual cycle will alway work an the time axis. It does not matter which other axes are defined in the input cube, the function will simply loop over these. All the functions are called using the mapCube function.mapCubeThe function will then be applied to the whole cube in a memory-efficient way, which means that chunks of data are read, processed and then saved in the output cube. Whether the output cube is a TempCube or a CubeMem is decided by the system, depending on if the calculation is parallel, and how large the output cube is.Here follows a list of analysis function included in this package. If you have implemented or wrapped a method that might be of interest to a broader community, please feel free to open a pull request."
@@ -290,7 +298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.MSC.gapFillMSC-Tuple{AbstractArray,AbstractArray{UInt8,N},AbstractArray,AbstractArray{UInt8,N},Integer,Any,Any}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.MSC.gapFillMSC",
     "category": "Method",
     "text": "gapFillMSC\n\nFills missing values of each time series with the mean annual cycle.\n\nCall signature\n\nmapCube(gapFillMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
@@ -298,7 +306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.MSC.getMSC",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.MSC.getMSC",
     "category": "Function",
     "text": "getMSC\n\nReturns the mean annual cycle from each time series.\n\nCall signature\n\nmapCube(getMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
@@ -306,7 +314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.MSC.getMedSC-Tuple{AbstractArray{T,1},AbstractArray{UInt8,1},AbstractArray{T,1},AbstractArray{UInt8,1}}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.MSC.getMedSC",
     "category": "Method",
     "text": "getMedMSC\n\nReturns the median annual cycle from each time series.\n\nCall signature\n\nmapCube(getMedMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
@@ -314,7 +322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.MSC.removeMSC-Tuple{AbstractArray,AbstractArray{UInt8,N},AbstractArray,AbstractArray{UInt8,N},Integer,Any,Any}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.MSC.removeMSC",
     "category": "Method",
     "text": "removeMSC\n\nRemoves the mean annual cycle from each time series.\n\nCall signature\n\nmapCube(removeMSC, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
@@ -322,7 +330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Seasonal-cycles-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Seasonal cycles",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.MSC]\nPrivate = false"
@@ -330,7 +338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.Outlier.DAT_detectAnomalies!-Tuple{AbstractArray,AbstractArray,MultivariateAnomalies.PARAMS}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.Outlier.DAT_detectAnomalies!",
     "category": "Method",
     "text": "DAT_detectAnomalies!\n\nA simple wrapper around the function detectAnomalies! from the MultivariateAnomalies package.\n\nCall signature\n\nmapCube(DAT_detectAnomalies!, cube, methods, trainArray)\n\ncube data cube with a axes: TimeAxis, VariableAxis\nmethods vector of methods to be applied, choose from: KDE,T2,REC,KNN-Gamma,KNN-Delta,SVDD,KNFST\ntrainArray a matrix of nsample x nvar, to estimate the training parameters for the model. Ideally does not contain any extreme values\n\nInput Axes TimeAxis, Variableaxis\n\nOutput Axes TimeAxis, Methodaxis\n\nFor an example on how to apply this function, see this notebook.\n\n\n\n"
@@ -338,7 +346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Outlier-detection-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Outlier detection",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.Outlier]\nPrivate = false"
@@ -346,7 +354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.DAT.reduceCube",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.DAT.reduceCube",
     "category": "Function",
     "text": "reduceCube(f::Function, cube, dim::Type{T<:CubeAxis};kwargs...)\n\nApply a reduction function f on slices of the cube cube. The dimension(s) are specified through dim, which is either an Axis type or a tuple of axis types. Keyword arguments are passed to mapCube or, if unknown passed again to f. It is assumed that f takes an array input and returns a single value.\n\n\n\n"
@@ -354,7 +362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.Stats.normalizeTS-Tuple{AbstractArray{T,1},AbstractArray{T,1}}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.Stats.normalizeTS",
     "category": "Method",
     "text": "normalizeTS\n\nNormalize a time series to zeros mean and unit variance\n\nCall signature\n\nmapCube(normalizeTS, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes TimeAxis\n\nOutput Axes TimeAxis\n\n\n\n"
@@ -362,7 +370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.Stats.timespacequantiles-Tuple{AbstractArray{T,1},AbstractArray,AbstractArray{T,1},Any}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.Stats.timespacequantiles",
     "category": "Method",
     "text": "timespacequantiles\n\nCalculate quantiles from a space time data cube. This is usually called on a subset of data returned by sampleLandPoints.\n\nCall signature\n\nmapCube(timespacequantiles, cube, quantiles)\n\ncube data cube with a axes: TimeAxis, SpatialPointAxis\nquantiles a vector of quantile values to calculate\n\nInput Axes TimeAxis, SpatialPointAxis\n\nOutput Axes QuantileAxis\n\nCalculating exact quantiles from data that don't fit into memory is quite a problem. One solution we provide here is to simply subsample your data and then get the quantiles from a smaller dataset.\n\nFor an example on how to apply this function, see this notebook.\n\n\n\n"
@@ -370,7 +378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Simple-Statistics-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Simple Statistics",
     "category": "section",
     "text": "Another typcial use case is the application of basic statistics like sum, mean and std. We provide a convenience function reduceCube  reduceCubeApplying these functions makes sense if the slices one wants to reduce fit in memory. However, if one wants to calculate some statistics on e.g. a timelonlat cube, one would preferably call one of the OnlineStats methods.  Additional simple statistics functions are:Modules = [CABLAB.Proc.Stats]\nPrivate = false"
@@ -378,7 +386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.TSDecomposition.filterTSFFT-Tuple{Array{T<:Real,2},Array{T<:Real,1},Number}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.TSDecomposition.filterTSFFT",
     "category": "Method",
     "text": "filterTSFFT\n\nFilter each time series using a Fourier filter and return the decomposed series in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)\n\nCall signature\n\nmapCube(filterTSFFT, cube)\n\ncube data cube with a axes: TimeAxis\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis, TimeScaleaxis\n\n\n\n"
@@ -386,7 +394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Time-series-decomposition-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Time series decomposition",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.TSDecomposition]\nPrivate = false"
@@ -394,7 +402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.CubeIO.extractLonLats-Tuple{CABLAB.Cubes.AbstractCubeData,Array{T,2}}",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.CubeIO.extractLonLats",
     "category": "Method",
     "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations.\n\n\n\n"
@@ -402,7 +410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.CubeIO.sampleLandPoints",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.CubeIO.sampleLandPoints",
     "category": "Function",
     "text": "sampleLandPoints(cube, nsample;nomissing=false)\n\nGet an area-weighted sample from all non-ocean grid cells. This will return a new Cube where the LonAxis and LatAxis are condensed into a single SpatialPointAxis of length nsample. If nomissing=true only grid cells will be selected which don't contain any missing values. This makes sense for gap-filled cubes to make sure that grid cells with systematic seasonal gaps are not selected in the sample.\n\n\n\n"
@@ -410,7 +418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Cube-transformations-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Cube transformations",
     "category": "section",
     "text": "Modules = [CABLAB.Proc.CubeIO]\nPrivate = false"
@@ -418,7 +426,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#OnlineStats-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "OnlineStats",
     "category": "section",
     "text": "It is possible to directly apply statistics included in the OnlineStats.jl package on the data cube. This makes it possible to calculate statistics on data too big to fit into memory. The general syntax ismapCube(f ,cube; by=CubeAxis[], cfun=identity, outAxis=nothing,kwargs...)where f is an OnlineStat data type and cube is the cube you want to apply the statistics to. By default this function will reduce all values over all axes of the cube, so if you want to do statistics by a certain axis, it has to be specified using the by keyword argument. by accepts a vector of axes types and up to one datacube that can serve as a mask. If such a data cube is supplied, the statistics are split by the unique values in the mask. One can pass a function cfun that transforms the mask values into an index in the range 1..N that defines the    index where the new value is going to be put to. If a mask is supplied, it must have either a labels property, which is a Dict{T,String} mapping the numerical mask value to the value name. Alternatively on can supply an outAxis argument that describes the resulting output axis.This all gets clearer with two small examples. suppose we want to calculate the mean of GPP, NEE and TER under the condition that Tair<280K and Tair>280K over all time steps and grid cells. This is achieved through the following lines of code:import OnlineStats\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)                            # Define the classification function\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])  # A two-length output axis, because there are two possible values\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis) # Of course we want to split by variable, too\n\nusing CABLABPlots\nplotXY(mT,xaxis=\"var\",group=\"tempclass\")#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using CABLAB\nimport OnlineStats\nimport Documenter\nds    = RemoteCube()\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis)\n\nusing CABLABPlots\ngr()\np=plotXY(mT,xaxis=\"var\",group=\"tempclass\")\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(takebuf_string(b))A second example would be that we want to calculate averages of the fluxes according to a country mask.import OnlineStats\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nm     = getCubeData(ds,variable=\"country_mask\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nmT    = mapCube(OnlineStats.Mean,cube,by=[m,VariableAxis], cfun=splitTemp, outAxis=outAxis)This will split the cube by country and variable and compute averages over the input variables."
@@ -426,7 +434,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#CABLAB.Proc.DATOnlineStats.cubePCA",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "CABLAB.Proc.DATOnlineStats.cubePCA",
     "category": "Function",
     "text": "cubePCA(cube::AbstractCubeData)\n\nPerforms a PCA based on a covariance matrix which is estimated through an online algorithm. Returns an OnlinePCA object from which explained_variance and the rotation can be extracted, or which can be used to perform the projection on a dataset.\n\nKeyword arguments\n\nMDAxis specifies the axes that is reduced through the PCA\nby a vector of axes types or masks denoting if several PCAs should be performed. If provided, several PCAs will be performed.\nnoutdims number of output dimensions, how many PCs are estimated\n\n\n\n"
@@ -434,7 +442,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Online-PCA-1",
-    "page": "Analysis",
+    "page": "Elementwise calculations",
     "title": "Online PCA",
     "category": "section",
     "text": "It is possible to compute a principal component analysis based on a covariance matrix obtained through an online algorithm. The package provides a convenient way to achieve this with the cubePCA function.cubePCAFor example, if one wants to calculate a PCA over the time dimension, you could use the following code:"
