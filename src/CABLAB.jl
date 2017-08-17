@@ -14,7 +14,7 @@ export registerDATFunction, mapCube, reduceCube, getAxis #From DAT module
 export DAT_detectAnomalies!, removeMSC, gapFillMSC, normalizeTS,DATfitOnline,
   sampleLandPoints, toPointAxis, getMSC, filterTSFFT, getNpY,timespacequantiles,
   timelonlatquantiles, getMedSC, extractLonLats,simpleAnomalies,
-  cubePCA, rotation_matrix, transformPCA, explained_variance #From Proc module
+  cubePCA, rotation_matrix, transformPCA, explained_variance, timeMean #From Proc module
 export TempCube, openTempCube, rmCube # From CachedArrays
 export @loadOrGenerate # from CABLAB Tools
 
