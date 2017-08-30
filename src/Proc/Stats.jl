@@ -7,6 +7,42 @@ importall ..Cubes
 using NullableArrays
 using StatsBase
 
+
+"""
+    timeMean
+
+Calculating the mean of a time Series omitting missing values
+
+### Call signature
+
+    mapCube(timeMean, cube)
+
+* `cube` data cube with a axes: `TimeAxis`
+
+**Input Axes** `TimeAxis`
+
+**Output Axes** `None`
+
+"""
+function timeMean{T}(xout::AbstractArray{T,0},maskout::AbstractArray{UInt8,0},xin::AbstractVector{T},maskin::AbstractVector)
+    s=zero(T)
+    n=0
+    for i in eachindex(xin)
+        if maskin[i]==VALID
+            s+=xin[i]
+            n+=1
+        end
+    end
+    if n>0
+        xout[1]=s/n
+        maskout[1]=VALID
+    else
+        xout[1]=NaN
+        maskout[1]=MISSING
+    end
+end
+registerDATFunction(timeMean,(TimeAxis,),(),no_ocean=1)
+
 """
     normalizeTS
 
