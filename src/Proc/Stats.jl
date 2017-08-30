@@ -9,19 +9,19 @@ using StatsBase
 
 
 """
-    TimeMean
+    timeMean
 
 Calculating the mean of a time Series omitting missing values
 
 ### Call signature
 
-    mapCube(normalizeTS, cube)
+    mapCube(timeMean, cube)
 
 * `cube` data cube with a axes: `TimeAxis`
 
 **Input Axes** `TimeAxis`
 
-**Output Axes** `TimeAxis`
+**Output Axes** `None`
 
 """
 function timeMean{T}(xout::AbstractArray{T,0},maskout::AbstractArray{UInt8,0},xin::AbstractVector{T},maskin::AbstractVector)
@@ -41,7 +41,7 @@ function timeMean{T}(xout::AbstractArray{T,0},maskout::AbstractArray{UInt8,0},xi
         maskout[1]=MISSING
     end
 end
-registerDATFunction(TimeMean,(TimeAxis,),(),no_ocean=1)
+registerDATFunction(timeMean,(TimeAxis,),(),no_ocean=1)
 
 """
     normalizeTS
