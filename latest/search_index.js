@@ -266,23 +266,15 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#",
-    "page": "Elementwise calculations",
-    "title": "Elementwise calculations",
+    "page": "Analysis",
+    "title": "Analysis",
     "category": "page",
     "text": ""
 },
 
 {
-    "location": "analysis.html#Elementwise-calculations-1",
-    "page": "Elementwise calculations",
-    "title": "Elementwise calculations",
-    "category": "section",
-    "text": "Doing elementwise calculations on the cube is generally done using the map function. So, if you want to multiply each single element of a data cube with 2, you could call newcube = map(x->2*x, oldcube). This will not execute the computation immediately but on the fly during the next computation or plotting. Functions with multiple arguments can also be applied like in: sumcube = map((x,y)->x+y, incube1, incube2). Which would calculate the sum of two data cubes.We have also overloaded a list of commonly used operators (+,-,*,/, max,min) and functions (sin,cos,exp,log, log10) to apply on datacubes directly. So newCube = (abs(cube1-cube2)) would work as expected."
-},
-
-{
     "location": "analysis.html#Analysis-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Analysis",
     "category": "section",
     "text": "The ESDL package comes with a list of predefined methods for statistical analysis. The functions are defined to work on specific axes, for example a function that removes the mean annual cycle will always extract one time series after the other from a cube, process them, store the results and concatenate the resulting time series to a new output cube. It does not matter which other axes are defined in the input cube, the function will simply loop over these.The function will then be applied to the whole cube in a memory-efficient way, which means that chunks of data are read, processed and then saved in the output cube. Whether the output cube is a MmapCube or a CubeMem is decided by the system, depending on if the calculation is parallel, and how large the output cube is.Here follows a list of analysis function included in this package. If you have implemented or wrapped a method that might be of interest to a broader community, please feel free to open a pull request."
@@ -290,7 +282,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.MSC.gapFillMSC-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.MSC.gapFillMSC",
     "category": "method",
     "text": "gapFillMSC\n\nFills missing values of each time series in a cube with the mean annual cycle.\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
@@ -298,7 +290,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.MSC.getMSC-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.MSC.getMSC",
     "category": "method",
     "text": "getMSC\n\nReturns the mean annual cycle from each time series.\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
@@ -306,7 +298,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.MSC.getMedSC-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.MSC.getMedSC",
     "category": "method",
     "text": "getMedMSC(c::AbstractCubeData)\n\nReturns the median annual cycle from each time series.\n\nInput Axes Timeaxis\n\nOutput Axes MSCaxis\n\n\n\n"
@@ -314,7 +306,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.MSC.removeMSC-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.MSC.removeMSC",
     "category": "method",
     "text": "removeMSC(c::AbstractCubeData)\n\nRemoves the mean annual cycle from each time series of a data cube.\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis\n\n\n\n"
@@ -322,7 +314,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Seasonal-cycles-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Seasonal cycles",
     "category": "section",
     "text": "Modules = [ESDL.Proc.MSC]\nPrivate = false"
@@ -330,7 +322,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.Outlier.cubeAnomalies-Tuple{ESDL.Cubes.AbstractCubeData,Any,Any}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.Outlier.cubeAnomalies",
     "category": "method",
     "text": "cubeAnomalies(cube, methods, trainArray)\n\nA simple wrapper around the function detectAnomalies! from the MultivariateAnomalies package.\n\ncube data cube with a axes: TimeAxis, VariableAxis\nmethods vector of methods to be applied, choose from: KDE,T2,REC,KNN-Gamma,KNN-Delta,SVDD,KNFST\ntrainArray a matrix of nsample x nvar, to estimate the training parameters for the model. Ideally does not contain any extreme values\n\nInput Axes TimeAxis, Variableaxis\n\nOutput Axes TimeAxis, Methodaxis\n\n\n\n"
@@ -338,7 +330,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Outlier-detection-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Outlier detection",
     "category": "section",
     "text": "Modules = [ESDL.Proc.Outlier]\nPrivate = false"
@@ -346,7 +338,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.Stats.normalizeTS-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.Stats.normalizeTS",
     "category": "method",
     "text": "normalizeTS(c::AbstractCubeData)\n\nNormalize a time series to zeros mean and unit variance\n\nInput Axes TimeAxis\n\nOutput Axes TimeAxis\n\n\n\n"
@@ -354,7 +346,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Simple-Statistics-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Simple Statistics",
     "category": "section",
     "text": "Another typical use case is the application of basic statistics like sum, mean and std applied on one or more cube axes. We overload the method mapslices for data cubes,   The main difference to the function exported in Base is that the dimensions to be sliced over are given by name and not by dimension index. For example,mapslices(mean, cube,(\"Lon\",\"Lat\"))will compute the mean over each spatial map contained in the data cube. Please that that the mapslices function will execute the function once with random number input to determine the shape of the returned values and then pre-allocate the output array. So keep this in mind when your function has some side-effects. Note also that although the mapslices function should just work in most cases, it is advised to know read about the mapCube function in Applying custom functions which gives you much more detailed control over the mapping operation.Applying these functions makes sense if the slices one wants to reduce fit in memory. However, if one wants to calculate some statistics on e.g. a timelonlat cube, one would preferably call one of the OnlineStats methods.  Additional simple statistics functions are:Modules = [ESDL.Proc.Stats]\nPrivate = false"
@@ -362,7 +354,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.TSDecomposition.filterTSFFT-Tuple{ESDL.Cubes.AbstractCubeData}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.TSDecomposition.filterTSFFT",
     "category": "method",
     "text": "filterTSFFT\n\nFilter each time series using a Fourier filter and return the decomposed series in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis, TimeScaleaxis\n\n\n\n"
@@ -370,7 +362,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Time-series-decomposition-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Time series decomposition",
     "category": "section",
     "text": "Modules = [ESDL.Proc.TSDecomposition]\nPrivate = false"
@@ -378,7 +370,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.CubeIO.exportcube-Tuple{ESDL.Cubes.AbstractCubeData,String}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.CubeIO.exportcube",
     "category": "method",
     "text": "exportcube(r::AbstractCubeData,filename::String)\n\nSaves a cube object to a portable NetCDF file in filename.\n\nWhen saving, every RangeAxis will be converted to an axis in the NetCDF cube, while every categorical axis will be represented by a different variable inside the resulting file. Dimensions will be ordered according to the priorities keyword argument, which defaults to Dict(\"LON\"=>1,\"LAT\"=>2,\"TIME\"=>3), which means that the file will be stored with longitudes varuing fastest. \n\n\n\n"
@@ -386,7 +378,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.CubeIO.extractLonLats-Tuple{ESDL.Cubes.AbstractCubeData,Array{T,2} where T}",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.CubeIO.extractLonLats",
     "category": "method",
     "text": "extractLonLats(c::AbstractCubeData,pl::Matrix)\n\nExtracts a list of longitude/latitude coordinates from a data cube. The coordinates are specified through the matrix pl where size(pl)==(N,2) and N is the number of extracted coordinates. Returns a data cube without LonAxis and LatAxis but with a SpatialPointAxis containing the input locations.\n\n\n\n"
@@ -394,7 +386,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.CubeIO.sampleLandPoints",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.CubeIO.sampleLandPoints",
     "category": "function",
     "text": "sampleLandPoints(cube, nsample;nomissing=false)\n\nGet an area-weighted sample from all non-ocean grid cells. This will return a new Cube where the LonAxis and LatAxis are condensed into a single SpatialPointAxis of length nsample. If nomissing=true only grid cells will be selected which don\'t contain any missing values. This makes sense for gap-filled cubes to make sure that grid cells with systematic seasonal gaps are not selected in the sample.\n\n\n\n"
@@ -402,7 +394,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Cube-transformations-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Cube transformations",
     "category": "section",
     "text": "Modules = [ESDL.Proc.CubeIO]\nPrivate = false"
@@ -410,7 +402,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#OnlineStats-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "OnlineStats",
     "category": "section",
     "text": "It is possible to directly apply statistics included in the OnlineStats.jl package on the data cube. This makes it possible to calculate statistics on data too big to fit into memory. The general syntax ismapCube(f ,cube; by=CubeAxis[], cfun=identity, outAxis=nothing,kwargs...)where f is an OnlineStat data type and cube is the cube you want to apply the statistics to. By default this function will reduce all values over all axes of the cube, so if you want to do statistics by a certain axis, it has to be specified using the by keyword argument. by accepts a vector of axes types and up to one datacube that can serve as a mask. If such a data cube is supplied, the statistics are split by the unique values in the mask. One can pass a function cfun that transforms the mask values into an index in the range 1..N that defines the    index where the new value is going to be put to. If a mask is supplied, it must have either a labels property, which is a Dict{T,String} mapping the numerical mask value to the value name. Alternatively on can supply an outAxis argument that describes the resulting output axis.This all gets clearer with two small examples. suppose we want to calculate the mean of GPP, NEE and TER under the condition that Tair<280K and Tair>280K over all time steps and grid cells. This is achieved through the following lines of code:import OnlineStats\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)                            # Define the classification function\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])  # A two-length output axis, because there are two possible values\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis) # Of course we want to split by variable, too\n\nusing ESDLPlots\nplotXY(mT,xaxis=\"var\",group=\"tempclass\")#Load Javascript env\nimport Patchwork\nimport Documenter\nDocumenter.Documents.RawHTML(\"<script>$(Patchwork.js_runtime())</script>\")using ESDL\nimport OnlineStats\nimport Documenter\nds    = Cube()\nlons  = (30,31)\nlats  = (50,51)\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nt     = getCubeData(ds,variable=\"air_temperature_2m\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nsplitTemp(t) = ifelse(t>280,2,1)\noutAxis      = CategoricalAxis(\"TempClass\",[\"< 7C\",\">7C\"])\nmT    = mapCube(OnlineStats.Mean,cube,by=[t,VariableAxis], cfun=splitTemp, outAxis=outAxis)\n\nusing ESDLPlots\ngr()\np=plotXY(mT,xaxis=\"var\",group=\"tempclass\")\nb=IOBuffer()\nshow(b,MIME\"text/html\"(),p)\nDocumenter.Documents.RawHTML(String(take!(b)))A second example would be that we want to calculate averages of the fluxes according to a country mask.import OnlineStats\nvars  = [\"gross_primary_productivity\",\"net_ecosystem_exchange\",\"terrestrial_ecosystem_respiration\"]\nm     = getCubeData(ds,variable=\"country_mask\",longitude=lons,latitude=lats)\ncube  = getCubeData(ds,variable=vars,longitude=lons,latitude=lats)\n\nmT    = mapCube(OnlineStats.Mean,cube,by=[m,VariableAxis], cfun=splitTemp, outAxis=outAxis)This will split the cube by country and variable and compute averages over the input variables."
@@ -418,7 +410,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#ESDL.Proc.DATOnlineStats.cubePCA",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "ESDL.Proc.DATOnlineStats.cubePCA",
     "category": "function",
     "text": "cubePCA(cube::AbstractCubeData)\n\nPerforms a PCA based on a covariance matrix which is estimated through an online algorithm. Returns an OnlinePCA object from which explained_variance and the rotation can be extracted, or which can be used to perform the projection on a dataset.\n\nKeyword arguments\n\nMDAxis specifies the axes that is reduced through the PCA\nby a vector of axes types or masks denoting if several PCAs should be performed. If provided, several PCAs will be performed.\nnoutdims number of output dimensions, how many PCs are estimated\n\n\n\n"
@@ -426,7 +418,7 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Online-PCA-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Online PCA",
     "category": "section",
     "text": "It is possible to compute a principal component analysis based on a covariance matrix obtained through an online algorithm. The package provides a convenient way to achieve this with the cubePCA function.cubePCAFor example, if one wants to calculate a PCA over the time dimension, you could use the following code:"
@@ -434,10 +426,18 @@ var documenterSearchIndex = {"docs": [
 
 {
     "location": "analysis.html#Online-Histograms-and-quantiles-1",
-    "page": "Elementwise calculations",
+    "page": "Analysis",
     "title": "Online Histograms and quantiles",
     "category": "section",
     "text": "It is possible to estimate histograms and quantiles of larger-than-memory datasets using an adaptive-bin histogram algorithm. The Base.quantile method is overloaded for objects of type AbstractCubeData, so the following works:c=Cube()\nd=getCubeData(c,variable=[\"gross_primary_productivity\",\"net_ecosystem_exchange\"], region=\"Europe\")\nq = quantile(d,[0.1,0.9], by=[VariableAxis])\nq.data2×2 Array{Float32,2}:\n 0.040161  -1.88354\n 6.02323    0.552485to estimate the 10% and 90% quantiles of all datapoints for each variable. Note that any additional keyword arguments to this call (like the by argument) are passed to the respective mapCube call."
+},
+
+{
+    "location": "analysis.html#Elementwise-calculations-1",
+    "page": "Analysis",
+    "title": "Elementwise calculations",
+    "category": "section",
+    "text": "Doing elementwise calculations on the cube is generally done using the map function. So, if you want to multiply each single element of a data cube with 2, you could call newcube = map(x->2*x, oldcube). This will not execute the computation immediately but on the fly during the next computation or plotting. Functions with multiple arguments can also be applied like in: sumcube = map((x,y)->x+y, incube1, incube2). Which would calculate the sum of two data cubes.We have also overloaded a list of commonly used operators (+,-,*,/, max,min) and functions (sin,cos,exp,log, log10) to apply on datacubes directly. So newCube = (abs(cube1-cube2)) would work as expected."
 },
 
 {
@@ -541,15 +541,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "A minimal example",
     "category": "section",
-    "text": "In order to understand how these principles are applied, let us walk through a very basic example, namely a function that normalizes the time series of a datacube. That means, we want to scale each time series in the cube in a way that its mean is 0 and the standard deviation is 1.Let\'s translate this into the principles mentioned above. Our function that we want to writes will take a 1D-array as an input (a time series) and write an output of the same length. So the function will have to accept two arguments, which we will call xin for the inout time series and xout as the placeholder for the output time series. We can define such a function like this:using ESDL\nfunction mynorm(xout, xin)\n  all(ismissing,xin) && return xout[:]=missing\n  m = mean(skipmissing(xin))\n  s = std(skipmissing(xin))\n  if s>0\n    xout[:].=(xin.-m)./s\n  else #Time series is probably constant\n    xout[:]=0\n  end\n  nothing\nendNext we have to define the input dimensions for our data cube. We want the function to operate on the time axis, so we create an object:indims = InDims(\"Time\")The InDims constructor takes any number of positional arguments and tries to convert them into a description of a cube axis, so you can pass it a string, an axis type or an axis itself, all of which will be matched against the axes of the input data cube. Next we define the output axis:outdims = OutDims(\"Time\")Similarly to the input cube constructor, for OutDims any number of descriptors is allowed. When passed a single string or axis type, then a matching input axis will be used as the output dimension. However, when a new output axis is created by the function, other possibilities for the output axis description are possible.Having defined these objects, we can finally load a data cube handle and apply the function, the dimension description gets passed using the indims and outdims keywords:c = Cube()\nd = getCubeData(c,variable = [\"gross_primary_productivity\", \"net_ecosystem_exchange\"],time=(DateTime(2001),DateTime(2002,12,31)), longitude = (50,51), latitude=(30,31))\nd_norm = mapCube(mynorm, d, indims=indims, outdims=outdims)The resulting cube has the same dimensions like the input cube. All variables except Time were just looped over and the result was stored in a new data cube."
-},
-
-{
-    "location": "adding_new.html#Examples-1",
-    "page": "Applying custom functions",
-    "title": "Examples",
-    "category": "section",
-    "text": ""
+    "text": "In order to understand how these principles are applied, let us walk through a very basic example, namely a function that normalizes the time series of a datacube. That means, we want to scale each time series in the cube in a way that its mean is 0 and the standard deviation is 1.Let\'s translate this into the principles mentioned above. Our function that we want to writes will take a 1D-array as an input (a time series) and write an output of the same length. So the function will have to accept two arguments, which we will call xin for the inout time series and xout as the placeholder for the output time series. We can define such a function like this:using ESDL\nusing Missings\nfunction mynorm(xout, xin)\n  all(ismissing,xin) && return xout[:]=missing\n  m = mean(skipmissing(xin))\n  s = std(skipmissing(xin))\n  if s>0\n    xout[:].=(xin.-m)./s\n  else #Time series is probably constant\n    xout[:]=0\n  end\n  nothing\nendNext we have to define the input dimensions for our data cube. We want the function to operate on the time axis, so we create an object:indims = InDims(\"Time\")The InDims constructor takes any number of positional arguments and tries to convert them into a description of a cube axis, so you can pass it a string, an axis type or an axis itself, all of which will be matched against the axes of the input data cube. Next we define the output axis:outdims = OutDims(\"Time\")Similarly to the input cube constructor, for OutDims any number of descriptors is allowed. When passed a single string or axis type, then a matching input axis will be used as the output dimension. However, when a new output axis is created by the function, other possibilities for the output axis description are possible.Having defined these objects, we can finally load a data cube handle and apply the function, the dimension description gets passed using the indims and outdims keywords:c = Cube()\nd = getCubeData(c,variable = [\"gross_primary_productivity\", \"net_ecosystem_exchange\"],time=(DateTime(2001),DateTime(2002,12,31)), longitude = (50,51), latitude=(30,31))\nd_norm = mapCube(mynorm, d, indims=indims, outdims=outdims)The resulting cube has the same dimensions like the input cube. All variables except Time were just looped over and the result was stored in a new data cube."
 },
 
 {
@@ -557,7 +549,23 @@ var documenterSearchIndex = {"docs": [
     "page": "Applying custom functions",
     "title": "Using different representations for missing data",
     "category": "section",
-    "text": "By default, the data that are passed to the user-defined function will always be represented as an Array{Union{T,Missing}}, so they use Julia\'s Missing type to represent missing data. However, there might be several reasons for the missingnes of a single data value, like it might be in the ocean, or it is out of the dataset period or it is an observation gap. In the ESDC this information is stored in a special mask type (see Cube Masks), that can be accessed inside the UDF. For example, if we want to rewrite the myNorm function defined above, but we want to only calculate the mean and std based on values that were not gapfilled, one could do so:import ESDL.Mask\nfunction mynorm(xout, ain)\n  #Destructure the tuple into the data and mask array\n  xin,min = ain\n  #Get the valid data points that are not filled\n  validx = find(i->Mask.isvalid(i) && !Mask.isfilled(i),min)\n  # Check if we have valid points at all\n  isempty(validx) && return xout[:]=missing\n  #Filter data\n  xin = xin[validx]\n  m = mean(xin)\n  s = std(xin)\n  if s>0\n    xout[:].=(xin.-m)./s\n  else #Time series is probably constant\n    xout[:]=0\n  end\n  nothing\nend\n\n\nindims  = InDims(\"time\",miss = ESDL.MaskMissing())\noutdims = OutDims(\"time\")\n\nmapCube(mynorm, d, indims = indims, outdims = outdims, no_ocean=1)Let\'s see what we changed. First when constructing the InDims object we used the miss keyword argument to specify that we want missing values represented by an extra mask. This tells the mapCube function to pass the first input cube as a tuple instead of as a DataArray. Inside the function, we first destructure the tuple into the mask and the data, determine the missing and filled values from the mask and then do the computation on the filtered data. See InDims for more options on representation of missing data."
+    "text": "By default, the data that are passed to the user-defined function will always be represented as an Array{Union{T,Missing}}, so they use Julia\'s Missing type to represent missing data. However, there might be several reasons for the missingnes of a single data value, like it might be in the ocean, or it is out of the dataset period or it is an observation gap. In the ESDC this information is stored in a special mask type (see Cube Masks), that can be accessed inside the UDF. For example, if we want to rewrite the myNorm function defined above, but we want to only calculate the mean and std based on values that were not gapfilled, one could do so:import ESDL.Mask\nfunction mynorm_nonfilled(xout, ain)\n  #Destructure the tuple into the data and mask array\n  xin,min = ain\n  #Get the valid data points that are not filled\n  validx = find(i->Mask.isvalid(i) && !Mask.isfilled(i),min)\n  # Check if we have valid points at all\n  isempty(validx) && return xout[:]=missing\n  #Filter data\n  xin = xin[validx]\n  m = mean(xin)\n  s = std(xin)\n  if s>0\n    xout[:].=(xin.-m)./s\n  else #Time series is probably constant\n    xout[:]=0\n  end\n  nothing\nend\n\n\nindims  = InDims(\"time\",miss = ESDL.MaskMissing())\noutdims = OutDims(\"time\")\n\nmapCube(mynorm_nonfilled, d, indims = indims, outdims = outdims, no_ocean=1)Let\'s see what we changed. First when constructing the InDims object we used the miss keyword argument to specify that we want missing values represented by an extra mask. This tells the mapCube function to pass the first input cube as a tuple instead of as a DataArray. Inside the function, we first destructure the tuple into the mask and the data, determine the missing and filled values from the mask and then do the computation on the filtered data. See InDims for more options on representation of missing data."
+},
+
+{
+    "location": "adding_new.html#Calculations-on-multiple-cubes-1",
+    "page": "Applying custom functions",
+    "title": "Calculations on multiple cubes",
+    "category": "section",
+    "text": "So far we showed only examples with a single input data cube. Here we give a first example for doing operations on two input cubes having different shapes. To do this, let us go back to our mynorm example and assume that we do not only want to return the normalized time series but also the standard deviation and the mean. The problem here is that mean and standard deviation are scalars while the time series is a vector so they can not easily be coerced into a single output cube. The solution would be to return multiple output cubes. So we define the norm function and Indims and Outdims as follows:function mynorm_return_stdm(xout_ts, xout_m, xout_s, xin)\n  # Check if we have only missing values\n  if all(ismissing,xin)\n    xout_ts[:]=missing\n    xout_m[1]=missing\n    xout_s[1]=missing\n  else\n    m = mean(skipmissing(xin))\n    s = std(skipmissing(xin))\n    if s>0 # See if time series is not constant\n      xout_ts[:].=(xin.-m)./s\n    else #Time series is probably constant\n      xout_ts[:]=0.0\n    end\n    # Now write mean and std to output\n    xout_s[1]=s\n    xout_m[1]=m\n  end\nend\n\nindims     = InDims(\"Time\")\noutdims_ts = OutDims(\"Time\")\noutdims_m  = OutDims()\noutdims_s  = OutDims()\n\nd_norm, m, s = mapCube(mynorm_return_stdm, d, indims=indims, outdims=(outdims_ts, outdims_m, outdims_s))First of all lets see what changed. We added two more arguments to the UDF, which are xout_m and xout_s the additional output arrays and we put the additional outputs into them. Then we added an additional output cube description OutDims() for each cube, which has no argument, because these outputs are singular values and don\'t contain any dimensions. When we apply the function, we simply pass a tuple of output cube descriptions to the outdims keywords and the mapCube function returns then three cubes: the full time x lon x lat x variable cube for the normalized time series and two lon x xlat x variable cubes for mean and standard deviation.   Of course, this also works the same way if you want to apply a function to multiple input data cubes. Let\'s stay with the normalization example and assume that we want to normalize our dataset with some externally given standard deviation and mean, which are different for every pixel. Then one would have to define multiple InDims objects:indims_ts = InDims(\"Time\")\nindims_m  = InDims()\nindims_s  = InDims()\noutdims   = OutDims(\"Time\")and define the function that does the scaling, which accepts now additional arguments for the scaling and offset:function mynorm_given_stdm(xout, xin_ts, m, s)\n  xout[:]=(xin_ts[:].-m[1])./s[1]\nend\n\nmapCube(mynorm_given_stdm, (d,m,s), indims = (indims_ts, indims_m, indims_s), outdims = outdims)Note that the operation will match all the other axes that the cube contains, so because the cubes d,m and s all contain a LonAxis, a LatAxis and a VariableAxis, holding the same values, it will loop over these so that for every pixel the \"right\" mean and standard deviation is used."
+},
+
+{
+    "location": "adding_new.html#Axes-are-cubes-1",
+    "page": "Applying custom functions",
+    "title": "Axes are cubes",
+    "category": "section",
+    "text": "In some cases one needs to have access to the value of an axis, for example when one wants to calculate a spatial Aggregation, the latitudes are important to determine grid cell weights. To do this, one can pass a cube axis to mapCube as if it was a cube having only one dimension. The values will then correspond to the axis values (the latitudes in degrees in this case).using ESDL # hide\nfunction spatialAggregation{T}(xout::Array{T,0}, xin::Matrix, latitudes::AbstractVector)\n  #code goes here\nend\n\n#Extract the latitude axis\nlatitudecube = ESDL.getAxis(\"Lat\",cube)\n\nindims_map = InDims(LonAxis, LatAxis)\nindims_lat = InDims(LatAxis,miss=ESDL.NoMissing())\noutdims    = OutDims()\nmapCube(spatialAggregation, (cube,lataxis), indims = (indims_map, indims_lat), outdims = outdims);Here, the function will operate on a lon x lat matrix and one has access to the latitude values inside the function. Note that the getAxis function is very useful in this context, since it extracts the axis of a certain name from a given data cube object. Then we pass the cube axis as a second input cube to the mapCube function (see also Calculations on multiple cubes)."
 },
 
 {
@@ -569,27 +577,19 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "adding_new.html#Calculations-on-multiple-cubes-1",
+    "location": "adding_new.html#Generating-new-output-axes-1",
     "page": "Applying custom functions",
-    "title": "Calculations on multiple cubes",
+    "title": "Generating new output axes",
     "category": "section",
-    "text": "So far we showed only examples with a single input data cube. Here we give a first example for doing operations on two input cubes having different shapes. Let\'s say we have a model that predicts the biospheric CO2 uptake over a given time range based on the data cube cubedata, which has the axes lon x lat x time x variable. This model depends on the vegetation type of each grid cell, which is a static variable and stored in a second data cube staticdata with the axes lon x lat. We call the function like this:using ESDL # hide\nfunction predictCarbonSink{T,U}(xout::Array{T,0}, xin::Matrix, vegmask::Array{U,0})\n  #Code goes here\nend\ninAxes=(InDims(TimeAxis, VariableAxis),InDims())\noutAxes=OutDims()\nmapCube(predictCarbonSink, (cube, vegmask), indims = inAxes, outdims = outAxes, no_ocean=2);The input cubes inAxes is now a tuple InDims, one for each input cube. From cubedata we want to extract the whole time series of all variables, while from staticdata we only need one value for the current pixel. When calling this function, make sure to put the input cubes into a tuple (mapCube(predictCarbonSink,(cubedata, staticdata))). Note that we set the optional argument no_ocean=2 This means that, again, ocean grid cells are skipped, but the 2 denotes that this time the second input cube will be checked for ocean cells, not the first one."
+    "text": "So far in our examples we always re-used axes from the input cube as output cube axes. However, it is possible to create new axes and use them for the resulting data cubes from a mapCube operation. The example we want to look at is a polynomial regression between two variables. Assume we want to describe the relationship between GPP and ecosystem respiration for each pixel through a polynomial of degree N.So for each pixel we want to do the polynomial regression on the two variables and then return a vector of coefficients. We define the function that does the calculation as:using ESDL\nusing Polynomials\nfunction fit_npoly(xout, var1, var2, n)\n  p = polyfit(var1, var2, n)\n  xout[:] = coeffs(p)\nendNow assume we want to fit a polynomial of order 2 to our variables. We first create the output axis we want to use, you can either use CategoricalAxis for non-continuous quantities or RangeAxis for continuous axes. Here we create a categorical Axis and pass it to the OutDims constructor:polyaxis = CategoricalAxis(\"Coefficients\",[\"Offset\",\"1\",\"2\"])\n\nindims1  = InDims(\"Time\",    miss=ESDL.NaNMissing())\nindims2  = InDims(\"Time\",    miss=ESDL.NaNMissing())\noutdims  = OutDims(polyaxis, miss=ESDL.NaNMissing())So here we don\'t describe the output axis through a type or name, but by passing an actual object. Then we can call the mapCube function:c   = Cube()\ngpp = getCubeData(c,variable = \"gross_primary_productivity\",time=(DateTime(2001),DateTime(2002,12,31)), longitude = (50,51), latitude=(30,31))\nter = getCubeData(c,variable = \"terrestrial_ecosystem_respiration\",time=(DateTime(2001),DateTime(2002,12,31)), longitude = (50,51), latitude=(30,31))\n\nmapCube(fit_npoly,(gpp,ter),2,indims = (indims1,indims2), outdims = outdims)Returned is a 3D cube with dimensions coeff x lon * lat."
 },
 
 {
-    "location": "adding_new.html#Axes-are-cubes-1",
+    "location": "adding_new.html#Wrapping-mapCube-calls-into-user-friendly-functions-1",
     "page": "Applying custom functions",
-    "title": "Axes are cubes",
+    "title": "Wrapping mapCube calls into user-friendly functions",
     "category": "section",
-    "text": "In some cases one needs to have access to the value of an axis, for example when one wants to calculate a spatial Aggregation, the latitudes are important to determine grid cell weights. To do this, one can pass a cube axis to mapCube as if it was a cube having only one dimension.using ESDL # hide\nfunction spatialAggregation{T}(xout::Array{T,0}, xin::Matrix, latitudes::AbstractVector)\n  #code goes here\nend\n\nindims=(InDims(LonAxis, LatAxis,miss=DataArrayMissing()), InDims(LatAxis,miss=ESDL.NoMissing()))\noutdims=OutDims()\nmapCube(spatialAggregation, (cube,ESDL.getAxis(\"Lat\",cube)), indims = indims, outdims = outdims);Here, the function will operate on a lon x lat matrix and one has access to the latitude values inside the function. For the second input cube the input axis we extract the latitude axis from the first user-supplied cube and pass it to the calculation as a second input cube. So we apply the function using:"
-},
-
-{
-    "location": "adding_new.html#Determine-output-axis-from-cube-properties-1",
-    "page": "Applying custom functions",
-    "title": "Determine output axis from cube properties",
-    "category": "section",
-    "text": "For some calculations the output axis does not equal any of the input axis, but has to be generated before the cube calculation starts. You can probably guess that this will happen through callback functions again, which have the same form as in the other examples. In this example we want to call a function that does a polynomial regression between time series of two variables. The result of this calculation are the regression parameters, so the output axis will be a newly created Parameter-axis (see Cube Axes). For the axis we define a default constructor which names the fitting parameters. In this example we create a ParameterAxis for a quadratic regression.using ESDL # hide\nfunction ParameterAxis(order::Integer)\n  order > 0 || error(\"Regression must be at least linear\")\n  CategoricalAxis(\"Parameter\",[\"offset\";[\"p$i\" for i=1:order]])\nend\nParameterAxis(2)Now we can go and call the function, while we specify the output axis with a function calling the Axis constructor.using ESDL # hide\nfunction ParameterAxis(order::Integer) # hide\n  order > 0 || error(\"Regression must be at least linear\") # hide\n  ParameterAxis([\"offset\";[\"p$i\" for i=1:order]]) # hide\nend # hide\nfunction polyRegression(xout::Vector, xin::Matrix, order::Integer)\n  #code here\nend\n\ninAxes  = InDims(TimeAxis,miss=NaNMissing())\noutAxes = OutDims((cube,pargs)->ParameterAxis(pargs[1]),miss=NaNMissing())\norder = 2\nmapCube(polyRegression, cube, 2, indims = inAxes, outdims = outAxes);The user can apply the function now using mapCube(polyRegression, cubedata, regOrder) where regOrder is the order of the Regression."
+    "text": "When a certain function is is used more often, it makes sense to wrap it into a single function so that the user does not have to deal with the input and output dimension description. For the polynomial regression example one could, for example, define this convenience wrapper and then call it directly, now for a third-order regression:function fitpoly(cube1, cube2, n)\n  polyaxis = CategoricalAxis(\"Coefficients\",[\"Offset\";string.(1:n)])\n\n  indims1  = InDims(\"Time\",    miss=ESDL.NaNMissing())\n  indims2  = InDims(\"Time\",    miss=ESDL.NaNMissing())\n  outdims  = OutDims(polyaxis, miss=ESDL.NaNMissing())\n\n  mapCube(fit_npoly,(cube1,cube2),n,indims = (indims1,indims2), outdims = outdims)\nend\n\nfitpoly(gpp,ter,3)This is exactly the way the built-in functions in Analysis were generated. So in case you want to contribute some functionality that you feel would benefit this package, please open a pull request at https://github.com/esa-esdl/ESDL.jl"
 },
 
 {
@@ -617,9 +617,9 @@ var documenterSearchIndex = {"docs": [
 },
 
 {
-    "location": "adding_new.html#Reference-1",
+    "location": "adding_new.html#Reference-documentation-for-mapCube-related-functions-1",
     "page": "Applying custom functions",
-    "title": "Reference",
+    "title": "Reference documentation for mapCube-related functions",
     "category": "section",
     "text": "InDimsOutDimsmapCube"
 },
