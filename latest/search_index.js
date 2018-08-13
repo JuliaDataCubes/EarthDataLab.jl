@@ -181,7 +181,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "ESDL.Cubes.Axes.CubeAxis",
     "category": "type",
-    "text": "abstract CubeAxis{T} <: AbstractCubeData{T,1}\n\nSupertype of all axes. Every CubeAxis is 1D Cube itself and can be passed to mapCube operationes. Although all cube axes are instances of the parametric typealias CategoricalAxis and RangeAxis, there are some typealiases defined to provide shorter and more convenient names for commonly used cube axes. Here is a list of the aliases:\n\nCategorical Axes\n\nVariableAxis represents different variables\nSpatialPointAxis represents a list of coordinates\nCountryAxis countries\nTimeScaleAxis time scales after time series decomposition\nQuantileAxis represents different quantiles\n\nCotinuous Axes\n\nLonAxis longitudes\nLatAxis latitudes\nTimeAxis time\nMSCAxis time step inside a year (for seasonal statistics)\n\n\n\n"
+    "text": "abstract CubeAxis{T} <: AbstractCubeData{T,1}\n\nSupertype of all axes. Every CubeAxis is 1D Cube itself and can be passed to mapCube operationes. Although all cube axes are instances of the parametric typealias CategoricalAxis and RangeAxis, there are some typealiases defined to provide shorter and more convenient names for commonly used cube axes. Here is a list of the aliases:\n\nCategorical Axes\n\nVariableAxis represents different variables\nSpatialPointAxis represents a list of coordinates\nCountryAxis countries\nScaleAxis time scales after time series decomposition\nQuantileAxis represents different quantiles\n\nCotinuous Axes\n\nLonAxis longitudes\nLatAxis latitudes\nTimeAxis time\nMSCAxis time step inside a year (for seasonal statistics)\n\n\n\n"
 },
 
 {
@@ -357,7 +357,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Analysis",
     "title": "ESDL.Proc.TSDecomposition.filterTSFFT",
     "category": "method",
-    "text": "filterTSFFT\n\nFilter each time series using a Fourier filter and return the decomposed series in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis, TimeScaleaxis\n\n\n\n"
+    "text": "filterTSFFT\n\nFilter each time series using a Fourier filter and return the decomposed series in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)\n\nInput Axes Timeaxis\n\nOutput Axes Timeaxis, Scaleaxis\n\n\n\n"
 },
 
 {
@@ -645,7 +645,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Loading and saving results",
     "title": "ESDL.Cubes.saveCube",
     "category": "function",
-    "text": "saveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the ESDL working directory.\n\nSee also loadCube, ESDLdir\n\n\n\n"
+    "text": "saveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\nsaveCube(cube,name::String)\n\nSave a TempCube or CubeMem to the folder name in the ESDL working directory.\n\nSee also loadCube, ESDLdir\n\n\n\nsaveCube(c::AbstractCubeData, name::String)\n\nPermanently saves a data cube to disk by either moving the folder out of the tmp directory (for TempCubes) or by storing the data to disk (for CubeMems)\n\n\n\n"
 },
 
 {
