@@ -165,7 +165,7 @@ var documenterSearchIndex = {"docs": [
     "page": "Accessing the Data Cube",
     "title": "ESDL.Cubes.MmapCube",
     "category": "type",
-    "text": "MmapCube{T,N}\n\nDefines a Memory-Mapped data cube which is stored on disk. Is generally returned by mapCube applications. \n\n\n\n"
+    "text": "MmapCube{T,N}\n\nDefines a Memory-Mapped data cube which is stored on disk. Is generally returned by mapCube applications.\n\n\n\n"
 },
 
 {
