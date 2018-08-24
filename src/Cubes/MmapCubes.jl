@@ -103,11 +103,13 @@ function saveCube(c::MmapCube,name::String)
   c.persist=true
 end
 export openmmapcube
-function openmmapcube(folder;persist=true,axlist=nothing)
-  axlist2,properties,T = open(joinpath(folder,"axinfo.bin")) do f
+function openmmapcube(folder;persist=true,axlist=nothing,T=nothing,properties=nothing)
+  axlist2,properties2,T2 = open(joinpath(folder,"axinfo.bin")) do f
     (deserialize(f),deserialize(f),deserialize(f))
   end
   axlist == nothing && (axlist=axlist2)
+  T == nothing && (T=T2)
+  properties==nothing && (properties=properties2)
   N=length(axlist)
   return MmapCube{T,length(axlist)}(axlist,folder,persist,properties)
 end
