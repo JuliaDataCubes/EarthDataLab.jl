@@ -24,8 +24,8 @@ function _read{T,N}(x::PermCube{T,N},thedata::Tuple{Any,Any},r::CartesianRange{C
 end
 Base.permutedims{T,N}(x::AbstractCubeData{T,N},perm)=PermCube{T,N,typeof(x)}(x,perm)
 gethandle(c::PermCube,block_size)=gethandle(c,block_size,handletype(c.parent))
-function gethandle(c::PermCube,block_size,::ViewHandle)
-  data,mask = gethandle(c.parent)
+function gethandle(c::PermCube,block_size,ht::ViewHandle)
+  data,mask = gethandle(c.parent,ht)
   PermutedDimsArray(data,c.perm),PermutedDimsArray(mask,c.perm)
 end
 gethandle(c::PermCube,block_size,::CacheHandle) = getcachehandle(c,CartesianIndex(block_size))
