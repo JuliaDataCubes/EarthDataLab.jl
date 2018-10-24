@@ -129,6 +129,7 @@ function _read{T,N}(x::TransformedCube{T,N},thedata::Tuple,r::CartesianRange{Car
   end
   map!(x.op,aout,ainter...)
   map!((x...)->reduce(|,x),mout,minter...)
+  map!((a,m)->isnan(a) ? (m | 0x01) : m,mout,aout,mout)
   return aout,mout
 end
 
