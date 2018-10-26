@@ -13,3 +13,4 @@ MultivariateStats
 DataFrames
 AxisArrays
 RecursiveArrayTools
+ProgressMeter
