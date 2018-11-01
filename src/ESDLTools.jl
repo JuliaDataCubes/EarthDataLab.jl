@@ -154,22 +154,32 @@ end
 ````
 """
 macro loadOrGenerate(x...)
-  code=x[end]
-  x=x[1:end-1]
-  x2=map(x) do i
-    isa(i,Symbol) ? (i,string(i)) : (i.head==:call && i.args[1]==:(=>)) ? (i.args[2],i.args[3]) : error("Wrong Argument type")
+  code = x[end]
+  x = x[1:end-1]
+  x2 = map(x) do i
+    if isa(i,Symbol)
+      (i, string(i))
+    elseif i.head == :call && i.args[1] == :(=>)
+      path = eval(i.args[3])::String
+      (i.args[2], path)
+    else
+      error("Wrong Argument type")
+    end
   end
-  xnames=map(i->i[2],x2)
-  loadEx=map(x2) do i
+  xnames = map(i->i[2],x2)
+
+  loadEx = map(x2) do i
     :($(i[1]) = loadCube($(i[2])))
   end
-  loadEx=Expr(:block,loadEx...)
-  saveEx=map(x2) do i
+  loadEx = Expr(:block,loadEx...)
+
+  saveEx = map(x2) do i
     :(saveCube($(i[1]),$(i[2])))
   end
   saveEx=Expr(:block,saveEx...)
+
   rmEx=map(x2) do i
-    :(rmCube($(i[2])))
+    :(ispath($(i[2])) && rm($(i[2])))
   end
   rmEx=Expr(:block,rmEx...)
   esc(quote
@@ -182,4 +192,5 @@ macro loadOrGenerate(x...)
     end
   end)
 end
-end
+
+end # module ESDLTools
