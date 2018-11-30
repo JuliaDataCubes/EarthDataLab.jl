@@ -8,11 +8,7 @@ notifications:
   email: false
 before_install:
   - sudo apt-get install -y libnetcdf-dev libhdf5-dev netcdf-bin
-# uncomment the following lines to override the default test script
-script:
-  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
-  - julia -e 'Pkg.clone(pwd()); Pkg.build("ESDL")'
-  - julia -e 'Pkg.test("ESDL"; coverage=true)'
+
 after_success:
   - julia -e 'Pkg.add("Documenter")'
   - julia -e 'Pkg.clone("https://github.com/esa-esdl/ESDLPlots.jl");Pkg.add("GR")'
