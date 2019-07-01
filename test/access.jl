@@ -95,10 +95,11 @@ end
   ESDLdir(dire)
   saveCube(data1,"mySavedCube")
 
-
   data3=readcubedata(loadCube("mySavedCube"))
+
   @test data1.axes==data3.axes
   @test data1.data==data3.data
+
 
   # Test loadOrGenerate macro
   d=subsetcube(c,time=Date(2001)..Date(2005),lon=(30,31),lat=(50,51),variable=["gross_primary_productivity","net_ecosystem_exchange"])
@@ -114,6 +115,18 @@ end
       error("This should never execute")
   end;
   @test danom isa ESDL.Cubes.ESDLZarr.ZArrayCube
+
+  @show danom.a.storage.folder
+  @show danom
+
+  saveCube(danom, "mySavedZArrayCube")
+  @show danom
+
+  danom = readcubedata(danom)
+  danom2=readcubedata(loadCube("mySavedZArrayCube"))
+
+  @test danom.axes==danom2.axes
+  @test danom.data==danom2.data
 
   ncf = tempname()
   exportcube(danom,ncf)
