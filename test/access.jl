@@ -116,13 +116,11 @@ end
   end;
   @test danom isa ESDL.Cubes.ESDLZarr.ZArrayCube
 
-  @show danom.a.storage.folder
-  @show danom
-
   saveCube(danom, "mySavedZArrayCube")
-  @show danom
 
-  danom = readcubedata(danom)
+  @test danom isa ESDL.Cubes.ESDLZarr.ZArrayCube
+
+  danom=readcubedata(danom)
   danom2=readcubedata(loadCube("mySavedZArrayCube"))
 
   @test danom.axes==danom2.axes

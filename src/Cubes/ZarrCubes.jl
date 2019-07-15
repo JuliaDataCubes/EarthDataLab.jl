@@ -402,7 +402,7 @@ function saveCube(z::ZArrayCube, name::AbstractString)
   if z.a.storage isa DirectoryStore
     folder = splitdir(z.a.storage.folder)
     run(`mv $(folder[1]) $(newfolder)`)
-    z = Cube(newfolder)
+    z.a = zopen(newfolder * "/layer")
   elseif z.a.storage isa S3Store
     error("Saving a cube based on a $(z.a.storage) not implemented yet")
   else
