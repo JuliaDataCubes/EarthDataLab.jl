@@ -50,11 +50,13 @@ function InputCube(c::AbstractCubeData, desc::InDims)
 end
 getcube(c::InputCube)=c.cube
 import AxisArrays
-function setworkarray(c::InputCube)
-  wa = createworkarray(eltype(c.cube),ntuple(i->length(c.axesSmall[i]),length(c.axesSmall)))
-  c.workarray = wrapWorkArray(c.desc.artype,wa,c.axesSmall)
+function setworkarray(c::InputCube,ntr)
+  wa = createworkarrays(eltype(c.cube),ntuple(i->length(c.axesSmall[i]),length(c.axesSmall)),ntr)
+  c.workarray = map(wa) do w
+    wrapWorkArray(c.desc.artype,w,c.axesSmall)
+  end
 end
-createworkarray(T,s)=Array{T}(undef,s...)
+createworkarrays(T,s,ntr)=[Array{T}(undef,s...) for i=1:ntr]
 
 
 
@@ -78,9 +80,11 @@ getcube(c::OutputCube)      = c.cube
 getsmallax(c::Union{InputCube,OutputCube})=c.axesSmall
 getAxis(desc,c::OutputCube) = getAxis(desc,c.cube)
 getAxis(desc,c::InputCube)  = getAxis(desc,c.cube)
-function setworkarray(c::OutputCube)
-  wa = createworkarray(eltype(c.cube),ntuple(i->length(c.axesSmall[i]),length(c.axesSmall)))
-  c.workarray = wrapWorkArray(c.desc.artype,wa,c.axesSmall)
+function setworkarray(c::OutputCube,ntr)
+  wa = createworkarrays(eltype(c.cube),ntuple(i->length(c.axesSmall[i]),length(c.axesSmall)),ntr)
+  c.workarray = map(wa) do w
+    wrapWorkArray(c.desc.artype,w,c.axesSmall)
+  end
 end
 
 getOutAxis(desc::Tuple,inAxes,incubes,pargs,f)=map(i->getOutAxis(i,inAxes,incubes,pargs,f),desc)
@@ -121,10 +125,11 @@ mutable struct DATConfig{NIN,NOUT}
   fu
   inplace      :: Bool
   include_loopvars:: Bool
+  nthreads
   addargs
   kwargs
 end
-function DATConfig(cdata,indims,outdims,inplace,max_cache,fu,ispar,include_loopvars,addargs,kwargs)
+function DATConfig(cdata,indims,outdims,inplace,max_cache,fu,ispar,include_loopvars,nthreads,addargs,kwargs)
 
   isa(indims,InDims) && (indims=(indims,))
   isa(outdims,OutDims) && (outdims=(outdims,))
@@ -149,6 +154,7 @@ function DATConfig(cdata,indims,outdims,inplace,max_cache,fu,ispar,include_loopv
     fu,                                         # fu                                      # loopcachesize
     inplace,                                    # inplace
     include_loopvars,
+    nthreads,
     addargs,                                    # addargs
     kwargs
   )
@@ -253,11 +259,12 @@ function mapCube(fu::Function,
     debug=false,
     include_loopvars=false,
     showprog=true,
+    nthreads=ispar ? [remotecall_fetch(Threads.nthreads(),i) for i in workers()] : [Threads.nthreads()] ,
     kwargs...)
   @debug_print "Check if function is registered"
   @debug_print "Generating DATConfig"
   dc=DATConfig(cdata,indims,outdims,inplace,
-    max_cache,fu,ispar,include_loopvars,addargs,kwargs)
+    max_cache,fu,ispar,include_loopvars,nthreads,addargs,kwargs)
   @debug_print "Reordering Cubes"
   reOrderInCubes(dc)
   @debug_print "Analysing Axes"
@@ -579,14 +586,14 @@ end
 
 function generateworkarrays(dc::DATConfig)
   if dc.ispar
-    @everywhereelsem foreach(ESDL.DAT.setworkarray,PMDATMODULE.dc.incubes)
-    @everywhereelsem foreach(ESDL.DAT.setworkarray,PMDATMODULE.dc.outcubes)
+    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[myid()]),PMDATMODULE.dc.incubes)
+    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[myid()]),PMDATMODULE.dc.outcubes)
   else
-    foreach(setworkarray,dc.incubes)
-    foreach(setworkarray,dc.outcubes)
+    foreach(i->setworkarray(i,dc.ntr[1]),dc.incubes)
+    foreach(i->setworkarray(i,dc.ntr[1]),dc.outcubes)
   end
 end
-
+import Threads
 using DataStructures: OrderedDict
 using Base.Cartesian
 @generated function innerLoop(f,loopRanges::T3,xin::NTuple{NIN,Any},xout::NTuple{NOUT,Any},filters,::InnerObj{T1,T2,T4,R,UPDOUT,LR},
@@ -601,9 +608,11 @@ using Base.Cartesian
   inworksyms = map(i->Symbol(string("inwork_",i)),1:NIN)
   outworksyms= map(i->Symbol(string("outwork_",i)),1:NOUT)
 
-  unrollEx = quote end
-  [push!(unrollEx.args,:($(inworksyms[i]) = inwork[$i])) for i=1:NIN]
-  [push!(unrollEx.args,:($(outworksyms[i]) = outwork[$i])) for i=1:NOUT]
+  unrollEx = quote
+    tid = Threads.threadid()
+  end
+  [push!(unrollEx.args,:($(inworksyms[i]) = inwork[$i][tid])) for i=1:NIN]
+  [push!(unrollEx.args,:($(outworksyms[i]) = outwork[$i][tid])) for i=1:NOUT]
   subIn = map(1:NIN) do i
     Expr(:call, :getSubRange2, inworksyms[i],  :(xin[$i]),  fill(:(:),NinCol[i])...,
       map(j->Symbol("i_$j"),nonbroadcastvars[i])...)
