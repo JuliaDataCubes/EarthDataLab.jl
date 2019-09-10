@@ -250,7 +250,6 @@ function getOutAxis(desc::Tuple{ByInference},axlist,incubes,pargs,f)
   inAxSmall = map(i->filter(j->in(j,axlist),i) |>collect,inAxes)
   inSizes = map(i->(map(length,i)...,),inAxSmall)
   testars = map(randn,inSizes)
-
   resu = f(testars...,pargs...)
   isa(resu,AbstractArray) || isa(resu,Number) || error("Function must return an array or a number")
   isa(resu,Number) && return ()
