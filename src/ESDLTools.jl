@@ -2,7 +2,31 @@ module ESDLTools
 using Distributed
 import ..ESDL: ESDLdir
 export mypermutedims!, freshworkermodule, passobj, @everywhereelsem,
-toRange, getiperm, CItimes, CIdiv, @loadOrGenerate
+toRange, getiperm, CItimes, CIdiv, @loadOrGenerate, PickAxisArray
+struct PickAxisArray{T,N,AT<:AbstractArray,P,NCOL}
+    parent::AT
+end
+
+function PickAxisArray(parent, indmask; ncol=0)
+    @assert sum(indmask)+ncol==ndims(parent)
+    f  = findall(indmask)
+    PickAxisArray{eltype(parent),length(indmask),typeof(parent),(f...,),ncol}(parent)
+end
+indmask(p::PickAxisArray{<:Any,<:Any,<:Any,i,<:Any}) where i = i
+getncol(p::PickAxisArray{<:Any,<:Any,<:Any,<:Any,NCOL}) where NCOL = NCOL
+function Base.view(p::PickAxisArray, i...)
+    inew = map(j->i[j],indmask(p))
+    cols = ntuple(_ -> Colon(), getncol(p))
+    view(p.parent,cols...,inew...)
+end
+function Base.getindex(p::PickAxisArray, i...)
+    inew = map(j->i[j],indmask(p))
+    cols = ntuple(_ -> Colon(), getncol(p))
+    getindex(p.parent,cols...,inew...)
+end
+Base.getindex(p::PickAxisArray,i::CartesianIndex) = p[i.I...]
+
+
 
 function getiperm(perm)
     iperm = Array{Int}(undef,length(perm))
