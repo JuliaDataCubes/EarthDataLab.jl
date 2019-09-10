@@ -1,26 +1,8 @@
-struct PickAxisArray{T,N,AT<:AbstractArray,P}
-    parent::AT
-end
-
-function PickAxisArray(parent, indmask)
-    @assert sum(indmask)==ndims(parent)
-    f  = findall(indmask)
-    PickAxisArray{eltype(parent),length(indmask),typeof(parent),(f...,)}(parent)
-end
-indmask(p::PickAxisArray{<:Any,<:Any,<:Any,i}) where i = i
-function Base.view(p::PickAxisArray, i...)
-    inew = map(j->i[j],indmask(p))
-    view(p.parent,inew...)
-end
-function Base.getindex(p::PickAxisArray, i...)
-    inew = map(j->i[j],indmask(p))
-    getindex(p.parent,inew...)
-end
-Base.getindex(p::PickAxisArray,i::CartesianIndex) = p[i.I...]
-
 include("SentinelMissings.jl")
 import .SentinelMissings
 import ESDL.DAT: DATConfig
+import ESDL.ESDLTools: PickAxisArray
+
 struct CubeIterator{R,ART,ARTBC,LAX,ILAX,S}
     dc::DATConfig
     r::R

@@ -125,7 +125,7 @@ mutable struct DATConfig{NIN,NOUT}
   fu
   inplace      :: Bool
   include_loopvars:: Bool
-  nthreads
+  ntr
   addargs
   kwargs
 end
@@ -354,13 +354,22 @@ function getallargs(dc::DATConfig)
   inars = map(ic->ic.handle,dc.incubes)
   outars = map(ic->ic.handle,dc.outcubes)
   filters = map(ic->ic.desc.procfilter,dc.incubes)
-  inob = InnerObj(dc)
   inworkar = (map(i->i.workarray,dc.incubes)...,)
   outworkar = (map(i->i.workarray,dc.outcubes)...,)
   loopax = (dc.LoopAxes...,)
   adda = dc.addargs
   kwa = dc.kwargs
-  (inars,outars,filters,inob,inworkar,outworkar,
+  inarsbc = map(dc.incubes) do ic
+    allax = falses(length(dc.LoopAxes))
+    allax[ic.loopinds].=true
+    PickAxisArray(ic.handle,allax,ncol=length(ic.axesSmall))
+  end
+  outarsbc = map(dc.outcubes) do oc
+    allax = falses(length(dc.LoopAxes))
+    allax[oc.loopinds].=true
+    PickAxisArray(oc.handle,allax,ncol=length(oc.axesSmall))
+  end
+  (inars,outars,inarsbc,outarsbc,filters,inworkar,outworkar,
   loopax,adda,kwa)
 end
 
@@ -593,124 +602,150 @@ function generateworkarrays(dc::DATConfig)
     foreach(i->setworkarray(i,dc.ntr[1]),dc.outcubes)
   end
 end
-import Threads
 using DataStructures: OrderedDict
 using Base.Cartesian
-@generated function innerLoop(f,loopRanges::T3,xin::NTuple{NIN,Any},xout::NTuple{NOUT,Any},filters,::InnerObj{T1,T2,T4,R,UPDOUT,LR},
-  inwork,outwork,loopaxes::LAX,addargs,kwargs) where {T1,T2,T3,T4,R,NIN,NOUT,UPDOUT,LR,LAX}
+function innerLoop(f,loopRanges,xin,xout,xinBC,xoutBC,filters,
+  inwork,outwork,loopaxes,addargs,kwargs)
 
-  NinCol      = T1
-  NoutCol     = T2
-  nonbroadcastvars = T4
-  Nloopvars   = length(T3.parameters)
-  loopnames   = map(axname,LAX.parameters)
-  loopRangesE = Expr(:block)
-  inworksyms = map(i->Symbol(string("inwork_",i)),1:NIN)
-  outworksyms= map(i->Symbol(string("outwork_",i)),1:NOUT)
-
-  unrollEx = quote
-    tid = Threads.threadid()
-  end
-  [push!(unrollEx.args,:($(inworksyms[i]) = inwork[$i][tid])) for i=1:NIN]
-  [push!(unrollEx.args,:($(outworksyms[i]) = outwork[$i][tid])) for i=1:NOUT]
-  subIn = map(1:NIN) do i
-    Expr(:call, :getSubRange2, inworksyms[i],  :(xin[$i]),  fill(:(:),NinCol[i])...,
-      map(j->Symbol("i_$j"),nonbroadcastvars[i])...)
-  end
-  syncex = quote end
-  subOut = Expr[]
-  #Decide how to treat the output, create a view or copy in the end...
-  for i=1:NOUT
-    if !in(i,UPDOUT)
-      ex = Expr(:call, :setSubRange2, outworksyms[i], :(xout[$i]), fill(:(:),NoutCol[i])...,
-        map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
-      push!(subOut, ex)
-    else
-      rhs = Expr(:call, :getSubRange, :(xout[$i]),  fill(:(:),NoutCol[i])...,
-        map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
-      push!(subIn,:($(outworksyms[i]) = $(rhs)[1]))
+  Threads.@threads for cI in CartesianIndices(loopRanges)
+    ithr = Threads.threadid()
+    #Pick the correct array according to thread
+    myinwork = map(i->i[ithr],inwork)
+    myoutwork = map(i->i[ithr],outwork)
+    #Copy data into work arrays
+    foreach((iw,x)->iw.=view(x,cI.I...),myinwork,xinBC)
+    #Apply filters
+    mvs = map(myinwork,filters) do iw, f
+      docheck(f,iw)
     end
-  end
-  for i=1:Nloopvars
-    isym=Symbol("i_$(i)")
-    if T3.parameters[i]==UnitRange{Int}
-      pushfirst!(loopRangesE.args,:($isym=1:length(loopRanges[$i])))
-    elseif T3.parameters[i]==Int
-      pushfirst!(loopRangesE.args,:($isym=1:loopRanges[$i]))
-    else
-      error("Wrong Range argument")
-    end
-  end
-  loopBody=quote end
-  callargs=Any[:f,Expr(:parameters,Expr(:...,:kwargs))]
-  R && foreach(j->push!(callargs,outworksyms[j]),1:NOUT)
-  append!(loopBody.args,subIn)
-  append!(callargs,inworksyms)
-  if LR
-    exloopdict = Expr(:tuple,[:($(loopnames[il]) = ($(Symbol("i_$il"))+first(loopRanges[$il])-1,loopaxes[$il].values[$(Symbol("i_$il"))+first(loopRanges[$il])-1])) for il=1:Nloopvars]...)
-    push!(loopBody.args,:(axdict = $exloopdict))
-    push!(callargs,:axdict)
-  end
-  push!(callargs,Expr(:...,:addargs))
-  runBody = quote end
-  if R
-    push!(runBody.args,Expr(:call,callargs...))
-  else
-    lhs = NOUT>1 ? Expr(:tuple,[:($(outworksyms[j])) for j=1:NOUT]...) : outworksyms[1]
-    rhs = Expr(:call,callargs...)
-    push!(runBody.args,:($lhs.=$rhs))
-  end
-  #Add mask filter to loop body
-  setzeroex = quote end
-  foreach(i->push!(setzeroex.args,:($(outworksyms[i]) .= missing)),1:NOUT)
-  foreach(1:NIN) do i
-    push!(loopBody.args,quote
-      mv = docheck(filters[$i],$(inworksyms[i]))
-      if mv
-        $setzeroex
-      else
-        $runBody
+    if any(mvs)
+      foreach(myoutwork) do ow
+        ow .= missing
       end
-    end)
-  end
-  append!(loopBody.args,subOut)
-  loopEx = length(loopRangesE.args)==0 ? loopBody : Expr(:for,loopRangesE,loopBody)
-  loopEx = quote
-    $unrollEx
-    $loopEx
-  end
-  if debugDAT[1]
-    b=IOBuffer()
-    show(b,loopEx)
-    s=String(take!(b))
-    loopEx=quote
-      println($s)
-      $loopEx
+    else
+      #Finally call the function
+      f(myoutwork...,myinwork...,addargs...;kwargs...)
     end
+    #Copy data into output array
+    foreach((iw,x)->view(x,cI.I...).=iw,myoutwork,xoutBC)
   end
-  loopEx
 end
 
-function getSubRange2(work,xin,cols...)
-  xview = getSubRange(xin,cols...)
-  work.=xview
-  return nothing
-end
+# @generated function innerLoop(f,loopRanges::T3,xin::NTuple{NIN,Any},xout::NTuple{NOUT,Any},filters,::InnerObj{T1,T2,T4,R,UPDOUT,LR},
+#   inwork,outwork,loopaxes::LAX,addargs,kwargs) where {T1,T2,T3,T4,R,NIN,NOUT,UPDOUT,LR,LAX}
+#
+#   NinCol      = T1
+#   NoutCol     = T2
+#   nonbroadcastvars = T4
+#   Nloopvars   = length(T3.parameters)
+#   loopnames   = map(axname,LAX.parameters)
+#   loopRangesE = Expr(:block)
+#   inworksyms = map(i->Symbol(string("inwork_",i)),1:NIN)
+#   outworksyms= map(i->Symbol(string("outwork_",i)),1:NOUT)
+#
+#   unrollEx = quote
+#     tid = Threads.threadid()
+#   end
+#   [push!(unrollEx.args,:($(inworksyms[i]) = inwork[$i][tid])) for i=1:NIN]
+#   [push!(unrollEx.args,:($(outworksyms[i]) = outwork[$i][tid])) for i=1:NOUT]
+#   subIn = map(1:NIN) do i
+#     Expr(:call, :getSubRange2, inworksyms[i],  :(xin[$i]),  fill(:(:),NinCol[i])...,
+#       map(j->Symbol("i_$j"),nonbroadcastvars[i])...)
+#   end
+#   syncex = quote end
+#   subOut = Expr[]
+#   #Decide how to treat the output, create a view or copy in the end...
+#   for i=1:NOUT
+#     if !in(i,UPDOUT)
+#       ex = Expr(:call, :setSubRange2, outworksyms[i], :(xout[$i]), fill(:(:),NoutCol[i])...,
+#         map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
+#       push!(subOut, ex)
+#     else
+#       rhs = Expr(:call, :getSubRange, :(xout[$i]),  fill(:(:),NoutCol[i])...,
+#         map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
+#       push!(subIn,:($(outworksyms[i]) = $(rhs)[1]))
+#     end
+#   end
+#   for i=1:Nloopvars
+#     isym=Symbol("i_$(i)")
+#     if T3.parameters[i]==UnitRange{Int}
+#       pushfirst!(loopRangesE.args,:($isym=1:length(loopRanges[$i])))
+#     elseif T3.parameters[i]==Int
+#       pushfirst!(loopRangesE.args,:($isym=1:loopRanges[$i]))
+#     else
+#       error("Wrong Range argument")
+#     end
+#   end
+#   loopBody=quote end
+#   callargs=Any[:f,Expr(:parameters,Expr(:...,:kwargs))]
+#   R && foreach(j->push!(callargs,outworksyms[j]),1:NOUT)
+#   append!(loopBody.args,subIn)
+#   append!(callargs,inworksyms)
+#   if LR
+#     exloopdict = Expr(:tuple,[:($(loopnames[il]) = ($(Symbol("i_$il"))+first(loopRanges[$il])-1,loopaxes[$il].values[$(Symbol("i_$il"))+first(loopRanges[$il])-1])) for il=1:Nloopvars]...)
+#     push!(loopBody.args,:(axdict = $exloopdict))
+#     push!(callargs,:axdict)
+#   end
+#   push!(callargs,Expr(:...,:addargs))
+#   runBody = quote end
+#   if R
+#     push!(runBody.args,Expr(:call,callargs...))
+#   else
+#     lhs = NOUT>1 ? Expr(:tuple,[:($(outworksyms[j])) for j=1:NOUT]...) : outworksyms[1]
+#     rhs = Expr(:call,callargs...)
+#     push!(runBody.args,:($lhs.=$rhs))
+#   end
+#   #Add mask filter to loop body
+#   setzeroex = quote end
+#   foreach(i->push!(setzeroex.args,:($(outworksyms[i]) .= missing)),1:NOUT)
+#   foreach(1:NIN) do i
+#     push!(loopBody.args,quote
+#       mv = docheck(filters[$i],$(inworksyms[i]))
+#       if mv
+#         $setzeroex
+#       else
+#         $runBody
+#       end
+#     end)
+#   end
+#   append!(loopBody.args,subOut)
+#   loopEx = length(loopRangesE.args)==0 ? loopBody : Expr(:for,loopRangesE,loopBody)
+#   loopEx = quote
+#     $unrollEx
+#     $loopEx
+#   end
+#   if debugDAT[1]
+#     b=IOBuffer()
+#     show(b,loopEx)
+#     s=String(take!(b))
+#     loopEx=quote
+#       println($s)
+#       $loopEx
+#     end
+#   end
+#   loopEx
+# end
 
-function getSubRange2(work::DataFrame,xin,cols...)
-  xview = getSubRange(xin,cols...)
-  for i = 1:size(xview,2)
-    work[i].=view(xview,:,i)
-  end
-  return nothing
-end
-
-function setSubRange2(work,xout,cols...)
-  xview = getSubRange(xout,cols...)
-  xview.=work
-end
-
-getSubRange(x::AbstractArray,cols...)     = view(x,cols...)
+# function getSubRange2(work,xin,cols...)
+#   xview = getSubRange(xin,cols...)
+#   work.=xview
+#   return nothing
+# end
+#
+# function getSubRange2(work::DataFrame,xin,cols...)
+#   xview = getSubRange(xin,cols...)
+#   for i = 1:size(xview,2)
+#     work[i].=view(xview,:,i)
+#   end
+#   return nothing
+# end
+#
+# function setSubRange2(work,xout,cols...)
+#   xview = getSubRange(xout,cols...)
+#   xview.=work
+# end
+#
+# getSubRange(x::AbstractArray,cols...)     = view(x,cols...)
 
 "Calculate an axis permutation that brings the wanted dimensions to the front"
 function getFrontPerm(dc::AbstractCubeData{T},dims) where T
