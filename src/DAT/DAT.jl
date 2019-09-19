@@ -2,7 +2,7 @@ module DAT
 export mapCube, getInAxes, getOutAxes, findAxis, reduceCube, getAxis, InputCube, OutputCube
 import ..Cubes
 using ..ESDLTools
-import Distributed: pmap, @everywhere, workers
+import Distributed: pmap, @everywhere, workers, remotecall_fetch, myid
 import ..Cubes: getAxis, getOutAxis, getAxis, cubechunks, iscompressed, chunkoffset, _write,
   CubeAxis, RangeAxis, CategoricalAxis, AbstractCubeData, CubeMem, AbstractCubeMem,
   caxes, findAxis, _read, _write, Dataset, getsavefolder
@@ -240,7 +240,7 @@ function mapCube(fu::Function,
     debug=false,
     include_loopvars=false,
     showprog=true,
-    nthreads=ispar ? [remotecall_fetch(Threads.nthreads(),i) for i in workers()] : [Threads.nthreads()] ,
+    nthreads=ispar ? Dict(i=>remotecall_fetch(Threads.nthreads,i) for i in workers()) : [Threads.nthreads()] ,
     kwargs...)
   @debug_print "Check if function is registered"
   @debug_print "Generating DATConfig"
@@ -322,10 +322,6 @@ updateinars(dc,r)=updatears(dc,dc.incubes,r,_read)
 writeoutars(dc,r)=updatears(dc,dc.outcubes,r,_write)
 
 function runLoop(dc::DATConfig,showprog)
-  #Replace fu if not inplace
-  if !dc.inplace
-    dc.fu = makeinplace(dc.fu)
-  end
   allRanges=distributeLoopRanges((dc.loopcachesize...,),(map(length,dc.LoopAxes)...,),getchunkoffsets(dc))
   #@show collect(allRanges)
   if dc.ispar
@@ -342,16 +338,34 @@ function runLooppar(allRanges)
   runLoop(dc,(allRanges,),false)
 end
 
+abstract type AxValCreator end
+struct NoLoopAxes <:AxValCreator end
+struct AllLoopAxes{A} <:AxValCreator
+  loopaxes::A
+end
+getlaxvals(::NoLoopAxes,cI) = ()
+getlaxvals(a::AllLoopAxes,cI) = (NamedTuple{map(axsym,a.loopaxes)}(map((ax,i)->(i,ax.values[i]),a.loopaxes,cI.I)),)
+
+
 function getallargs(dc::DATConfig)
   inars = map(ic->ic.handle,dc.incubes)
   outars = map(ic->ic.handle,dc.outcubes)
   filters = map(ic->ic.desc.procfilter,dc.incubes)
   inworkar = (map(i->i.workarray,dc.incubes)...,)
   outworkar = (map(i->i.workarray,dc.outcubes)...,)
-  loopax = (dc.LoopAxes...,)
+  axvals = if dc.include_loopvars
+    lax = (dc.LoopAxes...,)
+    AllLoopAxes(lax)
+  else
+    NoLoopAxes()
+  end
   adda = dc.addargs
   kwa = dc.kwargs
-  include_loopvars = Val{dc.include_loopvars}()
+  fu = if !dc.inplace
+    makeinplace(dc.fu)
+  else
+    dc.fu
+  end
   inarsbc = map(dc.incubes) do ic
     allax = falses(length(dc.LoopAxes))
     allax[ic.loopinds].=true
@@ -362,8 +376,8 @@ function getallargs(dc::DATConfig)
     allax[oc.loopinds].=true
     PickAxisArray(oc.handle,allax,ncol=length(oc.axesSmall))
   end
-  (inars,outars,inarsbc,outarsbc,filters,inworkar,outworkar,
-  loopax,include_loopvars,adda,kwa)
+  (fu,inars,outars,inarsbc,outarsbc,filters,inworkar,outworkar,
+  axvals,adda,kwa)
 end
 
 function runLoop(dc::DATConfig, allRanges, showprog)
@@ -375,7 +389,7 @@ end
   doprogress && (pm = Progress(length(allRanges)))
   for r in allRanges
     updateinars(dc,r)
-    innerLoop(dc.fu,r,args...)
+    innerLoop(r,args...)
     writeoutars(dc,r)
     doprogress && next!(pm)
   end
@@ -588,21 +602,19 @@ end
 
 function generateworkarrays(dc::DATConfig)
   if dc.ispar
-    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[myid()]),PMDATMODULE.dc.incubes)
-    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[myid()]),PMDATMODULE.dc.outcubes)
+    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[Distributed.myid()]),PMDATMODULE.dc.incubes)
+    @everywhereelsem foreach(i->ESDL.DAT.setworkarray(i,PMDATMODULE.dc.ntr[Distributed.myid()]),PMDATMODULE.dc.outcubes)
   else
     foreach(i->setworkarray(i,dc.ntr[1]),dc.incubes)
     foreach(i->setworkarray(i,dc.ntr[1]),dc.outcubes)
   end
 end
 
-getlaxvals(::Val{false},::Any,::Any) = ()
-getlaxvals(::Val{true},cI,loopaxes) = NamedTuple{}
 
 using DataStructures: OrderedDict
 using Base.Cartesian
-function innerLoop(f,loopRanges,xin,xout,xinBC,xoutBC,filters,
-  inwork,outwork,,addargs,kwargs)
+@noinline function innerLoop(loopRanges,f,xin,xout,xinBC,xoutBC,filters,
+  inwork,outwork,axvalcreator,addargs,kwargs)
 
   Threads.@threads for cI in CartesianIndices(map(i->1:length(i),loopRanges))
     ithr = Threads.threadid()
@@ -618,9 +630,9 @@ function innerLoop(f,loopRanges,xin,xout,xinBC,xoutBC,filters,
       foreach(ow->fill!(ow,missing),myoutwork)
     else
       #Compute loop axis values if necessary
-      laxval = getlaxvals(include_loopaxes,cI,loopaxes)
+      laxval = getlaxvals(axvalcreator,cI)
       #Finally call the function
-      f(myoutwork...,myinwork...,addargs...;kwargs...)
+      f(myoutwork...,myinwork...,laxval...,addargs...;kwargs...)
     end
     #Copy data into output array
     foreach((iw,x)->view(x,cI.I...).=iw,myoutwork,xoutBC)

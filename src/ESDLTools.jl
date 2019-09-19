@@ -109,6 +109,7 @@ getfrom(p::Int, nm::Symbol; mod=Main) = fetch(@spawnat(p, getfield(mod, nm)))
 function freshworkermodule()
     in(:PMDATMODULE,names(Main)) || Core.eval(Main,:(module PMDATMODULE
         using ESDL
+        using Distributed
     end))
     Core.eval(Main,quote
       using Distributed
@@ -116,9 +117,10 @@ function freshworkermodule()
       for pid in workers()
         n=remotecall_fetch(()->in(:PMDATMODULE,names(Main)),pid)
         if !n
-          r1=remotecall(()->(Core.eval(Main,:(using ESDL));nothing),pid)
+          r1=remotecall(()->(Core.eval(Main,:(using ESDL, Distributed));nothing),pid)
           r2=remotecall(()->(Core.eval(Main,:(module PMDATMODULE
           using ESDL
+          using Distributed
         end));nothing),pid)
           push!(rs,r1)
           push!(rs,r2)
