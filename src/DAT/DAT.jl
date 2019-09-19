@@ -351,6 +351,7 @@ function getallargs(dc::DATConfig)
   loopax = (dc.LoopAxes...,)
   adda = dc.addargs
   kwa = dc.kwargs
+  include_loopvars = Val{dc.include_loopvars}()
   inarsbc = map(dc.incubes) do ic
     allax = falses(length(dc.LoopAxes))
     allax[ic.loopinds].=true
@@ -362,7 +363,7 @@ function getallargs(dc::DATConfig)
     PickAxisArray(oc.handle,allax,ncol=length(oc.axesSmall))
   end
   (inars,outars,inarsbc,outarsbc,filters,inworkar,outworkar,
-  loopax,adda,kwa)
+  loopax,include_loopvars,adda,kwa)
 end
 
 function runLoop(dc::DATConfig, allRanges, showprog)
@@ -594,10 +595,14 @@ function generateworkarrays(dc::DATConfig)
     foreach(i->setworkarray(i,dc.ntr[1]),dc.outcubes)
   end
 end
+
+getlaxvals(::Val{false},::Any,::Any) = ()
+getlaxvals(::Val{true},cI,loopaxes) = NamedTuple{}
+
 using DataStructures: OrderedDict
 using Base.Cartesian
 function innerLoop(f,loopRanges,xin,xout,xinBC,xoutBC,filters,
-  inwork,outwork,loopaxes,addargs,kwargs)
+  inwork,outwork,,addargs,kwargs)
 
   Threads.@threads for cI in CartesianIndices(map(i->1:length(i),loopRanges))
     ithr = Threads.threadid()
@@ -607,14 +612,13 @@ function innerLoop(f,loopRanges,xin,xout,xinBC,xoutBC,filters,
     #Copy data into work arrays
     foreach((iw,x)->iw.=view(x,cI.I...),myinwork,xinBC)
     #Apply filters
-    mvs = map(myinwork,filters) do iw, f
-      docheck(f,iw)
-    end
+    mvs = map(docheck,filters,myinwork)
     if any(mvs)
-      foreach(myoutwork) do ow
-        ow .= missing
-      end
+      # Set all outputs to missing
+      foreach(ow->fill!(ow,missing),myoutwork)
     else
+      #Compute loop axis values if necessary
+      laxval = getlaxvals(include_loopaxes,cI,loopaxes)
       #Finally call the function
       f(myoutwork...,myinwork...,addargs...;kwargs...)
     end

@@ -226,14 +226,26 @@ fittable(iter,WeightedMean,:tair,weight=(i->abs(cosd(i.lat))),by=(i->month(i.tim
 function fittable(tab,o,fitsym;by=(),weight=nothing,showprog=false)
   agg = TableAggregator(tab,o,fitsym,by=by,weight=weight)
   if showprog
-    p=Progress(length(tab),1)
-    foreach(i->begin fitrow!(agg,i); next!(p) end,tab)
+    runfitrows_progress(agg,tab)
   else
     foreach(i->fitrow!(agg,i),tab)
   end
   agg
 end
 fittable(tab,o::Type{<:OnlineStat},fitsym;kwargs...)=fittable(tab,o(),fitsym;kwargs...)
+
+@noinline function runfitrows_progress(agg,tab)
+  p = Progress(length(tab)÷100,1)
+  every = 0
+  for row in tab
+    fitrow!(agg,row)
+    every += 1
+    if every == 100
+      next!(p)
+      every=0
+    end
+  end
+end
 
 struct collectedValue{V,S,SY}
     value::V
