@@ -82,7 +82,7 @@ function collectdims(g::ZGroup)
   foreach(g.arrays) do ar
     k,v = ar
     for (len,dname) in zip(size(v),reverse(v.attrs["_ARRAY_DIMENSIONS"]))
-      if !occursin("bnds",dname)
+      if !occursin("bnds",dname) && !occursin("bounds",dname)
         offs = get(g.arrays[dname].attrs,"_ARRAY_OFFSET",0)
         push!(dlist,(dname,offs,len))
       end

@@ -398,7 +398,7 @@ function subsetcube(z::ESDL.Cubes.ConcatCube{T,N};kwargs...) where {T,N}
 end
 
 function saveCube(z::ZArrayCube, name::AbstractString; overwrite=false, chunksize=nothing, compressor=NoCompressor())
-  if z.subset === nothing && isa(z.a.storage, DirectoryStore) && chunksize!==nothing && !isa(compressor, NoCompressor())
+  if z.subset === nothing && !z.persist && isa(z.a.storage, DirectoryStore) && chunksize==nothing && isa(compressor, NoCompressor)
     newfolder = joinpath(workdir[1], name)
     check_overwrite(newfolder, overwrite)
     # the julia cp implentation currently can only deal with files <2GB
