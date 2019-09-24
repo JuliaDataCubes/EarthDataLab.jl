@@ -120,7 +120,7 @@ function getrow(ci::CubeIterator{<:Any,<:Any,<:Any,<:Any,ILAX,S},inarsBC,indnow,
 end
 function getrow(ci::CubeIterator{<:Any,<:Any,<:Any,<:Any,(),S},inarsBC,indnow,offs) where S
    cvals  = map(i->i[indnow],inarsBC)
-   S(cvals...)
+   S(cvals)
 end
 
 # @generated function getrow(ci::CI,inarsBC,indnow) where CI

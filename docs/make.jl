@@ -1,4 +1,17 @@
-using ImageMagick, Documenter, ESDL, ESDLPlots, Cairo, Fontconfig
+using ImageMagick, Documenter, ESDL, ESDLPlots, Cairo
+
+
+newcubedir = mktempdir()
+ESDLdir(newcubedir)
+# Download Cube subset
+c = S3Cube()
+csa = c[
+  region = "South America",
+  var = ["gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "soil_moisture"],
+  time = 2003:2006
+]
+saveCube(csa,"southamericacube", chunksize=(90,90,92,1))
+ENV["ESDL_CUBEDIR"] = joinpath(newcubedir,"southamericacube")
 
 makedocs(
     modules = [ESDL, ESDLPlots],
