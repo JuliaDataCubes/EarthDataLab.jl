@@ -66,7 +66,7 @@ end
 dicteltype(::Type{<:Dict{K,V}}) where {K,V} = V
 dictktype(::Type{<:Dict{K,V}}) where {K,V} = K
 actval(v) = v
-#actval(v::SentinelMissings.SentinelMissing) = v[]
+actval(v::SentinelMissings.SentinelMissing) = v[]
 function fitrow!(o::GroupedOnlineAggregator{T,S,BY,W},r) where {T,S,BY,W}
     v = getproperty(r,S)
     if !ismissing(v)
