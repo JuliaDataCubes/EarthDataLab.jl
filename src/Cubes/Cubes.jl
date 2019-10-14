@@ -45,6 +45,7 @@ This function calculates a subset of a cube's data
 """
 function subsetcube end
 
+function _read end
 
 getsubset(x::AbstractCubeData) = x.subset === nothing ? ntuple(i->Colon(),ndims(x)) : x.subset
 #"""

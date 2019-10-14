@@ -3,7 +3,7 @@
 The ESDL package comes with a list of predefined methods for statistical analysis.
 The functions are defined to work on specific axes. For example a function that removes the
 mean annual cycle, will always extract one time series after the other from a cube, process them, store the results and concatenate the resulting time series to a new output cube. It does not matter which other axes are defined
-in the input cube, the function will simply loop over these.
+in the input cube, the function will simply iterate over these.
 
 The function will be applied to the whole cube
 in a memory-efficient way, which means that chunks of data are read, processed and then saved in
@@ -51,7 +51,7 @@ The main difference to the function exported in Base is that the dimensions to b
 mapslices(mean, cube, ("Lon","Lat"))
 ```
 
-will compute the mean over each spatial map contained in the data cube. Please note that that the `mapslices` function will execute the function once with random number input to determine the shape of the returned values and then pre-allocate the output array. Keep this in mind when your function has some side-effects. Although the `mapslices` function should *work* in most cases, it is advised to read about the [`mapCube`](@ref) function in [Applying custom functions](@ref) which gives you much more detailed control over the mapping operation.
+will compute the mean over each spatial map contained in the data cube. Please note that the `mapslices` function will execute the function once with random number input to determine the shape of the returned values and then pre-allocate the output array. Keep this in mind when your function has some side-effects. Although the `mapslices` function should *work* in most cases, it is advised to read about the [`mapCube`](@ref) function in [Applying custom functions](@ref) which gives you much more detailed control over the mapping operation.
 
 Applying these basic statistics functions makes sense, if the slices one wants to reduce fit in memory. However,
 if one wants to calculate some statistics on e.g. a *time x lon x lat* cube, one would preferably
@@ -239,7 +239,7 @@ The main feature of this package, and probably the one one that is most differen
 2. The function `f` has at least `N_out + N_in` arguments, where so its signature is `f(xout1, xout2, .... ,xoutN, xin1, xin2, ... xinN, addargs...; kwargs...)`
 3. Every input array of `f` will be a slice of an input data cube. The user specifies the axes that will be used for slicing by creating an [`InDims`](@ref) object for every input cube object and passing it to the [`mapCube`](@ref) function.
 4. The dimensions of every output array have to be specified by the user by creating an [`OutDims`](@ref) object for every output cube and passing it to the [`mapCube`](@ref) function.
-5. The input data cubes may have additional dimensions which are not used for slicing, these will be iterated over and the function `f` will be called repeatedly for every slice. If there are multiple input cubes, and contain additional axes of the same name, they are required to have the same axis elements, so that these elements are matched in the loop. If different input cubes have differently named additional axes, their oputer product will be applied and the axes will all be added to the output cubes.
+5. The input data cubes may have additional dimensions which are not used for slicing, these will be iterated over and the function `f` will be called repeatedly for every slice. If there are multiple input cubes, and contain additional axes of the same name, they are required to have the same axis elements, so that these elements are matched in the loop. If different input cubes have differently named additional axes, their outer product will be applied and the axes will all be added to the output cubes.
 
 ### A minimal example
 

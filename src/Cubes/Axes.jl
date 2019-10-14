@@ -5,7 +5,7 @@ ScaleAxis, axname, @caxis_str, findAxis, AxisDescriptor, get_descriptor, ByName,
 getOutAxis, ByInference, renameaxis!, axsym
 import NetCDF.NcDim
 using ..Cubes
-import ..Cubes: caxes
+import ..Cubes: caxes, _read
 using Dates
 
 macro defineCatAxis(axname,eltype)
@@ -298,6 +298,10 @@ function renameaxis!(c::AbstractCubeData,p::Pair{<:Any,<:CubeAxis})
   length(c.axes[i].values) == length(p[2].values) || throw(ArgumentError("Length of replacement axis must equal length of old axis"))
   c.axes[i]=p[2]
   c
+end
+
+function _read(ax::CubeAxis, ar::AbstractArray, I::CartesianIndices)
+  ar[:] .= ax.values[I.indices[1]]
 end
 
 macro caxis_str(s)
