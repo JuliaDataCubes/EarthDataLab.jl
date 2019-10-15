@@ -101,11 +101,11 @@ cTable = CubeTable(value=cube,include_axes=("lat","lon","time","variable"),temp=
 r = cubefittable(cTable, WeightedMean, :value, by=(i->splitTemp(i.temp), :variable), weight=(i->cosd(i.lat)))
 ```
 
-The results can be converted to a DataFrame, since a `CubeTable` implements the table interface.
+The results can be converted to a DataFrame, since a DataCube implements the table interface.
 
 ```@example 1
 using DataFrames
-DataFrame(CubeTable(mean=r, include_axes=true))
+DataFrame(r)
 ```
 
 

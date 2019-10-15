@@ -244,3 +244,8 @@ Tables.rowaccess(::Type{<:CubeIterator}) = true
 Tables.rows(x::CubeIterator) = x
 Tables.schema(x::CubeIterator) = Tables.schema(typeof(x))
 Tables.schema(x::Type{<:CubeIterator}) = Tables.Schema(fieldnames(eltype(x)),map(s->fieldtype(eltype(x),s),fieldnames(eltype(x))))
+
+Tables.istable(::Type{<:AbstractCubeData}) = true
+Tables.rowaccess(::Type{<:AbstractCubeData}) = true
+Tables.rows(x::AbstractCubeData) = CubeTable(value = x, include_axes=true)
+Tables.schema(x::AbstractCubeData) = Tables.schema(Tables.rows(x))
