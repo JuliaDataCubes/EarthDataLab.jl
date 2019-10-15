@@ -29,14 +29,17 @@ Here is an example on how to plot a map. The keyword arguments specify the time
 step (`time=Date(1980,1,1)`) and the variable (`var="air_temperature_2m"`).
 
 ```@example 1
-using ESDL # hide
+using ESDL, Compose # hide
 using ESDLPlots
 gr()
 import Documenter # hide
 c=Cube() # hide
 cube=subsetcube(c,variable=["air_temperature_2m","gross_primary_productivity"])
-p = plotMAP(cube,time=Date(2001,1,1), var="air_temperature_2m")
+p = plotMAP(cube,time=Date(2003,1,1), var="air_temperature_2m")
+draw(SVG("p1.svg", 16cm, 10cm), p) #hide
+nothing #hide
 ```
+![](p1.svg)
 
 Inside a Jupyter notebook, the keyword arguments can be omitted and sliders or
 dropdown menus will be shown to select the desired values.
@@ -56,18 +59,21 @@ we can do the following:
 
 
 ```@example 1
-using ESDL # hide
+using ESDL, Compose # hide
 using ESDLPlots
 gr()
 import Documenter # hide
 c=Cube() # hide
 using ColorTypes
-plotMAPRGB(c,c1="gross_primary_productivity",
+p = plotMAPRGB(c,c1="gross_primary_productivity",
              c2="net_ecosystem_exchange",
              c3="terrestrial_ecosystem_respiration",
              cType=Lab,
              time=Date(2003,2,26))
+draw(SVG("p2.svg", 16cm, 10cm), p) #hide
+nothing #hide
 ```
+![](p2.svg)
 
 ## Other plots
 
@@ -97,13 +103,11 @@ This is a plot showing the mean values of the chosen variables across different 
 
 
 ````@example 1
-using ESDLPlots
-using WeightedOnlineStats
-cube=subsetcube(c,variable=["net_ecosystem_exchange","gross_primary_productivity","terrestrial_ecosystem_respiration"],
-lon=-79,lat=-50)
-cTable = CubeTable(value=cube,include_axes=("lat","lon","time","variable"))
-m = cubefittable(cTable, WeightedMean, :value, weight=(i->cosd(i.lat)), by=(:variable, :lat, :lon))
-p=plotXY(m,xaxis="variable",group="lat",lon=30)
+using ESDL, ESDLPlots
+using Statistics
+cube=subsetcube(c,variable=["net_ecosystem_exchange","gross_primary_productivity","terrestrial_ecosystem_respiration"], lon = -70, lat=(-51,-49))
+m = mapslices(mean ∘ skipmissing, cube, dims="time")
+p=plotXY(m,xaxis="var",group="lat")
 ````
 
 ### Scatter plots

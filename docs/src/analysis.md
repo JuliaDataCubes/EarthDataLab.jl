@@ -89,69 +89,25 @@ following lines of code:
 
 ```@example 1
 using ESDL, WeightedOnlineStats
-lons  = (30,31)
-lats  = (50,51)
+lons  = (-71,-70)
+lats  = (-51,-50)
 vars  = ["gross_primary_productivity","net_ecosystem_exchange","terrestrial_ecosystem_respiration"]
 c = Cube()
-cube  = subsetcube(c,variable=vars,lon=lons,lat=lats, time=2001:2005)
-t     = subsetcube(c,variable="air_temperature_2m",lon=lons,lat=lats, time=2001:2005)
+cube  = subsetcube(c,variable=vars,lon=lons,lat=lats)
+t     = subsetcube(c,variable="air_temperature_2m",lon=lons,lat=lats)
 
 splitTemp(t) = if !ismissing(t) if t>280 return "T>7C" else return "T<7C" end else return missing end # Define the classification function
 cTable = CubeTable(value=cube,include_axes=("lat","lon","time","variable"),temp=t)
-cubefittable(cTable, WeightedMean, :value, by=(i->splitTemp(i.temp), :variable), weight=(i->cosd(i.lat)))
+r = cubefittable(cTable, WeightedMean, :value, by=(i->splitTemp(i.temp), :variable), weight=(i->cosd(i.lat)))
 ```
-```
-In-Memory data cube with the following dimensions
-Category1           Axis with 2 elements: T<7C T>7C
-Variable            Axis with 3 elements: gross_primary_productivity net_ecosystem_exchange terrestrial_ecosystem_respiration
-Total size: 54.0 bytes
-```
-<!-- ```@eval
-#Load Javascript env
-import Documenter
-```
-```@eval
-using ESDL
-using WeightedOnlineStats
-using Documenter
-lons  = (30,31)
-lats  = (50,51)
-vars  = ["gross_primary_productivity","net_ecosystem_exchange","terrestrial_ecosystem_respiration"]
-c = Cube()
-cube  = subsetcube(c,variable=vars,lon=lons,lat=lats, time=2001:2005)
-t     = subsetcube(c,variable="air_temperature_2m",lon=lons,lat=lats, time=2001:2005)
 
-splitTemp(t) = if !ismissing(t) if t>280 return "T>7C" else return "T<7C" end else return missing end # Define the classification function
-cTable = CubeTable(value=cube,include_axes=("lat","lon","time","variable"),temp=t)
-mT = cubefittable(cTable, WeightedMean, :value, by=(i->splitTemp(i.temp), :variable), weight=(i->cosd(i.lat)))
-using ESDLPlots
-gr()
-p=plotXY(mT,xaxis="var",group="tempclass")
-b=IOBuffer()
-show(b,MIME"text/html"(),p)
-Documenter.Documents.RawHTML(String(take!(b)))
-``` -->
-
-A second example would be that we want to calculate averages of the fluxes according to
-a country mask.
+The results can be converted to a DataFrame, since a `CubeTable` implements the table interface.
 
 ```@example 1
-using ESDL, WeightedOnlineStats
-vars  = ["gross_primary_productivity","net_ecosystem_exchange","terrestrial_ecosystem_respiration"]
-c     = Cube()
-m     = subsetcube(c,variable="country_mask",lon=lons,lat=lats)
-cube  = subsetcube(c,variable=vars,lon=lons,lat=lats, time=2001:2005)
+using DataFrames
+DataFrame(CubeTable(mean=r, include_axes=true))
+```
 
-cTable = CubeTable(value=cube,axes=("lat","lon","time","variable"),country=m)
-cubefittable(cTable, WeightedMean, :value, by=(:country, :variable), weight=(i->cosd(i.lat)))
-```
-```
-In-Memory data cube with the following dimensions
-Country             Axis with 1 elements: Ukraine
-Variable            Axis with 3 elements: gross_primary_productivity net_ecosystem_exchange terrestrial_ecosystem_respiration
-Total size: 27.0 bytes
-```
-This will split the cube by country and variable and compute averages over the input variables.
 
 ```@docs
 ESDL.DAT.CubeTable

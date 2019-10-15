@@ -38,6 +38,9 @@ function CubeIterator(dc,r;varnames::Tuple=ntuple(i->Symbol("x$i"),length(dc.inc
       PickAxisArray(ic.handle,allax)
     end
     et = map(i->SentinelMissings.SentinelMissing{eltype(i[1]),defaultval(eltype(i[1]))},inars)
+    if include_loopvars == true
+      include_loopvars = map(axname,(loopaxes...,))
+    end
     if !isempty(include_loopvars)
       ilax = map(i->findAxis(i,collect(loopaxes)),include_loopvars)
       any(isequal(nothing),ilax) && error("Axis not found in cubes")
