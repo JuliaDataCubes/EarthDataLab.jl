@@ -122,10 +122,8 @@ stripc0x(a) = replace(a, r"[^\x20-\x7e]"=> "")
 
 function rasterize!(outar,shapefile;bb = (left = -180.0, right=180.0, top=90.0,bottom=-90.0),label=nothing)
   shapepath = shapefile
-  handle = open(shapepath, "r") do io
-    read(io, Shapefile.Handle)
-  end
-  p = handle.shapes
+  t = Shapefile.Table(shapepath)
+  p = Shapefile.shapes(t)
   if length(p)>1
     rasterizepoly!(outar,p,bb)
   else
@@ -133,7 +131,7 @@ function rasterize!(outar,shapefile;bb = (left = -180.0, right=180.0, top=90.0,b
   end
 end
 
-function rasterizepoly!(outmat,poly::Vector{<:AbstractMultiPolygon},bb)
+function rasterizepoly!(outmat,poly::Vector{<:Union{Missing,AbstractMultiPolygon}},bb)
     foreach(1:length(poly)) do ipoly
         rasterizepoly!(outmat,poly[ipoly],bb,value=ipoly)
     end

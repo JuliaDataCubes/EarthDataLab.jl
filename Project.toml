@@ -1,7 +1,7 @@
 name = "ESDL"
 uuid = "359177bc-a543-11e8-11b7-bb015dba3358"
 authors = ["Fabian Gans <fgans@bgc-jena.mpg.de>"]
-version = "0.8.0"
+version = "0.8.1"
 
 [deps]
 AWSCore = "4f1ea46c-232b-54a6-9b17-cc2d0f3e6598"
@@ -35,6 +35,7 @@ Zarr = "0a941bbe-ad1d-11e8-39d9-ab76183a1d99"
 
 [compat]
 WeightedOnlineStats = "0.3"
+SHapefile = "0.6"
 
 [extras]
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
