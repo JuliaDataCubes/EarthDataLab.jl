@@ -72,6 +72,7 @@ mutable struct OutputCube
   broadcastAxes::Vector{CubeAxis}         #List of axes that are broadcasted
   loopinds::Vector{Int}              #Index of the loop axes that are broadcasted for this output cube
   isMem::Bool                      #Shall the output cube be in memory
+  innerchunks
   workarray::Any
   handle::Any                       #Cache to write the output to
   outtype
@@ -87,12 +88,31 @@ function setworkarray(c::OutputCube,ntr)
   end
 end
 
+function interpretoutchunksizes(desc,axesSmall,incubes)
+  if desc.chunksize == :max
+    map(length,axesSmall)
+  elseif desc.chunksize == :input
+    map(axesSmall) do ax
+      for cc in incubes
+        i = findAxis(axname(ax),cc)
+        if i !== nothing
+          return min(length(ax),cubechunks(cc)[i])
+        end
+      end
+      return length(ax)
+    end
+  else
+    desc.chunksize
+  end
+end
+
 getOutAxis(desc::Tuple,inAxes,incubes,pargs,f)=map(i->getOutAxis(i,inAxes,incubes,pargs,f),desc)
 function OutputCube(desc::OutDims,inAxes::Vector{CubeAxis},incubes,pargs,f)
   axesSmall     = getOutAxis(desc.axisdesc,inAxes,incubes,pargs,f)
   broadcastAxes = getOutAxis(desc.bcaxisdesc,inAxes,incubes,pargs,f)
   outtype       = getOuttype(desc.outtype,incubes)
-  OutputCube(nothing,desc,collect(CubeAxis,axesSmall),CubeAxis[],collect(CubeAxis,broadcastAxes),Int[],false,nothing,nothing,outtype)
+  innerchunks   = interpretoutchunksizes(desc,axesSmall,incubes)
+  OutputCube(nothing,desc,collect(CubeAxis,axesSmall),CubeAxis[],collect(CubeAxis,broadcastAxes),Int[],false,innerchunks,nothing,nothing,outtype)
 end
 
 """
@@ -412,7 +432,8 @@ function getRetCubeType(oc,ispar,max_cache)
 end
 
 function generateOutCube(::Type{T},eltype,oc::OutputCube,loopcachesize,co) where T<:ZArrayCube
-  cs = oc.desc.chunksize ===nothing ? (map(length,oc.axesSmall)...,loopcachesize...) : oc.desc.chunksize
+  cs_inner = oc.innerchunks
+  cs = (cs_inner..., loopcachesize...)
   folder = getsavefolder(oc.desc.path)
   oc.cube=ZArrayCube(oc.allAxes,folder=folder,T=eltype,persist=oc.desc.persist,chunksize=cs,chunkoffset=co,compressor=oc.desc.compressor)
 end
@@ -528,16 +549,16 @@ function getCacheSizes(dc::DATConfig)
         push!(cmisses,(iloopax = ilax,cs = cubechunks(ic.cube)[ii],iscompressed = iscompressed(ic.cube), innerleap=inax))
       end
     end
-    for oc in dc.outcubes
-      cs = oc.desc.chunksize
-      if cs !== nothing
-        ii = findAxis(lax,oc.allAxes)
-        if !isa(ii,Nothing)
-          innerleap = prod(cs)
-          push!(cmisses,(iloopax = ilax,cs = cs[ii],iscompressed = isa(oc.desc.compressor,NoCompressor), innerleap=innerleap))
-        end
-      end
-    end
+    # for oc in dc.outcubes
+    #   cs = oc.desc.chunksize
+    #   if cs !== nothing
+    #     ii = findAxis(lax,oc.allAxes)
+    #     if !isa(ii,Nothing)
+    #       innerleap = prod(cs)
+    #       push!(cmisses,(iloopax = ilax,cs = cs[ii],iscompressed = isa(oc.desc.compressor,NoCompressor), innerleap=innerleap))
+    #     end
+    #   end
+    # end
   end
   sort!(cmisses,lt=cmpcachmisses)
   #@show cmisses
@@ -639,121 +660,6 @@ using Base.Cartesian
   end
 end
 
-# @generated function innerLoop(f,loopRanges::T3,xin::NTuple{NIN,Any},xout::NTuple{NOUT,Any},filters,::InnerObj{T1,T2,T4,R,UPDOUT,LR},
-#   inwork,outwork,loopaxes::LAX,addargs,kwargs) where {T1,T2,T3,T4,R,NIN,NOUT,UPDOUT,LR,LAX}
-#
-#   NinCol      = T1
-#   NoutCol     = T2
-#   nonbroadcastvars = T4
-#   Nloopvars   = length(T3.parameters)
-#   loopnames   = map(axname,LAX.parameters)
-#   loopRangesE = Expr(:block)
-#   inworksyms = map(i->Symbol(string("inwork_",i)),1:NIN)
-#   outworksyms= map(i->Symbol(string("outwork_",i)),1:NOUT)
-#
-#   unrollEx = quote
-#     tid = Threads.threadid()
-#   end
-#   [push!(unrollEx.args,:($(inworksyms[i]) = inwork[$i][tid])) for i=1:NIN]
-#   [push!(unrollEx.args,:($(outworksyms[i]) = outwork[$i][tid])) for i=1:NOUT]
-#   subIn = map(1:NIN) do i
-#     Expr(:call, :getSubRange2, inworksyms[i],  :(xin[$i]),  fill(:(:),NinCol[i])...,
-#       map(j->Symbol("i_$j"),nonbroadcastvars[i])...)
-#   end
-#   syncex = quote end
-#   subOut = Expr[]
-#   #Decide how to treat the output, create a view or copy in the end...
-#   for i=1:NOUT
-#     if !in(i,UPDOUT)
-#       ex = Expr(:call, :setSubRange2, outworksyms[i], :(xout[$i]), fill(:(:),NoutCol[i])...,
-#         map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
-#       push!(subOut, ex)
-#     else
-#       rhs = Expr(:call, :getSubRange, :(xout[$i]),  fill(:(:),NoutCol[i])...,
-#         map(j->Symbol("i_$j"),nonbroadcastvars[NIN+i])...)
-#       push!(subIn,:($(outworksyms[i]) = $(rhs)[1]))
-#     end
-#   end
-#   for i=1:Nloopvars
-#     isym=Symbol("i_$(i)")
-#     if T3.parameters[i]==UnitRange{Int}
-#       pushfirst!(loopRangesE.args,:($isym=1:length(loopRanges[$i])))
-#     elseif T3.parameters[i]==Int
-#       pushfirst!(loopRangesE.args,:($isym=1:loopRanges[$i]))
-#     else
-#       error("Wrong Range argument")
-#     end
-#   end
-#   loopBody=quote end
-#   callargs=Any[:f,Expr(:parameters,Expr(:...,:kwargs))]
-#   R && foreach(j->push!(callargs,outworksyms[j]),1:NOUT)
-#   append!(loopBody.args,subIn)
-#   append!(callargs,inworksyms)
-#   if LR
-#     exloopdict = Expr(:tuple,[:($(loopnames[il]) = ($(Symbol("i_$il"))+first(loopRanges[$il])-1,loopaxes[$il].values[$(Symbol("i_$il"))+first(loopRanges[$il])-1])) for il=1:Nloopvars]...)
-#     push!(loopBody.args,:(axdict = $exloopdict))
-#     push!(callargs,:axdict)
-#   end
-#   push!(callargs,Expr(:...,:addargs))
-#   runBody = quote end
-#   if R
-#     push!(runBody.args,Expr(:call,callargs...))
-#   else
-#     lhs = NOUT>1 ? Expr(:tuple,[:($(outworksyms[j])) for j=1:NOUT]...) : outworksyms[1]
-#     rhs = Expr(:call,callargs...)
-#     push!(runBody.args,:($lhs.=$rhs))
-#   end
-#   #Add mask filter to loop body
-#   setzeroex = quote end
-#   foreach(i->push!(setzeroex.args,:($(outworksyms[i]) .= missing)),1:NOUT)
-#   foreach(1:NIN) do i
-#     push!(loopBody.args,quote
-#       mv = docheck(filters[$i],$(inworksyms[i]))
-#       if mv
-#         $setzeroex
-#       else
-#         $runBody
-#       end
-#     end)
-#   end
-#   append!(loopBody.args,subOut)
-#   loopEx = length(loopRangesE.args)==0 ? loopBody : Expr(:for,loopRangesE,loopBody)
-#   loopEx = quote
-#     $unrollEx
-#     $loopEx
-#   end
-#   if debugDAT[1]
-#     b=IOBuffer()
-#     show(b,loopEx)
-#     s=String(take!(b))
-#     loopEx=quote
-#       println($s)
-#       $loopEx
-#     end
-#   end
-#   loopEx
-# end
-
-# function getSubRange2(work,xin,cols...)
-#   xview = getSubRange(xin,cols...)
-#   work.=xview
-#   return nothing
-# end
-#
-# function getSubRange2(work::DataFrame,xin,cols...)
-#   xview = getSubRange(xin,cols...)
-#   for i = 1:size(xview,2)
-#     work[i].=view(xview,:,i)
-#   end
-#   return nothing
-# end
-#
-# function setSubRange2(work,xout,cols...)
-#   xview = getSubRange(xout,cols...)
-#   xview.=work
-# end
-#
-# getSubRange(x::AbstractArray,cols...)     = view(x,cols...)
 
 "Calculate an axis permutation that brings the wanted dimensions to the front"
 function getFrontPerm(dc::AbstractCubeData{T},dims) where T

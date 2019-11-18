@@ -24,11 +24,12 @@ end
 getCubeDes(::ZArrayCube)="ZArray Cube"
 caxes(z::ZArrayCube)=z.axes
 iscompressed(z::ZArrayCube)=!isa(z.a.metadata.compressor,NoCompressor)
-cubechunks(z::ZArrayCube)=z.a.metadata.chunks
+cubechunks(z::ZArrayCube{<:Any,<:Any,<:ZArray,Nothing}) = z.a.metadata.chunks
+cubechunks(z::ZArrayCube) = ((z.a.metadata.chunks[i] for i in 1:length(z.subset) if !isa(z.subset[i],Integer))...,)
 cubeproperties(z::ZArrayCube) = z.properties
 function chunkoffset(z::ZArrayCube)
   cc = cubechunks(z)
-  map((s,c)->mod(first(s)-1,c),z.subset,cc)
+  map((s,c)->mod(first(s)-1,c),onlyrangetuple(z.subset),cc)
 end
 chunkoffset(z::ZArrayCube{T,N,A,Nothing}) where A<:ZArray{T} where {T,N}  = ntuple(i->0,N)
 Base.size(z::ZArrayCube) = map(length,onlyrangetuple(z.subset))
