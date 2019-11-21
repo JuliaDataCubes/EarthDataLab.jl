@@ -11,7 +11,7 @@ cgermany = c[
   time = 2000:2010
 ]
 saveCube(cgermany,"germanycube", chunksize=(20,20,92,1))
-ENV["ESDL_CUBEDIR"] = joinpath(newcubedir,"germanycube")
+ESDL.ESDLDefaults.cubedir[] = joinpath(newcubedir,"germanycube")
 
 include("access.jl")
 include("axes.jl")

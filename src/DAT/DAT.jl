@@ -154,9 +154,6 @@ function DATConfig(cdata,indims,outdims,inplace,max_cache,fu,ispar,include_loopv
   isa(indims,InDims) && (indims=(indims,))
   isa(outdims,OutDims) && (outdims=(outdims,))
   length(cdata)==length(indims) || error("Number of input cubes ($(length(cdata))) differs from registration ($(length(indims)))")
-  if max_cache === nothing
-    max_cache = parse(Float64,get(ENV,"ESDL_MAX_CACHE","100")) * 1e6
-  end
   incubes  = ([InputCube(o[1],o[2]) for o in zip(cdata,indims)]...,)
   allInAxes = vcat([ic.axesSmall for ic in incubes]...)
   outcubes = ((map(1:length(outdims),outdims) do i,desc
@@ -252,7 +249,7 @@ a tuple input cubes if needed.
 """
 function mapCube(fu::Function,
     cdata::Tuple,addargs...;
-    max_cache=nothing,
+    max_cache=ESDL.ESDLDefaults.max_cache[],
     indims=InDims(),
     outdims=OutDims(),
     inplace=true,
@@ -326,7 +323,7 @@ function getchunkoffsets(dc::DATConfig)
   (co...,)
 end
 
-updatears(dc,clist,r,f) = foreach(clist) do ic
+updatears(clist,r,f) = foreach(clist) do ic
   indscol = ntuple(i->1:size(ic.cube,i),length(ic.axesSmall))
   indsr   = ntuple(i->r[ic.loopinds[i]],length(ic.loopinds))
   indsall = CartesianIndices((indscol...,indsr...))
@@ -338,8 +335,8 @@ updatears(dc,clist,r,f) = foreach(clist) do ic
   end
   nothing
 end
-updateinars(dc,r)=updatears(dc,dc.incubes,r,_read)
-writeoutars(dc,r)=updatears(dc,dc.outcubes,r,_write)
+updateinars(dc,r)=updatears(dc.incubes,r,_read)
+writeoutars(dc,r)=updatears(dc.outcubes,r,_write)
 
 function runLoop(dc::DATConfig,showprog)
   allRanges=distributeLoopRanges((dc.loopcachesize...,),(map(length,dc.LoopAxes)...,),getchunkoffsets(dc))

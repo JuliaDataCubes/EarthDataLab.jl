@@ -88,7 +88,11 @@ end
 
 function cleanZArrayCube(y::ZArrayCube)
   if !y.persist && myid()==1
-    rm(y.a.storage.folder,recursive=true)
+    if !isdir(y.a.storage.folder)
+      @warn "Cube directory $(y.a.storage.folder) does not exist. Can not clean"
+    else
+      rm(y.a.storage.folder,recursive=true)
+    end
   end
 end
 
@@ -254,10 +258,8 @@ const known_names = Dict("water_mask"=>"Water","country_mask"=>"Country","srex_m
 
 Cube(s::String;kwargs...) = Cube(zopen(s,"r");kwargs...)
 function Cube(;kwargs...)
-  if haskey(ENV,"ESDL_CUBEDIR")
-    Cube(ENV["ESDL_CUBEDIR"];kwargs...)
-  elseif isdir("/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/")
-    Cube("/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/";kwargs...)
+  if !isempty(ESDL.ESDLDefaults.cubedir[])
+    Cube(ESDL.ESDLDefaults.cubedir[];kwargs...)
   else
     S3Cube(;kwargs...)
   end
@@ -269,7 +271,7 @@ function CubeMask(s::String,v::String;kwargs...)
   c.properties["name"]   = known_names[vname]
   readcubedata(c)
 end
-CubeMask(v;kwargs...) = CubeMask(get(ENV,"ESDL_CUBEDIR","/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/"),v;static=true,kwargs...)
+CubeMask(v;kwargs...) = CubeMask(ESDL.ESDLDefaults.cubedir[],v;static=true,kwargs...)
 
 
 @deprecate getCubeData(c;longitude=(-180.0,180.0),latitude=(-90.0,90.0),kwargs...) subsetcube(c;lon=longitude,lat=latitude,kwargs...)
@@ -400,7 +402,7 @@ end
 
 function saveCube(z::ZArrayCube, name::AbstractString; overwrite=false, chunksize=nothing, compressor=NoCompressor())
   if z.subset === nothing && !z.persist && isa(z.a.storage, DirectoryStore) && chunksize==nothing && isa(compressor, NoCompressor)
-    newfolder = joinpath(workdir[1], name)
+    newfolder = joinpath(workdir[], name)
     check_overwrite(newfolder, overwrite)
     # the julia cp implentation currently can only deal with files <2GB
     # the issue is:
@@ -421,7 +423,7 @@ Loads a cube that was previously saved with [`saveCube`](@ref). Returns a
 `TempCube` object.
 """
 function loadCube(name::String)
-  newfolder=joinpath(workdir[1],name)
+  newfolder=joinpath(workdir[],name)
   isdir(newfolder) || error("$(name) does not exist")
   Cube(newfolder)
 end
@@ -432,7 +434,7 @@ end
 Deletes a memory-mapped data cube.
 """
 function rmCube(name::String)
-  newfolder=joinpath(workdir[1],name)
+  newfolder=joinpath(workdir[],name)
   isdir(newfolder) && rm(newfolder,recursive=true)
   nothing
 end

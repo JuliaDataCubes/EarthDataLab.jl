@@ -58,7 +58,7 @@ end
 Base.length(ci::CubeIterator)=prod(length.(ci.loopaxes))
 function Base.iterate(ci::CubeIterator)
     rnow,blockstate = iterate(ci.r)
-    updateinars(ci.dc,rnow)
+    updatears(ci.dc.incubes,rnow,ESDL.Cubes._read)
     innerinds = CartesianIndices(length.(rnow))
     indnow, innerstate = iterate(innerinds)
     offs = map(i->first(i)-1,rnow)
@@ -74,7 +74,7 @@ function Base.iterate(ci::CubeIterator,s)
         else
             rnow = t2[1]
             blockstate = t2[2]
-            updateinars(ci.dc,rnow)
+            updatears(ci.dc.incubes,rnow,_read)
             innerinds = CartesianIndices(length.(rnow))
             indnow,innerstate = iterate(innerinds)
 
@@ -92,30 +92,10 @@ function Base.iterate(ci::CubeIterator,s)
 end
 abstract type CubeRow
 end
-#Base.getproperty(s::CubeRow,v::Symbol)=Base.getfield(s,v)
 abstract type CubeRowAx<:CubeRow
 end
-# function Base.getproperty(s::T,v::Symbol) where T<:CubeRowAx
-#   if v in fieldnames(T)
-#     getfield(s,v)
-#   else
-#     ax = getfield(s,:axes)
-#     ind = getfield(s,:i)
-#     i = findfirst(i->axsym(i)==v,ax)
-#     ax[i].values[ind.I[i]]
-#   end
-# end
 
-# @noinline function getrow(ci::CubeIterator{R,ART,ARTBC,LAX,ILAX,RN,RT},inarsBC,indnow)::NamedTuple{RN,RT} where {R,ART,ARTBC,LAX,ILAX,RN,RT}
-#   axvals = map(i->ci.loopaxes[i].values[indnow.I[i]],ILAX)
-#   cvals  = map(i->i[indnow],inarsBC)
-#   allvals::RT = (axvals...,cvals...)
-#   #NamedTuple{RN,RT}(axvals...,cvals...)
-#   NamedTuple{RN,RT}(allvals)
-# end
 function getrow(ci::CubeIterator{<:Any,<:Any,<:Any,<:Any,ILAX,S},inarsBC,indnow,offs) where {ILAX,S}
-   #inds = map(i->indnow.I[i],ILAX)
-   #axvals = map((i,indnow)->ci.loopaxes[i][indnow],ILAX,inds)
    axvalsall = map((ax,i,o)->ax.values[i+o],ci.loopaxes,indnow.I,offs)
    axvals = map(i->axvalsall[i],ILAX)
    cvals  = map(i->i[indnow],inarsBC)
@@ -125,17 +105,6 @@ function getrow(ci::CubeIterator{<:Any,<:Any,<:Any,<:Any,(),S},inarsBC,indnow,of
    cvals  = map(i->i[indnow],inarsBC)
    S(cvals)
 end
-
-# @generated function getrow(ci::CI,inarsBC,indnow) where CI
-#     rn = getrownames(CI)
-#     nc = getncubes(CI)
-#     exlist = [:($(rn[i]) = inarsBC[$ir][indnow]) for (ir,i) = enumerate((length(rn)-nc+1):length(rn))]
-#     if length(rn)>nc
-#       exlist2 = [:($(rn[i]) = ci.loopaxes[$i].values[indnow.I[$i]]) for i=1:(length(rn)-nc)]
-#       exlist = [exlist2;exlist]
-#     end
-#     Expr(:(::),Expr(:tuple,exlist...),eltype(ci))
-# end
 
 function Base.show(io::IO,s::CubeRow)
   print(io,"Cube Row: ")

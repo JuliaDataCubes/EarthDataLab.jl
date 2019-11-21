@@ -236,7 +236,7 @@ function getsavefolder(name)
   if isempty(name)
     name = tempname()[2:end]
   end
-  isabspath(name) ? name : joinpath(workdir[1],name)
+  isabspath(name) ? name : joinpath(workdir[],name)
 end
 
 """

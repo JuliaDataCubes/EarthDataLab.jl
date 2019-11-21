@@ -120,7 +120,7 @@ function Dataset(g::ZGroup)
 end
 Base.getindex(x::Dataset;kwargs...) = subsetcube(x;kwargs...)
 Dataset(s::String;kwargs...) = Dataset(zopen(s);kwargs...)
-ESDLDataset(;kwargs...) = Dataset(get(ENV,"ESDL_CUBEDIR","/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/");kwargs...)
+ESDLDataset(;kwargs...) = Dataset(ESDL.ESDLDefaults.cubedir[];kwargs...)
 
 
 function Cube(ds::Dataset; joinname="Variable")

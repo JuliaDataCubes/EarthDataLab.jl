@@ -3,7 +3,7 @@ const AxisDescriptorAll = Union{AxisDescriptor,String,Type{T},CubeAxis,Function}
 import ..Cubes.Axes: get_descriptor, ByFunction
 import ..Cubes: getsavefolder
 import Zarr: Compressor, NoCompressor
-import ...ESDL: workdir
+import ...ESDL: workdir, ESDLDefaults
 
 abstract type ArTypeRepr end
 struct AsArray <: ArTypeRepr end
@@ -121,8 +121,8 @@ function OutDims(axisdesc...;
            retcubetype=:auto,
            update=false,
            artype::ArTypeRepr=AsArray(),
-           chunksize=:input,
-           compressor=NoCompressor(),
+           chunksize=ESDLDefaults.chunksize[],
+           compressor=ESDLDefaults.compressor[],
            path="",
            outtype=1)
   descs = map(get_descriptor,axisdesc)

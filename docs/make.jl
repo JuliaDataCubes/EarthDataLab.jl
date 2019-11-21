@@ -4,7 +4,7 @@ using ImageMagick, Documenter, ESDL, ESDLPlots, Cairo
 newcubedir = mktempdir()
 ESDLdir(newcubedir)
 # Download Cube subset
-if !haskey(ENV,"ESDL_CUBEDIR")
+if !isempty(ESDL.ESDLDefaults.cubedir[])
   c = S3Cube()
   csa = c[
     region = "South America",
@@ -12,7 +12,7 @@ if !haskey(ENV,"ESDL_CUBEDIR")
     time = 2003:2006
   ]
   saveCube(csa,"southamericacube", chunksize=(90,90,92,1))
-  ENV["ESDL_CUBEDIR"] = joinpath(newcubedir,"southamericacube")
+  ESDL.ESDLDefaults.cubedir[] = joinpath(newcubedir,"southamericacube")
 end
 
 exampledir = joinpath(@__DIR__,"src","examples")
