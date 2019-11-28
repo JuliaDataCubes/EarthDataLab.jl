@@ -314,7 +314,7 @@ import Base.isequal
 isequal(a::CubeAxis, b::CubeAxis) = a==b
 
 import CFTime: timeencode
-function NetCDF.NcDim(a::CubeAxis{T},start::Integer,count::Integer) where T<:TimeType
+function NcDim(a::CubeAxis{T},start::Integer,count::Integer) where T<:TimeType
   if start + count - 1 > length(a.values)
     count = oftype(count,length(a.values) - start + 1)
   end
