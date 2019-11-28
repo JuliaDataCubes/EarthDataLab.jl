@@ -326,7 +326,7 @@ function NcDim(a::CubeAxis{T},start::Integer,count::Integer) where T<:TimeType
   d = timeencode(tv, timeunits)
   NcDim(axname(a),length(d),values=d,atts=atts)
 end
-NcDim(getAxis("Time",cout))
+
 #Default constructor
 NcDim(a::CubeAxis{T},start::Integer,count::Integer) where {T<:Real}=NcDim(axname(a),count,values=collect(a.values[start:(start+count-1)]),atts=Dict{Any,Any}("units"=>axunits(a)))
 NcDim(a::CubeAxis,start::Integer,count::Integer)=NcDim(axname(a),count,values=Float64[start:(start+count-1);],atts=Dict{Any,Any}("units"=>axunits(a)))
