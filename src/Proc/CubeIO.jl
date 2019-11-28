@@ -98,7 +98,7 @@ function exportcube(r::AbstractCubeData,filename::String;priorities = Dict("LON"
   ncputatt(filename, proj["grid_mapping_name"], proj)
   dl = map(i->i.dimlen,dims) |> cumprod
   isplit = findfirst(i->i>5e7,dl)
-  isplit isa Nothing && (isplit=length(dl)+1)
+  isplit isa Nothing && (isplit=length(dl))
   incubes = InDims(ax_cont[1:(isplit-1)]...)
   cont_loop = Dict(ii=>axname(ax_cont[ii]) for ii in isplit:length(ax_cont))
   mapCube(writefun,r,length(ax_cont),cont_loop,filename,indims=incubes,include_loopvars=true,ispar=false,max_cache=5e8,
