@@ -249,7 +249,16 @@ function getOutAxis(desc::Tuple{ByInference},axlist,incubes,pargs,f)
   inAxes = map(caxes,incubes)
   inAxSmall = map(i->filter(j->in(j,axlist),i) |>collect,inAxes)
   inSizes = map(i->(map(length,i)...,),inAxSmall)
-  testars = map(randn,inSizes)
+  intypes = map(eltype, incubes)
+  testars = map((s,it)->zeros(it,s...),inSizes, intypes)
+  map(testars) do ta
+    ta .= rand(nonmissingtype(eltype(ta)),size(ta)...)
+    if eltype(ta) >: Missing
+      # Add some missings
+      randind = rand(1:length(ta),length(ta)÷10)
+      ta[randind] .= missing
+    end
+  end
   resu = f(testars...,pargs...)
   isa(resu,AbstractArray) || isa(resu,Number) || error("Function must return an array or a number")
   isa(resu,Number) && return ()
