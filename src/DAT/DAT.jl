@@ -324,16 +324,18 @@ function getchunkoffsets(dc::DATConfig)
 end
 
 updatears(clist,r,f) = foreach(clist) do ic
-  indscol = ntuple(i->1:size(ic.cube,i),length(ic.axesSmall))
-  indsr   = ntuple(i->r[ic.loopinds[i]],length(ic.loopinds))
+  updatear(f,r, ic.cube,length(ic.axesSmall), ic.loopinds, ic.handle )
+end
+function updatear(f,r,cube,ncol,loopinds,handle)
+  indscol = ntuple(i->1:size(cube,i),ncol)
+  indsr   = ntuple(i->r[loopinds[i]],length(loopinds))
   indsall = CartesianIndices((indscol...,indsr...))
-  if size(ic.handle) != size(indsall)
+  if size(handle) != size(indsall)
     hinds = map(i->1:length(i),indsall.indices)
-    f(ic.cube,view(ic.handle,hinds...),indsall)
+    f(cube,view(handle,hinds...),indsall)
   else
-    f(ic.cube,ic.handle,indsall)
+    f(cube,handle,indsall)
   end
-  nothing
 end
 updateinars(dc,r)=updatears(dc.incubes,r,_read)
 writeoutars(dc,r)=updatears(dc.outcubes,r,_write)
@@ -628,13 +630,8 @@ function generateworkarrays(dc::DATConfig)
   end
 end
 
-
-using DataStructures: OrderedDict
-using Base.Cartesian
-@noinline function innerLoop(loopRanges,f,xin,xout,xinBC,xoutBC,filters,
-  inwork,outwork,axvalcreator,addargs,kwargs)
-
-  Threads.@threads for cI in CartesianIndices(map(i->1:length(i),loopRanges))
+macro innercode()
+  esc(quote
     ithr = Threads.threadid()
     #Pick the correct array according to thread
     myinwork = map(i->i[ithr],inwork)
@@ -654,6 +651,22 @@ using Base.Cartesian
     end
     #Copy data into output array
     foreach((iw,x)->view(x,cI.I...).=iw,myoutwork,xoutBC)
+  end)
+end
+
+using DataStructures: OrderedDict
+using Base.Cartesian
+@noinline function innerLoop(loopRanges,f,xin,xout,xinBC,xoutBC,filters,
+  inwork,outwork,axvalcreator,addargs,kwargs)
+
+  if length(inwork[1])==1
+    for cI in CartesianIndices(map(i->1:length(i),loopRanges))
+      @innercode
+    end
+  else
+    Threads.@threads for cI in CartesianIndices(map(i->1:length(i),loopRanges))
+      @innercode
+    end
   end
 end
 

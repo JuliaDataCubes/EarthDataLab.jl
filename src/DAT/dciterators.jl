@@ -14,10 +14,7 @@ Base.IteratorSize(::Type{<:CubeIterator})=Base.HasLength()
 Base.IteratorEltype(::Type{<:CubeIterator})=Base.HasEltype()
 Base.eltype(i::Type{<:CubeIterator{A,B,C,D,E,F}}) where {A,B,C,D,E,F} = F
 
-getrownames(t::Type{<:CubeIterator}) = fieldnames(t)
-getncubes(::Type{<:CubeIterator{A,B}}) where {A,B} = tuplelen(B)
 tuplelen(::Type{<:NTuple{N,<:Any}}) where N=N
-
 
 lift64(::Type{Float32})=Float64
 lift64(::Type{Int32})=Int64
@@ -52,8 +49,9 @@ function CubeIterator(dc,r;varnames::Tuple=ntuple(i->Symbol("x$i"),length(dc.inc
     elt = NamedTuple{(map(Symbol,varnames)...,map(Symbol,include_loopvars)...),Tuple{et...}}
     CubeIterator{typeof(r),typeof(inars),typeof(inarsbc),typeof(loopaxes),ilax,elt}(dc,r,inars,inarsbc,loopaxes)
 end
+tuplenames(t::Type{<:NamedTuple{N}}) where N = string.(N)
 function Base.show(io::IO,ci::CubeIterator{<:Any,<:Any,<:Any,<:Any,<:Any,E}) where E
-  print(io,"Datacube iterator with ", length(ci), " elements with fields: ",E)
+  print(io,"Datacube iterator with ", length(ci), " elements with fields: ",tuplenames(E))
 end
 Base.length(ci::CubeIterator)=prod(length.(ci.loopaxes))
 function Base.iterate(ci::CubeIterator)

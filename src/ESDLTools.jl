@@ -25,7 +25,11 @@ function Base.getindex(p::PickAxisArray, i...)
     getindex(p.parent,cols...,inew...)
 end
 Base.getindex(p::PickAxisArray,i::CartesianIndex) = p[i.I...]
-
+function newparent(a::PickAxisArray{T,N,AT,P,NCOL},parent) where {T,N,AT,P,NCOL}
+  eltype(parent) == T || error("Types do not match")
+  size(parent) == size(a.parent) || error("Sizes do not match")
+  PickAxisArray{T,N,AT,P,NCOL}(parent)
+end
 
 
 function getiperm(perm)

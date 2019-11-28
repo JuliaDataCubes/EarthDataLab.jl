@@ -30,11 +30,8 @@ import WeightedOnlineStats: WeightedMean
 import Dates: Day
 
 function getlabeldict(shapepath,labelsym,T,labelsleft)
-  dbfname = string(splitext(shapepath)[1],".dbf")
-  dbf = open(dbfname) do f
-    DBFTables.read_dbf(f)
-  end
-  labels = dbf[labelsym]
+  t = Shapefile.Table(shapepath)
+  labels = getproperty(t,labelsym)
   labeldict = Dict(T(i)=>stripc0x(labels[i]) for i in 1:length(labels) if T(i) in labelsleft)
   properties = Dict("labels"=>labeldict)
 end
