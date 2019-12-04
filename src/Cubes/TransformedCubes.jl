@@ -15,6 +15,16 @@ permtuple(t,perm)=ntuple(i->t[perm[i]],length(t))
 iscompressed(c::PermCube)=iscompressed(c.parent)
 cubechunks(c::PermCube)=cubechunks(c.parent)[collect(c.perm)]
 chunkoffset(c::PermCube)=chunkoffset(c.parent)[collect(c.perm)]
+function subsetcube(p::PermCube; kwargs...)
+  subscube = subsetcube(p.parent;kwargs...)
+  lostaxes = setdiff(caxes(p.parent), caxes(subscube))
+  ilose    = map(ax->findAxis(ax,p.parent), lostaxes)
+  losemap  = cumsum([!in(i,ilose) for i=1:ndims(p.parent)])
+  losemap[findall([in(i,ilose) for i=1:ndims(p.parent)])] .= 0
+  newperm = []
+  foreach(i->losemap[i]==0 ? nothing : push!(newperm,losemap[i]),p.perm)
+  isempty(newperm) ? subscube : permutedims(subscube,(newperm...,))
+end
 function _read(x::PermCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}) where {T,N}
   perm=x.perm
   iperm=getiperm(perm)
@@ -59,6 +69,10 @@ getCubeDes(v::TransformedCube)="Transformed cube $(getCubeDes(v.parents[1]))"
 iscompressed(v::TransformedCube)=any(iscompressed,v.parents)
 cubechunks(v::TransformedCube)=cubechunks(v.parents[1])
 chunkoffset(v::TransformedCube)=chunkoffset(v.parents[1])
+function subsetcube(v::TransformedCube{T}; kwargs...) where T
+  newcubes = map(i->subsetcube(i; kwargs...), v.parents)
+  map(v.op, newcubes..., T=T)
+end
 
 
 using Base.Cartesian
