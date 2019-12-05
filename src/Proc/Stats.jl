@@ -4,7 +4,6 @@ import ..DAT: NValid
 using ..DAT
 using ..Proc
 using ..Cubes
-using StatsBase
 using Statistics
 import Statistics: quantile
 import ..Cubes: findAxis, axname

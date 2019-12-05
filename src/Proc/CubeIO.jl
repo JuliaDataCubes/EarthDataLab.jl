@@ -4,8 +4,6 @@ using ..DAT
 using ..Proc
 
 import NetCDF.ncread, NetCDF.ncclose
-import StatsBase.Weights
-import StatsBase.sample
 import Base.Iterators
 import ..Cubes: saveCube, check_overwrite, getsavefolder, cubechunks
 import ..Cubes.ESDLZarr: ZArrayCube

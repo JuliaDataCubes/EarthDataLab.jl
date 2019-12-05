@@ -25,7 +25,6 @@ import Shapefile
 import GeoInterface: AbstractMultiPolygon, AbstractPoint
 export cubefromshape
 import ..Cubes.Axes: get_bb, axisfrombb
-import DBFTables
 import WeightedOnlineStats: WeightedMean
 import Dates: Day
 

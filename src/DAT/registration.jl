@@ -7,18 +7,18 @@ import ...ESDL: workdir, ESDLDefaults
 
 abstract type ArTypeRepr end
 struct AsArray <: ArTypeRepr end
-struct AsAxisArray <: ArTypeRepr end
+#struct AsAxisArray <: ArTypeRepr end
 struct AsDataFrame <: ArTypeRepr
   dimcol::Bool
 end
 AsDataFrame()=AsDataFrame(false)
 wrapWorkArray(::AsArray,a,axes) = a
-function wrapWorkArray(::AsAxisArray,a,cablabaxes)
-  newaxes = map(cablabaxes) do ax
-    AxisArrays.Axis{Symbol(axname(ax))}(ax.values)
-  end
-  AxisArrays.AxisArray(a,newaxes...)
-end
+# function wrapWorkArray(::AsAxisArray,a,cablabaxes)
+#   newaxes = map(cablabaxes) do ax
+#     AxisArrays.Axis{Symbol(axname(ax))}(ax.values)
+#   end
+#   AxisArrays.AxisArray(a,newaxes...)
+# end
 import DataFrames
 function wrapWorkArray(t::AsDataFrame,a,cablabaxes)
   colnames = map(Symbol,cablabaxes[2].values)

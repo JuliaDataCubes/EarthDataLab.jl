@@ -16,7 +16,6 @@ import DataFrames: DataFrame, ncol
 import ProgressMeter: Progress, next!, progress_pmap
 import Zarr: NoCompressor
 using Dates
-import StatsBase.Weights
 global const debugDAT=[false]
 macro debug_print(e)
   debugDAT[1] && return(:(println($e)))
@@ -49,7 +48,6 @@ function InputCube(c::AbstractCubeData, desc::InDims)
   InputCube(c,desc,collect(CubeAxis,axesSmall),Int[],Int[],isMem,nothing,nothing)
 end
 getcube(c::InputCube)=c.cube
-import AxisArrays
 function setworkarray(c::InputCube,ntr)
   wa = createworkarrays(eltype(c.cube),ntuple(i->length(c.axesSmall[i]),length(c.axesSmall)),ntr)
   c.workarray = map(wa) do w

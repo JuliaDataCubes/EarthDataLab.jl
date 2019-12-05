@@ -239,7 +239,7 @@ function subsetcube(v::SplitDimsCube; kwargs...)
 end
 using Base.Cartesian
 function _read(x::SplitDimsCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}) where {T,N}
-    r1 = r.indices[x.isplit]
+  r1 = r.indices[x.isplit]
   r2 = r.indices[x.isplit+1]
   if length(r2)==1 && length(r1)==length(x.newaxes[1])
     error("This read is not yet implemented")
@@ -249,6 +249,6 @@ function _read(x::SplitDimsCube{T,N},thedata::AbstractArray,r::CartesianIndices{
   indsold = r.indices
   inew = CartesianIndices((r.indices[1:x.isplit-1]...,istart:iend,r.indices[x.isplit+2:end]...))
   a2 = reshape(thedata,size(inew))
-  _read(c,a2,inew)
+  _read(x.parent,a2,inew)
   return thedata
 end
