@@ -171,8 +171,6 @@ function gethandle(c::ConcatCube,block_size)
   VectorOfArray(map(gethandle,c.cubelist))
 end
 
-import ESDL: AbstractCubeData
-import ESDL.Cubes: caxes, getCubeDes, iscompressed, cubechunks, chunkoffset, findAxis, _read
 struct SplitDimsCube{T,N,C} <: AbstractCubeData{T,N}
     parent::C
     newaxes
@@ -180,7 +178,7 @@ struct SplitDimsCube{T,N,C} <: AbstractCubeData{T,N}
     isplit::Int
 end
 
-
+export splitdim
 """
 Splits an axis into two, reshaping the data cube into a higher-order cube.
 """
