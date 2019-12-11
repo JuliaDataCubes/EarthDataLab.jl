@@ -360,8 +360,8 @@ struct NoLoopAxes <:AxValCreator end
 struct AllLoopAxes{A} <:AxValCreator
   loopaxes::A
 end
-getlaxvals(::NoLoopAxes,cI) = ()
-getlaxvals(a::AllLoopAxes,cI) = (NamedTuple{map(axsym,a.loopaxes)}(map((ax,i)->(i,ax.values[i]),a.loopaxes,cI.I)),)
+getlaxvals(::NoLoopAxes,cI,offscur) = ()
+getlaxvals(a::AllLoopAxes,cI,offscur) = (NamedTuple{map(axsym,a.loopaxes)}(map((ax,i,of)->(i+of,ax.values[i]),a.loopaxes,cI.I, offscur)),)
 
 
 function getallargs(dc::DATConfig)
@@ -643,7 +643,7 @@ macro innercode()
       foreach(ow->fill!(ow,missing),myoutwork)
     else
       #Compute loop axis values if necessary
-      laxval = getlaxvals(axvalcreator,cI)
+      laxval = getlaxvals(axvalcreator,cI,offscur)
       #Finally call the function
       f(myoutwork...,myinwork...,laxval...,addargs...;kwargs...)
     end
@@ -656,7 +656,7 @@ using DataStructures: OrderedDict
 using Base.Cartesian
 @noinline function innerLoop(loopRanges,f,xin,xout,xinBC,xoutBC,filters,
   inwork,outwork,axvalcreator,addargs,kwargs)
-
+  offscur = map(i->(first(i)-1), loopRanges)
   if length(inwork[1])==1
     for cI in CartesianIndices(map(i->1:length(i),loopRanges))
       @innercode

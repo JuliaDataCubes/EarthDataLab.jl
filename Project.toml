@@ -43,7 +43,7 @@ RecursiveArrayTools = "1"
 Shapefile = "0.6"
 Tables = "0.2"
 WeightedOnlineStats = "0.3, 0.4"
-Zarr = "0.3"
+Zarr = "0.3.1"
 julia = "1"
 
 [extras]
