@@ -357,11 +357,13 @@ end
 
 abstract type AxValCreator end
 struct NoLoopAxes <:AxValCreator end
-struct AllLoopAxes{A} <:AxValCreator
-  loopaxes::A
+struct AllLoopAxes{S,V} <:AxValCreator
+  loopsyms::S
+  loopaxvals::V
 end
+AllLoopAxes(a) = AllLoopAxes(map(axsym,a), map(i->i.values,a))
 getlaxvals(::NoLoopAxes,cI,offscur) = ()
-getlaxvals(a::AllLoopAxes,cI,offscur) = (NamedTuple{map(axsym,a.loopaxes)}(map((ax,i,of)->(i+of,ax.values[i]),a.loopaxes,cI.I, offscur)),)
+getlaxvals(a::AllLoopAxes,cI,offscur) = (NamedTuple{a.loopsyms}(map((ax,i,of)->(i+of,ax[i+of]),a.loopaxvals,cI.I, offscur)),)
 
 
 function getallargs(dc::DATConfig)
