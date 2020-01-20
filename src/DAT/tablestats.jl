@@ -268,7 +268,16 @@ end
 
 getpostfunction(s::OnlineStat)=getpostfunction(typeof(s))
 getpostfunction(::Type{<:OnlineStat})=value
-getpostfunction(::Type{<:WeightedAdaptiveHist})=i->hcat(value(i)...)
+function getpostfunction(w::WeightedAdaptiveHist)
+  nb = w.alg.b
+  i->begin
+    r = hcat(value(i)...)
+    if size(r,1)<nb
+      r = vcat(r,zeros(eltype(r),nb-size(r,1),2))
+    end
+    r
+end
+end
 getnbins(f::GroupedOnlineAggregator)=f.cloneobj.alg.b
 getnbins(f::TableAggregator)=f.o.alg.b
 
