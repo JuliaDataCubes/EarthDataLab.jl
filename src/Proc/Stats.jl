@@ -5,6 +5,7 @@ using ..DAT
 using ..Proc
 using ..Cubes
 using Statistics
+import StatsBase: pweights
 import Statistics: quantile
 import ..Cubes: findAxis, axname
 
@@ -50,6 +51,14 @@ function quantile(c::AbstractCubeData,p=[0.25,0.5,0.75];by=(),nbins=100)
     histcube = cubefittable(tfull, WeightedAdaptiveHist(nbins), :data, by=by, weight=weights)
     quantile(histcube,p)
   end
+end
+
+function cquantile(xout,xin,p)
+  w = xin[:,2]
+  nonzero = w.>0
+  d = xin[nonzero,1]
+  w = Float64.(xin[nonzero,2])
+  xout[:] = quantile(d,pweights(w),p)
 end
 
 end
