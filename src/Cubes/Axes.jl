@@ -252,7 +252,7 @@ function getOutAxis(desc::Tuple{ByInference},axlist,incubes,pargs,f)
   intypes = map(eltype, incubes)
   testars = map((s,it)->zeros(it,s...),inSizes, intypes)
   map(testars) do ta
-    ta .= rand(nonmissingtype(eltype(ta)),size(ta)...)
+    ta .= rand(Base.nonmissingtype(eltype(ta)),size(ta)...)
     if eltype(ta) >: Missing
       # Add some missings
       randind = rand(1:length(ta),length(ta)÷10)
