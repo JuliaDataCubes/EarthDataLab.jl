@@ -50,7 +50,8 @@ mutable struct TransformedCube{T,N,F} <: AbstractCubeData{T,N}
   cubeaxes::Vector{CubeAxis}
   properties::Dict{String,Any}
 end
-
+# eltype(incubes[1]) assumes, that all of the incubes have the same element types and this might fail.
+# Could we use type widening here?
 function Base.map(op, incubes::AbstractCubeData...; T::Type=eltype(incubes[1]))
   axlist=copy(caxes(incubes[1]))
   N=ndims(incubes[1])
@@ -58,6 +59,8 @@ function Base.map(op, incubes::AbstractCubeData...; T::Type=eltype(incubes[1]))
     all(caxes(incubes[i]).==axlist) || error("All cubes must have the same axes, cube number $i does not match")
     ndims(incubes[i])==N || error("All cubes must have the same dimension")
   end
+  #Can we add information about the function into the properties?
+  #So that we could track where a cube comes from.
   props=merge(cubeproperties.(incubes)...)
   TransformedCube{T,N,typeof(op)}(incubes,op,axlist,props)
 end
@@ -65,9 +68,10 @@ end
 Base.size(x::TransformedCube)=size(x.parents[1])
 Base.size(x::TransformedCube{T,N},i) where {T,N}=size(x.parents[1],i)
 caxes(v::TransformedCube)=v.cubeaxes
+# Should this also describe the function?
 getCubeDes(v::TransformedCube)="Transformed cube $(getCubeDes(v.parents[1]))"
 iscompressed(v::TransformedCube)=any(iscompressed,v.parents)
-cubechunks(v::TransformedCube)=cubechunks(v.parents[1])
+cubechunks(v::TransformedCube)=cubechunks(v.parents[1]) # Can we assume, that all of the chunks are the same?
 chunkoffset(v::TransformedCube)=chunkoffset(v.parents[1])
 function subsetcube(v::TransformedCube{T}; kwargs...) where T
   newcubes = map(i->subsetcube(i; kwargs...), v.parents)
@@ -75,14 +79,14 @@ function subsetcube(v::TransformedCube{T}; kwargs...) where T
 end
 
 
-using Base.Cartesian
+using Base.Cartesian # Using statements should go at the beginning of the module
 function _read(x::TransformedCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}) where {T,N}
   ainter=map(x.parents) do c
     aouti=Array{eltype(c)}(undef,size(thedata))
     _read(c,aouti,r)
     aouti
   end
-  map!(x.op,thedata,ainter...)
+  map!(x.op,thedata,ainter...) #?
   return thedata
 end
 
@@ -90,9 +94,10 @@ ops2 = [:+, :-,:/, :*, :max, :min]
 for op in ops2
   eval(:(Base.$(op)(x::AbstractCubeData, y::AbstractCubeData)=map($op, x,y)))
   eval(:(Base.$(op)(x::AbstractCubeData, y::Number)          =map(i->$(op)(i,y),x)))
-  eval(:(Base.$(op)(x::Number, y::AbstractCubeData)          =map(i->$(op)(x,i),y)))
+  eval(:(Base.$(op)(x::Number, y::AbstractCubeData)          =map(i->$(op)(x,i),y))) #Isnt this handled by the commutativity which is defined in base?
 end
 
+# Why are ops1 defined after ops2?
 ops1 = [:sin, :cos, :log, :log10, :exp, :abs]
 for op in ops1
   eval(:(Base.$(op)(x::AbstractCubeData)=map($op, x)))
@@ -126,10 +131,12 @@ function concatenateCubes(cl,cataxis::CubeAxis)
   N=ndims(cl[1])
   for i=2:length(cl)
     all(caxes(cl[i]).==axlist) || error("All cubes must have the same axes, cube number $i does not match")
-    eltype(cl[i])==T || error("All cubes must have the same element type, cube number $i does not match")
+    eltype(cl[i])==T || error("All cubes must have the same element type, cube number $i does not match") # Can we use type widening here?
     ndims(cl[i])==N || error("All cubes must have the same dimension")
   end
+  # Add Info about concatenation to cube
   props=merge(cubeproperties.(cl)...)
+
   ConcatCube{T,N+1}(cl,cataxis,axlist,props)
 end
 function concatenateCubes(;kwargs...)
@@ -145,10 +152,9 @@ Base.size(x::ConcatCube)=(size(x.cubelist[1])...,length(x.cataxis))
 Base.size(x::ConcatCube{T,N},i) where {T,N}=i==N ? length(x.cataxis) : size(x.cubelist[1],i)
 caxes(v::ConcatCube)=[v.cubeaxes;v.cataxis]
 iscompressed(x::ConcatCube)=any(iscompressed,x.cubelist)
-cubechunks(x::ConcatCube)=(cubechunks(x.cubelist[1])...,1)
+cubechunks(x::ConcatCube)=(cubechunks(x.cubelist[1])...,1) # This assumes the same cubechunking for all cubes
 chunkoffset(x::ConcatCube)=(chunkoffset(x.cubelist[1])...,0)
-getCubeDes(v::ConcatCube)="Collection of $(getCubeDes(v.cubelist[1]))"
-using Base.Cartesian
+getCubeDes(v::ConcatCube)="Collection of $(getCubeDes.(v.cubelist))" # Show descriptions of all cubes
 function _read(x::ConcatCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}) where {T,N}
   rnew = CartesianIndices(r.indices[1:end-1])
   for (j,i)=enumerate(r.indices[end])
@@ -166,7 +172,7 @@ function _write(x::ConcatCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}
   return nothing
 end
 
-using RecursiveArrayTools
+using RecursiveArrayTools # move at beginning of module
 function gethandle(c::ConcatCube,block_size)
   VectorOfArray(map(gethandle,c.cubelist))
 end
@@ -178,7 +184,7 @@ struct SplitDimsCube{T,N,C} <: AbstractCubeData{T,N}
     isplit::Int
 end
 
-export splitdim
+export splitdim # move at beginning of module 
 """
 Splits an axis into two, reshaping the data cube into a higher-order cube.
 """
@@ -201,9 +207,11 @@ function splitdim(c, dimtosplit, newdims)
     SplitDimsCube{eltype(c), ndims(c)+1, typeof(c)}(c,(newdims...,),newchunks,isplit)
 end
 
+# Can we combine the definitions of size, caxes and cubechunks, because they look very similar.
+# Based on a eval for loop?
 function Base.size(x::SplitDimsCube)
     sp = size(x.parent)
-    (sp[1:isplit-1]...,length.(newaxes)...,sp[isplit+1:end]...)
+    (sp[1:isplit-1]...,length.(x.newaxes)...,sp[isplit+1:end]...)
 end
 Base.size(x::SplitDimsCube{T,N},i) where {T,N} = if i<x.isplit
     size(x.parent,i)
@@ -218,7 +226,7 @@ function caxes(v::SplitDimsCube)
     axold = caxes(v.parent)
     [axold[1:v.isplit-1]...;v.newaxes...;axold[v.isplit+1:end]...]
 end
-getCubeDes(v::SplitDimsCube)=getCubeDes(v.parent)
+getCubeDes(v::SplitDimsCube)=getCubeDes(v.parent) # Should we add info that it is a splitcube?
 iscompressed(v::SplitDimsCube)=iscompressed(v.parent)
 function cubechunks(v::SplitDimsCube)
     cc = cubechunks(v.parent)
@@ -237,7 +245,6 @@ function subsetcube(v::SplitDimsCube; kwargs...)
     newcube = subsetcube(v.parent; kwargs...)
     splitdim(newcube,caxes(newcube)[isplit],v.newaxes)
 end
-using Base.Cartesian
 function _read(x::SplitDimsCube{T,N},thedata::AbstractArray,r::CartesianIndices{N}) where {T,N}
   r1 = r.indices[x.isplit]
   r2 = r.indices[x.isplit+1]
