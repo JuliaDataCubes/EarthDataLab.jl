@@ -1,8 +1,9 @@
 """
-## The Earth System Data Cube
+## The Earth System Data Lab
 ![](http://earthsystemdatacube.net/wp-content/uploads/2015/07/EarthDataCube3.png "The DataCube")
 
-Some info on the project...
+ESDL is a package to provide easy access to data cubes and to allow the application of user defined functions on such data cubes.
+
 """
 module ESDL
 import Dates: Date
