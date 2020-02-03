@@ -47,7 +47,7 @@ end
 """
     function S3Cube(;kwargs...)
 
-Opens a datacube from the Telecom Object Storage Service as a Dataset. This works on any system, but
+Opens a datacube from the Telecom Object Storage Service as a Cube. This works on any system, but
 might involve some latency depending on connection speed. One can either specify a `bucket`
 and `store` or pick a resolution, chunking and cube region.
 
