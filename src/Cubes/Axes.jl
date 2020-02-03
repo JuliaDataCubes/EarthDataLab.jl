@@ -51,7 +51,7 @@ of the aliases:
 """
 abstract type CubeAxis{T,S} <: AbstractCubeMem{T,1} end
 
-Base.size(x::CubeAxis)=(length(x.values),)
+Base.size(x::CubeAxis)=(length(x.values),) #Do we now, that x has a field values?
 Base.size(x::CubeAxis,i)=i==1 ? length(x.values) : error("Axis has only a single dimension")
 Base.ndims(x::CubeAxis)=1
 
@@ -86,7 +86,7 @@ end
 """
     RangeAxis{T,S,R}
 
-To represent axes that are categorical, where `T` is the element type.
+To represent axes that are continous, where `T` is the element type.
 The type parameter `S` denotes the axis name (a symbol) and `R` the type of the
 range which is used to represent the axis values.
 The default constructor is:
@@ -110,12 +110,12 @@ MSCAxis(n::Int)=MSCAxis(DateTime(1900):Day(ceil(Int,366/n)):DateTime(1900,12,31,
 
 caxes(x::CubeAxis)=CubeAxis[x]
 
-axname(::CategoricalAxis{T,S}) where {T,S}=string(S)
+axname(::CategoricalAxis{T,S}) where {T,S}=string(S) # Can we combine these definitions?
 axname(::RangeAxis{T,S}) where {T,S}=string(S)
-axname(::Type{T}) where T<:CubeAxis{S,U} where {S,U} = U
+axname(::Type{T}) where T<:CubeAxis{S,U} where {S,U} = string(U) #?
 axsym(ax::CubeAxis{<:Any,S}) where S = S
 axunits(::CubeAxis)="unknown"
-axunits(::LonAxis)="degrees_east"
+axunits(::LonAxis)="degrees_east" # This is not true anymore when we allow different projections. The question would be whether we should use lat and lon
 axunits(::LatAxis)="degrees_north"
 
 get_step(r::AbstractRange)=step(r)
