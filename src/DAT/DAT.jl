@@ -476,7 +476,7 @@ end
 function allocatecachebuf(ic::Union{InputCube,OutputCube},loopcachesize) where N
   sl = ntuple(i->loopcachesize[ic.loopinds[i]],length(ic.loopinds))
   s = (map(length,ic.axesSmall)...,sl...)
-  ic.handle = zeros(eltype(ic.cube),s...)
+  ic.handle = Array{eltype(ic.cube)}(undef, s...)
 end
 
 function init_DATworkers()
