@@ -122,15 +122,13 @@ function prune_labels!(c::CubeMem)
 end
 stripc0x(a) = replace(a, r"[^\x20-\x7e]"=> "")
 
-function rasterize!(outar,shapefile;bb = (left = -180.0, right=180.0, top=90.0,bottom=-90.0),label=nothing)
-  shapepath = shapefile
 function rasterize!(outar,shapepath;bb = (left = -180.0, right=180.0, top=90.0,bottom=-90.0),label=nothing, kwargs...)
   t = Shapefile.Table(shapepath)
   p = Shapefile.shapes(t)
-  @debug p
-  @debug kwargs
+  #@debug p
+  #@debug kwargs
   if length(p)>1
-    @debug length(p)
+    #@debug length(p)
     rasterizepoly!(outar,p,bb; kwargs...)
   else
     rasterizepoly!(outar,p[1],bb;kwargs...)
@@ -153,7 +151,7 @@ nx,ny = size(outmat)
 resx = (bb.right-bb.left)/nx
 resy = (bb.top-bb.bottom)/ny
 @debug resx, resy
-@debug bb.left
+#@debug bb.left
 xr = range(bb.left+resx/2,bb.right-resx/2,length=nx)
 yr = range(bb.top-resy/2,bb.bottom+resy/2,length=ny)
 @debug xr, yr
@@ -166,14 +164,14 @@ for (iy,pixelY) in enumerate(yr)
         p2 = poly[j]
         if wrap !==nothing
           wrapwidth = wrap.right-wrap.left
-          @debug wrapwidth
+          #@debug wrapwidth
           if abs(p1.x-p2.x)>wrapwidth
             p1,p2 = p1.x < p2.x ? (T(p1.x+wrapwidth,p1.y),T(p2.x,p2.y)) : (T(p1.x,p1.y),T(p2.x+wrapwidth,p2.y))
-            @debug p1, p2
+            #@debug p1, p2
           end
         end
         if (p1.y < pixelY) && (p2.y >= pixelY) || (p2.y < pixelY) && (p1.y >= pixelY)
-            @debug nodeX, pixelY
+            #@debug nodeX, pixelY
             push!(nodeX, p1.x + (pixelY-p1.y)/(p2.y-p1.y)*(p2.x-p1.x))
         end
         j = i
@@ -181,8 +179,8 @@ for (iy,pixelY) in enumerate(yr)
     #Add intersect points at start and end for wrapped polygons
     if wrap!==nothing && any(i->i>wrap.right,nodeX)
       wrapwidth = wrap.right-wrap.left
-      @debug wrap.left
-      @debug nodeX
+      #@debug wrap.left
+      #@debug nodeX
         push!(nodeX,wrap.left)
         push!(nodeX,wrap.right)
         map!(i->i>wrap.right ? i-wrapwidth : i,nodeX,nodeX)
@@ -192,9 +190,9 @@ for (iy,pixelY) in enumerate(yr)
     @assert(iseven(length(nodeX)))
     #@debug nodeX
     for i = 1:2:length(nodeX)
-      @debug nodeX
-        @debug searchsortedfirst(xr, nodeX[i]), searchsortedlast(xr, nodeX[i+1])
-        @debug iy
+      #@debug nodeX
+        #@debug searchsortedfirst(xr, nodeX[i]), searchsortedlast(xr, nodeX[i+1])
+        #@debug iy
         outmat[searchsortedfirst(xr,nodeX[i]):searchsortedlast(xr,nodeX[i+1]),iy].=value
     end
 end
