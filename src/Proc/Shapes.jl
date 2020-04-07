@@ -49,17 +49,18 @@ function aggregate_out(allout, highmat, labelsleft,n)
   map!(i->i/(n*n),allout,allout)
 end
 
-function cubefromshape_fraction(shapepath,lonaxis,lataxis;labelsym=nothing, T=Float64, nincrease=10)
+function cubefromshape_fraction(shapepath,lonaxis,lataxis;labelsym=nothing, T=Float64, nincrease=10, kwargs...)
   @debug "cubefromshapefraction"
   s = (length(lonaxis), length(lataxis))
   outmat = zeros(T,map(i->i*nincrease,s)...)
   lon1,lon2 = get_bb(lonaxis)
   lat1,lat2 = get_bb(lataxis)
-  rasterize!(outmat, shapepath, bb = (left = lon1, right=lon2, top=lat1, bottom=lat2))
+  rasterize!(outmat, shapepath, bb = (left = lon1, right=lon2, top=lat1, bottom=lat2); kwargs...)
 
   outmat = replace(outmat,zero(T)=>missing)
   labelsleft = collect(skipmissing(unique(outmat)))
-  pp = getlabeldict(shapepath,labelsym,T,Set(labelsleft))["labels"]
+  pp = getlabeldict(shapepath,labelsym,T,Set(labelsleft))
+
 
   allout = zeros(T,s...,length(labelsleft))
   aggregate_out(allout,outmat,labelsleft,nincrease)
