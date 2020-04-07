@@ -93,7 +93,7 @@ function cubefromshape_single(shapepath, lonaxis, lataxis; labelsym = nothing, T
 end
 
 """
-    cubefromshape_single(shapepath, refcube; samplefactor=nothing, labelsym = nothing, T=Int32)
+    cubefromshape(shapepath, refcube; samplefactor=nothing, labelsym = nothing, T=Int32)
 
 This function will read the shapefile at `shapepath` (path to the file with .shp extension), which is required to contain
 a list of polygons. The polygons will be *rasterized* to the same grid and bounding box as the reference data cube `refcube`.
