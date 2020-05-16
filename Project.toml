@@ -48,7 +48,7 @@ RecursiveArrayTools = "1, 2.0"
 Shapefile = "0.6"
 StatsBase = "0.32"
 Tables = "0.2, 1.0"
-WeightedOnlineStats = "0.3, 0.4"
+WeightedOnlineStats = "0.3, 0.4, 0.5"
 Zarr = "0.3.1, 0.4"
 julia = "1.3"
 
