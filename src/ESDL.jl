@@ -5,58 +5,31 @@
 Some info on the project...
 """
 module ESDL
-global const ESDLDefaults = (
-  workdir = Ref("./"),
-  recal   = Ref(false),
-  chunksize  = Ref{Any}(:input),
-  max_cache  = Ref(1e8),
-  cubedir    = Ref(""),
-  subsetextensions = [],
-)
-global const workdir=ESDLDefaults.workdir
-global const recal=ESDLDefaults.recal
-function __init__()
-  ESDLDefaults.workdir[]   = get(ENV,"ESDL_WORKDIR","./")
-  ESDLDefaults.max_cache[] = parse(Float64,get(ENV,"ESDL_MAX_CACHE","100")) * 1e6
-  ESDLDefaults.cubedir[]   = get(ENV,"ESDL_CUBEDIR","")
-end
-ESDLdir(x::String)=ESDLDefaults.workdir[]=x
-recalculate(x::Bool)=ESDLDefaults.recal[]=x
-recalculate()=ESDLDefaults.recal[]
-ESDLdir()=ESDLDefaults.workdir[]
-export ESDLdir
 
-include("ESDLTools.jl")
-include("Cubes/Cubes.jl")
-include("DatasetAPI/Datasets.jl")
-include("DAT/DAT.jl")
-include("Proc/Proc.jl")
+include("Proc.jl")
+include("countrydict.jl")
 
-using .ESDLTools: @reexport
+using YAXArrays.YAXTools: @reexport
 
 @reexport using Dates: Date, DateTime
-@reexport using IntervalSets: (..)
-@reexport using .Cubes: cubeinfo, concatenateCubes, caxes,
-  subsetcube, readcubedata,renameaxis!, ESDLArray
-@reexport using .Cubes.Axes: CubeAxis, RangeAxis, CategoricalAxis,
+@reexport using YAXArrays: (..)
+@reexport using YAXArrays: cubeinfo, concatenateCubes, caxes,
+  subsetcube, readcubedata,renameaxis!, YAXArray
+@reexport using YAXArrays: CubeAxis, RangeAxis, CategoricalAxis,
   getAxis
 
-@reexport using .DAT: mapCube, getAxis, InDims, OutDims, Dataset,
+@reexport using YAXArrays: mapCube, getAxis, InDims, OutDims, Dataset,
       CubeTable, cubefittable, fittable #From DAT module
 @reexport using .Proc: removeMSC, gapFillMSC,normalizeTS,
-  getMSC, filterTSFFT, getNpY,savecube,loadcube,rmcube,
+  getMSC, filterTSFFT, getNpY,
   getMedSC, extractLonLats, cubefromshape,
   gapfillpoly, spatialinterp #From Proc module
-@reexport using .Datasets: Dataset, Cube, open_dataset
-@reexport using .ESDLTools: @loadOrGenerate # from ESDL Tools
+@reexport using YAXArrays: Dataset, Cube, open_dataset
+@reexport using YAXArrays: @loadOrGenerate # from ESDL Tools
 
-@deprecate saveCube(data, filename) savecube(data,filename)
-@deprecate loadCube(filename) loadcube(filename)
-@deprecate rmCube(filename) rmcube(filename)
-@deprecate exportcube(data, filename; kwargs...) savecube(data, filename; backend=:netcdf, kwargs...)
-@deprecate cubeproperties(x) getattributes(x)
-
-#include("precompile.jl")
-#_precompile_()
+using YAXArrays: YAXDefaults
+function __init__()
+    push!(YAXDefaults.subsetextensions, replaceregion)
+end
 
 end # module

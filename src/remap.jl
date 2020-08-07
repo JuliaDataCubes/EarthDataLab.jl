@@ -55,7 +55,7 @@ function interpolatecube(c::AbstractCubeData,
       RangeAxis(axname(ax),val)
     end
   end
-  ESDLArray(newax,ar,c.properties, cleaner = c.cleaner)
+  YAXArray(newax,ar,c.properties, cleaner = c.cleaner)
 end
 
 function getinterpinds(oldvals::AbstractRange, newvals::AbstractRange)
