@@ -8,6 +8,7 @@ module ESDL
 
 include("Proc.jl")
 include("countrydict.jl")
+include("esdc.jl")
 
 using YAXArrays.YAXTools: @reexport
 
@@ -26,6 +27,8 @@ using YAXArrays.YAXTools: @reexport
   gapfillpoly, spatialinterp #From Proc module
 @reexport using YAXArrays: Dataset, Cube, open_dataset
 @reexport using YAXArrays: @loadOrGenerate # from ESDL Tools
+
+@reexport using .ESDC: esdc, esdd
 
 using YAXArrays: YAXDefaults
 function __init__()
