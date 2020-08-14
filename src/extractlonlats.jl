@@ -7,14 +7,14 @@ function toPointAxis(aout,ain,loninds,latinds)
 end
 
 """
-    extractLonLats(c::AbstractCubeData,pl::Matrix)
+    extractLonLats(c,pl::Matrix)
 
 Extracts a list of longitude/latitude coordinates from a data cube. The coordinates
 are specified through the matrix `pl` where `size(pl)==(N,2)` and N is the number
 of extracted coordinates. Returns a data cube without `LonAxis` and `LatAxis` but with a
 `SpatialPointAxis` containing the input locations.
 """
-function extractLonLats(c::AbstractCubeData,pl::Matrix;kwargs...)
+function extractLonLats(c,pl::Matrix;kwargs...)
   size(pl,2)==2 || error("Coordinate list must have exactly 2 columns")
   axlist=caxes(c)
   ilon=findAxis("Lon",axlist)

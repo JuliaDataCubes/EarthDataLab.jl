@@ -2,12 +2,12 @@ using DiskArrayTools: InterpolatedDiskArray
 using Interpolations: Linear, Flat, Constant, NoInterp
 using DiskArrays: eachchunk, GridChunks
 """
-  spatialinterp(c::AbstractCubeData,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
+  spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
 """
-function spatialinterp(c::AbstractCubeData,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
+function spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
   interpolatecube(c,Dict("Lon"=>newlons, "Lat"=>newlats), order = Dict("Lon"=>Linear(),"Lat"=>Linear()))
 end
-spatialinterp(c::AbstractCubeData,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
+spatialinterp(c,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
   spatialinterp(c,newlons.values,newlats.values;kwargs...)
 
   function expandchunksizes(c,newaxdict)
@@ -28,7 +28,7 @@ spatialinterp(c::AbstractCubeData,newlons::CubeAxis,newlats::CubeAxis;kwargs...)
     newchunks = GridChunks(size(c),newcs, offset = newco)
   end
 
-function interpolatecube(c::AbstractCubeData,
+function interpolatecube(c,
   newaxes::Dict,
   newchunks = expandchunksizes(c,newaxes);
   order=Dict()

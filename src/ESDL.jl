@@ -9,12 +9,13 @@ module ESDL
 include("Proc.jl")
 include("countrydict.jl")
 include("esdc.jl")
+include("cubeinfo.jl")
 
 using YAXArrays.YAXTools: @reexport
 
 @reexport using Dates: Date, DateTime
 @reexport using YAXArrays: (..)
-@reexport using YAXArrays: cubeinfo, concatenateCubes, caxes,
+@reexport using YAXArrays: concatenateCubes, caxes,
   subsetcube, readcubedata,renameaxis!, YAXArray
 @reexport using YAXArrays: CubeAxis, RangeAxis, CategoricalAxis,
   getAxis

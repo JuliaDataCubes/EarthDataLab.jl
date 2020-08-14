@@ -71,7 +71,7 @@ If the shapefile comes with additional labels in a .dbf file, the labels can be 
 providing the label to choose as a symbol. If a `samplefactor` is supplied, the polygons will be rasterized on an n-times higher
 resolution and the fraction of area within each polygon will be returned.
 """
-cubefromshape(shapepath, c::AbstractCubeData; kwargs...) = cubefromshape(shapepath, getAxis("Lon",c), getAxis("Lat",c);kwargs...)
+cubefromshape(shapepath, c; kwargs...) = cubefromshape(shapepath, getAxis("Lon",c), getAxis("Lat",c);kwargs...)
 function cubefromshape(args...; samplefactor=nothing, kwargs...)
   if samplefactor===nothing
     cubefromshape_single(args...; kwargs...)

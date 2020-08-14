@@ -10,7 +10,7 @@ function removeMSC(aout,ain,NpY::Integer)
 end
 
 """
-    removeMSC(c::AbstractCubeData)
+    removeMSC(c)
 
 Removes the mean annual cycle from each time series of a data cube.
 
@@ -18,7 +18,7 @@ Removes the mean annual cycle from each time series of a data cube.
 
 **Output Axis** `Time`axis
 """
-function removeMSC(c::AbstractCubeData;kwargs...)
+function removeMSC(c;kwargs...)
     NpY = getNpY(c)
     mapCube(
         removeMSC,
@@ -31,7 +31,7 @@ function removeMSC(c::AbstractCubeData;kwargs...)
 end
 
 """
-    gapFillMSC(c::AbstractCubeData;complete_msc=false)
+    gapFillMSC(c;complete_msc=false)
 
 Fills missing values of each time series in a cube with the mean annual cycle.
 If `complete_msc` is set to `true`, the MSC will be filled with a polynomial
@@ -41,7 +41,7 @@ in case it still contains missing values due to systematic gaps.
 
 **Output Axis** `Time`axis
 """
-function gapFillMSC(c::AbstractCubeData;kwargs...)
+function gapFillMSC(c;kwargs...)
   NpY=getNpY(c)
   mapCube(gapFillMSC,c,NpY;indims=InDims("Time"),outdims=OutDims("Time"),kwargs...)
 end
@@ -62,7 +62,7 @@ function fill_msc_poly!(tmsc)
   tmsc .= view(a,(n+1):(n+n))
 end
 
-gapfillpoly(x::AbstractCubeData;max_gap=30,nbefore_after=10, polyorder = 2) =
+gapfillpoly(x;max_gap=30,nbefore_after=10, polyorder = 2) =
   mapslices(gapfillpoly,x,dims="Time",max_gap=max_gap, nbefore_after=nbefore_after, polyorder=polyorder)
 
 """
@@ -113,7 +113,7 @@ end
 
 
 """
-    getMSC(c::AbstractCubeData)
+    getMSC(c)
 
 Returns the mean annual cycle from each time series.
 
@@ -122,7 +122,7 @@ Returns the mean annual cycle from each time series.
 **Output Axis** `MSC`axis
 
 """
-function getMSC(c::AbstractCubeData;kwargs...)
+function getMSC(c;kwargs...)
   N = getNpY(c)
   outdims = OutDims(RangeAxis("MSC",DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)))
   indims = InDims("Time")
@@ -160,7 +160,7 @@ function replaceMisswithMSC(msc::AbstractVector,xin::AbstractArray,xout::Abstrac
 end
 
 """
-    getMedMSC(c::AbstractCubeData)
+    getMedMSC(c)
 
 Returns the median annual cycle from each time series.
 
@@ -168,7 +168,7 @@ Returns the median annual cycle from each time series.
 
 **Output Axis** `MSC`axis
 """
-function getMedSC(c::AbstractCubeData;kwargs...)
+function getMedSC(c;kwargs...)
   N = getNpY(c)
   outdims = OutDims(RangeAxis("MSC",DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)))
   indims = InDims("Time")
