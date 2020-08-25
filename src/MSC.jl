@@ -1,4 +1,4 @@
-using Polynomials: polyfit
+using Polynomials: fit
 using Statistics: quantile!
 
 function removeMSC(aout,ain,NpY::Integer)
@@ -63,7 +63,7 @@ function fill_msc_poly!(tmsc)
 end
 
 gapfillpoly(x;max_gap=30,nbefore_after=10, polyorder = 2) =
-  mapslices(gapfillpoly,x,dims="Time",max_gap=max_gap, nbefore_after=nbefore_after, polyorder=polyorder)
+  mapslices(gapfillpoly!,x,dims="Time",max_gap=max_gap, nbefore_after=nbefore_after, polyorder=polyorder)
 
 """
     fillgaps_poly(x;max_gap=30,nbefore_after=10, polyorder = 2)
@@ -73,7 +73,7 @@ the algorithm uses `nbefore_after` time steps before and after the gap to fit
 a polynomial of order `polyorder`. The missing alues are then replaced by the
 fitted polynomial.
 """
-function gapfillpoly(x;max_gap=30,nbefore_after=10, polyorder = 2)
+function gapfillpoly!(x;max_gap=30,nbefore_after=10, polyorder = 2)
     x = replace(i->(!ismissing(i) && isfinite(i)) ? i : missing,x)
     a = copy(x)
     workx = Float64[]
@@ -98,7 +98,7 @@ function gapfillpoly(x;max_gap=30,nbefore_after=10, polyorder = 2)
                 end
             end
             if length(workx)>polyorder
-                p = polyfit(workx,worky,polyorder)
+                p = fit(workx,worky,polyorder)
                 for idx in gapstart:(gapstop-1)
                     a[idx] = p(idx)
                 end
