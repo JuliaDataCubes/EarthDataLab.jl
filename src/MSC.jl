@@ -58,7 +58,7 @@ end
 function fill_msc_poly!(tmsc)
   mscrep = [tmsc;tmsc;tmsc]
   n = length(tmsc)
-  a = gapfillpoly(mscrep, max_gap = n÷2, nbefore_after = max(3,n÷30))
+  a = gapfillpoly!(mscrep, max_gap = n÷2, nbefore_after = max(3,n÷30))
   tmsc .= view(a,(n+1):(n+n))
 end
 
