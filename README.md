@@ -11,7 +11,7 @@
 # Installation
 
 - Add the ESDL package
-`Pkg.add("https://github.com/esa-esdl/ESDL.jl")`
+`Pkg.add(PackageSpec(url="https://github.com/esa-esdl/ESDL.jl"))`
 
 # Documentation
 
