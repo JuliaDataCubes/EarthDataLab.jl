@@ -40,7 +40,7 @@ and `store` or pick a resolution, chunking and cube region.
 
 """
 function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global")
-  if bucket==nothing
+  if bucket===nothing
     bucket, store = cubesdict[(res,chunks,region)]
   end
   open_dataset(zopen(S3Store(bucket,store,2,aws),consolidated=true))

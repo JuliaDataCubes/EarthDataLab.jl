@@ -20,12 +20,11 @@ using YAXArrays.YAXTools: @reexport
   getAxis
 
 @reexport using YAXArrays: mapCube, getAxis, InDims, OutDims, Dataset,
-      CubeTable, cubefittable, fittable, savecube #From DAT module
+      CubeTable, cubefittable, fittable, savecube, Cube, open_dataset #From DAT module
 @reexport using .Proc: removeMSC, gapFillMSC,normalizeTS,
   getMSC, filterTSFFT, getNpY,
   getMedSC, extractLonLats, cubefromshape,
   gapfillpoly, spatialinterp #From Proc module
-@reexport using YAXArrays: Dataset, Cube, open_dataset
 @reexport using YAXArrays: @loadOrGenerate # from ESDL Tools
 
 @reexport using .ESDC: esdc, esdd
