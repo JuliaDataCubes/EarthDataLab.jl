@@ -25,30 +25,30 @@ iris = dataset("datasets", "iris")
                     )
     @test value(fitMeanWeight) ≈ mean(iris[!,:SepalWidth], weights(weightVector))
 
-    meanBy = by(iris, :Species, :SepalWidth => mean)
-    cn = names(meanBy)[2]
-    fitMeanBy = fittable(DataFrames.eachrow(iris), Mean, :SepalWidth, by=(:Species,))
-    for (key, value) in value(fitMeanBy)
-        @test value ≈ meanBy[meanBy[:Species] .== key, cn][1]
-    end
+    # meanBy = combine(groupby(iris, :Species), SepalWidth => mean)
+    # cn = names(meanBy)[2]
+    # fitMeanBy = fittable(DataFrames.eachrow(iris), Mean, :SepalWidth, by=(:Species,))
+    # for (key, value) in value(fitMeanBy)
+    #     @test value ≈ meanBy[meanBy[:Species] .== key, cn][1]
+    # end
 
-    meanByWeight = by(iris, :Species,
-                        SepalWidth_mean = [:SepalWidth, :SepalLength] =>
-                            (x -> mean(x.SepalWidth,
-                                weights(map(x -> (x - minSepalLength) /
-                                            (maxSepalLength - minSepalLength),
-                                            x.SepalLength)
-                                        )
-                                )
-                            )
-                    )
-    fitMeanByWeight = fittable(DataFrames.eachrow(iris), WeightedMean,
-                                :SepalWidth, by=(:Species,),
-                                weight=(x -> (x.SepalLength - minSepalLength) /
-                                            (maxSepalLength - minSepalLength)
-                                        )
-                                )
-    for (key, value) in value(fitMeanByWeight)
-        @test value ≈ meanByWeight[meanByWeight[!,:Species] .== key, :SepalWidth_mean][1]
-    end
+    # meanByWeight = by(iris, :Species,
+    #                     SepalWidth_mean = [:SepalWidth, :SepalLength] =>
+    #                         (x -> mean(x.SepalWidth,
+    #                             weights(map(x -> (x - minSepalLength) /
+    #                                         (maxSepalLength - minSepalLength),
+    #                                         x.SepalLength)
+    #                                     )
+    #                             )
+    #                         )
+    #                 )
+    # fitMeanByWeight = fittable(DataFrames.eachrow(iris), WeightedMean,
+    #                             :SepalWidth, by=(:Species,),
+    #                             weight=(x -> (x.SepalLength - minSepalLength) /
+    #                                         (maxSepalLength - minSepalLength)
+    #                                     )
+    #                             )
+    # for (key, value) in value(fitMeanByWeight)
+    #     @test value ≈ meanByWeight[meanByWeight[!,:Species] .== key, :SepalWidth_mean][1]
+    # end
 end

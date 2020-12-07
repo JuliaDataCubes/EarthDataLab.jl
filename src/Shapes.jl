@@ -44,7 +44,7 @@ function cubefromshape_fraction(shapepath,lonaxis,lataxis;labelsym=nothing, T=Fl
     newax = CategoricalAxis(labelsym,[pp[l] for l in labelsleft])
   end
 
-  return ESDLArray(CubeAxis[lonaxis, lataxis, newax], allout)
+  return YAXArray(CubeAxis[lonaxis, lataxis, newax], allout)
 
 
 end
@@ -59,7 +59,7 @@ function cubefromshape_single(shapepath, lonaxis, lataxis; labelsym = nothing, T
   labelsleft = collect(skipmissing(unique(outmat)))
   properties = getlabeldict(shapepath,labelsym,T,labelsleft)
 
-  return ESDLArray(CubeAxis[lonaxis, lataxis], outmat,properties)
+  return YAXArray(CubeAxis[lonaxis, lataxis], outmat,properties)
 end
 
 """
@@ -71,7 +71,7 @@ If the shapefile comes with additional labels in a .dbf file, the labels can be 
 providing the label to choose as a symbol. If a `samplefactor` is supplied, the polygons will be rasterized on an n-times higher
 resolution and the fraction of area within each polygon will be returned.
 """
-cubefromshape(shapepath, c::AbstractCubeData; kwargs...) = cubefromshape(shapepath, getAxis("Lon",c), getAxis("Lat",c);kwargs...)
+cubefromshape(shapepath, c; kwargs...) = cubefromshape(shapepath, getAxis("Lon",c), getAxis("Lat",c);kwargs...)
 function cubefromshape(args...; samplefactor=nothing, kwargs...)
   if samplefactor===nothing
     cubefromshape_single(args...; kwargs...)
@@ -80,7 +80,7 @@ function cubefromshape(args...; samplefactor=nothing, kwargs...)
   end
 end
 
-function prune_labels!(c::ESDLArray)
+function prune_labels!(c::YAXArray)
   if haskey(c.properties,"labels")
     labelsleft = Set(skipmissing(unique(c.data)))
     dold = c.properties["labels"]
