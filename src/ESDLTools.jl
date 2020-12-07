@@ -1,156 +1,66 @@
 module ESDLTools
 using Distributed
 import ..ESDL: ESDLdir
-export mypermutedims!, freshworkermodule, passobj, @everywhereelsem,
-toRange, getiperm, CItimes, CIdiv, @loadOrGenerate, PickAxisArray
-struct PickAxisArray{T,N,AT<:AbstractArray,P,NCOL}
+export freshworkermodule, passobj, @everywhereelsem,
+@loadOrGenerate, PickAxisArray
+struct PickAxisArray{T,N,AT<:AbstractArray,P,PERM}
     parent::AT
 end
 
-function PickAxisArray(parent, indmask; ncol=0)
-    @assert sum(indmask)+ncol==ndims(parent)
-    f  = findall(indmask)
-    PickAxisArray{eltype(parent),length(indmask),typeof(parent),(f...,),ncol}(parent)
-end
-indmask(p::PickAxisArray{<:Any,<:Any,<:Any,i,<:Any}) where i = i
-getncol(p::PickAxisArray{<:Any,<:Any,<:Any,<:Any,NCOL}) where NCOL = NCOL
-function Base.view(p::PickAxisArray, i...)
-    inew = map(j->i[j],indmask(p))
-    cols = ntuple(_ -> Colon(), getncol(p))
-    view(p.parent,cols...,inew...)
-end
-function Base.getindex(p::PickAxisArray, i...)
-    inew = map(j->i[j],indmask(p))
-    cols = ntuple(_ -> Colon(), getncol(p))
-    getindex(p.parent,cols...,inew...)
-end
-Base.getindex(p::PickAxisArray,i::CartesianIndex) = p[i.I...]
-function newparent(a::PickAxisArray{T,N,AT,P,NCOL},parent) where {T,N,AT,P,NCOL}
-  eltype(parent) == T || error("Types do not match")
-  size(parent) == size(a.parent) || error("Sizes do not match")
-  PickAxisArray{T,N,AT,P,NCOL}(parent)
-end
-
-
-function getiperm(perm)
-    iperm = Array{Int}(undef,length(perm))
-    for i = 1:length(perm)
-        iperm[perm[i]] = i
-    end
-    return ntuple(i->iperm[i],length(iperm))
-end
-
-using Base.Cartesian
-@generated function mypermutedims!(dest::AbstractArray{T,N},src::AbstractArray{S,N},perm::Type{Q}) where {Q,T,S,N}
-    ind1=ntuple(i->Symbol("i_",i),N)
-    ind2=ntuple(i->Symbol("i_",perm.parameters[1].parameters[1][i]),N)
-    ex1=Expr(:ref,:src,ind1...)
-    ex2=Expr(:ref,:dest,ind2...)
-    quote
-        @nloops $N i src begin
-            $ex2=$ex1
-        end
-    end
-end
-
-@generated function CIdiv(index1::CartesianIndex{N}, index2::CartesianIndex{N}) where N
-    I = index1
-    args = [:(Base.div(index1[$d],index2[$d])) for d = 1:N]
-    :($I($(args...)))
-end
-@generated function CItimes(index1::CartesianIndex{N}, index2::CartesianIndex{N}) where N
-    I = index1
-    args = [:(.*(index1[$d],index2[$d])) for d = 1:N]
-    :($I($(args...)))
-end
-
-@generated function Base.getindex(t::NTuple{N},p::NTuple{N,Int}) where N
-    :(@ntuple $N d->t[p[d]])
-end
-
-toRange(r::CartesianIndices)=map(colon,r.start.I,r.stop.I)
-toRange(c1::CartesianIndex,c2::CartesianIndex)=map(colon,c1.I,c2.I)
-
-function passobj(src::Int, target::Vector{Int}, nm::Symbol;
-                 from_mod=Main, to_mod=Main)
-    r = RemoteChannel(src)
-    @spawnat(src, put!(r, getfield(from_mod, nm)))
-    @sync for to in target
-        @spawnat(to, Core.eval(to_mod, Expr(:(=), nm, fetch(r))))
-    end
-    nothing
-end
-
-
-function passobj(src::Int, target::Int, nm::Symbol; from_mod=Main, to_mod=Main)
-    passobj(src, [target], nm; from_mod=from_mod, to_mod=to_mod)
-end
-
-
-function passobj(src::Int, target, nms::Vector{Symbol};
-                 from_mod=Main, to_mod=Main)
-    for nm in nms
-        passobj(src, target, nm; from_mod=from_mod, to_mod=to_mod)
-    end
-end
-
-function sendto(p::Int; args...)
-    for (nm, val) in args
-        @spawnat(p, Core.eval(Main, Expr(:(=), nm, val)))
-    end
-end
-
-
-function sendto(ps::Vector{Int}; args...)
-    for p in ps
-        sendto(p; args...)
-    end
-end
-
-getfrom(p::Int, nm::Symbol; mod=Main) = fetch(@spawnat(p, getfield(mod, nm)))
-
-
-function freshworkermodule()
-    in(:PMDATMODULE,names(Main)) || Core.eval(Main,:(module PMDATMODULE
-        using ESDL
-        using Distributed
-    end))
-    Core.eval(Main,quote
-      using Distributed
-      rs=Future[]
-      for pid in workers()
-        n=remotecall_fetch(()->in(:PMDATMODULE,names(Main)),pid)
-        if !n
-          r1=remotecall(()->(Core.eval(Main,:(using ESDL, Distributed));nothing),pid)
-          r2=remotecall(()->(Core.eval(Main,:(module PMDATMODULE
-          using ESDL
-          using Distributed
-        end));nothing),pid)
-          push!(rs,r1)
-          push!(rs,r2)
-        end
-      end
-      [wait(r) for r in rs]
-  end)
-
-  nothing
-end
-
-import Distributed: extract_imports, remotecall_eval
-macro everywhereelsem(ex)
-  modu=:(Main.PMDATMODULE)
-  procs = :(workers())
-  imps = [Expr(:import, m) for m in extract_imports(ex)]
-  return quote
-    p = $(esc(procs))
-    if p!=[1]
-      $(isempty(imps) ? nothing : Expr(:toplevel, imps...)) # run imports locally first
-      let ex = $(Expr(:quote, ex)), procs = p, mo=$(esc(modu))
-        remotecall_eval(mo, procs, ex)
+function PickAxisArray(parent, indmask, perm=nothing)
+    f  = findall(isequal(true),indmask)
+    f2 = findall(isequal(Colon()), indmask)
+    o = sort([f;f2])
+    o = isempty(f2) ? o : replace(o, map(i->i=>Colon(),f2)...)
+    nsub = 0
+    for i in 1:length(o)
+      if o[i] isa Colon
+        nsub +=1
+      else
+        o[i] = o[i]-nsub
       end
     end
+    if perm !== nothing
+      length(perm) != length(f2) && error("Not a valid permutation")
+      perm = (perm...,)
+    end
+    PickAxisArray{eltype(parent),length(indmask),typeof(parent),(o...,),perm}(parent)
+end
+indmask(p::PickAxisArray{<:Any,<:Any,<:Any,i}) where i = i
+getind(i,j) = i[j]
+getind(i,j::Colon) = j
+permout(::PickAxisArray{<:Any,<:Any,<:Any,<:Any,P},x) where P = permutedims(x,P)
+permout(::PickAxisArray{<:Any,<:Any,<:Any,<:Any,nothing},x) = x
+function Base.view(p::PickAxisArray, i::Integer...)
+  inew = map(j->getind(i,j),indmask(p))
+  r = permout(p,view(p.parent,inew...))
+  r
+end
+function Base.getindex(p::PickAxisArray, i::Integer...)
+    inew = map(j->getind(i,j),indmask(p))
+    permout(p,getindex(p.parent,inew...))
+end
+anycol(t::Tuple{}) = false
+anycol(t::Tuple) = anycol(first(t), Base.tail(t))
+anycol(::Colon,t::Tuple) = true
+anycol(i,::Tuple{}) = false
+anycol(::Colon,::Tuple{}) = true
+anycol(i,t::Tuple) = anycol(first(t),Base.tail(t))
+ncol(t::Tuple) = ncol(first(t), Base.tail(t),0)
+ncol(::Colon,t::Tuple,n) = ncol(first(t),Base.tail(t), n+1)
+ncol(i,::Tuple{},n) = n
+ncol(::Colon,::Tuple{},n) = n+1
+ncol(i,t::Tuple,n) = ncol(first(t),Base.tail(t),n)
+
+function Base.eltype(p::PickAxisArray{T}) where T
+  im = indmask(p)
+  if anycol(im)
+    Array{T,ncol(im)}
+  else
+    T
   end
 end
+Base.getindex(p::PickAxisArray,i::CartesianIndex) = p[i.I...]
 
 """
     macro loadOrGenerate(x...,expression)
@@ -182,15 +92,15 @@ macro loadOrGenerate(x...)
   end
   xnames=map(i->i[2],x2)
   loadEx=map(x2) do i
-    :($(i[1]) = loadCube($(i[2])))
+    :($(i[1]) = loadcube($(i[2])))
   end
   loadEx=Expr(:block,loadEx...)
   saveEx=map(x2) do i
-    :(saveCube($(i[1]),$(i[2])))
+    :(savecube($(i[1]),$(i[2])))
   end
   saveEx=Expr(:block,saveEx...)
   rmEx=map(x2) do i
-    :(rmCube($(i[2])))
+    :(rmcube($(i[2])))
   end
   rmEx=Expr(:block,rmEx...)
   esc(quote
@@ -203,4 +113,31 @@ macro loadOrGenerate(x...)
     end
   end)
 end
+
+# Here we define ouur own reexport macro copied from
+# https://github.com/simonster/Reexport.jl/blob/master/src/Reexport.jl
+
+macro reexport(ex)
+    isa(ex, Expr) && (ex.head == :module ||
+                      ex.head == :using ||
+                      (ex.head == :toplevel &&
+                       all(e->isa(e, Expr) && e.head == :using, ex.args))) ||
+        error("@reexport: syntax error")
+
+    if ex.head == :module
+        modules = Any[ex.args[2]]
+        ex = Expr(:toplevel, ex, :(using .$(ex.args[2])))
+    elseif ex.head == :using && all(e->isa(e, Symbol), ex.args)
+        modules = Any[ex.args[end]]
+    elseif ex.head == :using && ex.args[1].head == :(:)
+        symbols = [e.args[end] for e in ex.args[1].args[2:end]]
+        return esc(Expr(:toplevel, ex, :(eval(Expr(:export, $symbols...)))))
+    else
+        modules = Any[e.args[end] for e in ex.args]
+    end
+
+    esc(Expr(:toplevel, ex,
+             [:(eval(Expr(:export, names($mod)...))) for mod in modules]...))
+end
+
 end

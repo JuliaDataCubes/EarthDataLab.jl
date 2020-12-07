@@ -1,14 +1,7 @@
-module TSDecomposition
-export filterTSFFT
-using ..Cubes
-using ..DAT
-using ..Proc
-using FFTW
-using Statistics
-import ..DAT: AnyMissing
-import Distributed: workers, remotecall, fetch, myid
+using FFTW: plan_fft
+using Statistics: mean
+using Distributed: workers, remotecall, fetch, myid
 
-#Looks like linreg is broken in 0.7, here is a custom version, this should be replaced soon:
 function linreg(x,y)
   b = cov(x,y)/var(x)
   a = mean(y) - b*mean(x)
@@ -16,7 +9,7 @@ function linreg(x,y)
 end
 
 function detrendTS!(outar::AbstractMatrix,xin::AbstractVector{T}) where T
-    x=T[i for i in 1:length(xin)]
+    x=collect(T,eachindex(xin))
     a,b=linreg(x,xin)
     for i in eachindex(xin)
         outar[i,1]=a+b*x[i]
@@ -30,7 +23,7 @@ end
 mirror(i,l)=l-i+2
 
 """
-    filterTSFFT(c::AbstractCubeData)
+    filterTSFFT(c)
 
 Filter each time series using a Fourier filter and return the decomposed series
 in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)
@@ -40,7 +33,7 @@ in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations
 **Output Axes** `Time`axis, `Scale`axis
 
 """
-function filterTSFFT(c::AbstractCubeData;kwargs...)
+function filterTSFFT(c;kwargs...)
   indims = InDims(TimeAxis,filter=AnyMissing())
   outdims = OutDims(TimeAxis,(c,p)->ScaleAxis(["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
   ntime = length(getAxis("Time",c))
@@ -59,16 +52,13 @@ end
 function filterTSFFT(outar::AbstractMatrix,y::AbstractVector, annfreq::Number,
   plandict; nharm::Int=3)
 
-  any(ismissing,y) && return outar[:].=missing
-
   fftplan, ifftplan = fetch(plandict[myid()])
-    size(outar) == (length(y),4) || error("Wrong size of output array")
 
     detrendTS!(outar,y)
     l        = length(y)
 
     fy       = Complex{Base.nonmissingtype(eltype(y))}[y[i]-outar[i,1] for i=1:l]
-    fftplan * fy
+    fftplan * fy #Apply fftplan on fy inplace changes fy
     fyout    = similar(fy)
     czero    = zero(eltype(fy))
 
@@ -89,7 +79,7 @@ function filterTSFFT(outar::AbstractMatrix,y::AbstractVector, annfreq::Number,
         end
     end
 
-    ifftplan * fyout
+    ifftplan * fyout #Apply ifftplan on fyout inplace, changes fyout
     for i=1:l
         outar[i,3]=real(fyout[i])
     end
@@ -112,5 +102,4 @@ function filterTSFFT(outar::AbstractMatrix,y::AbstractVector, annfreq::Number,
         outar[i,2]=real(fyout[i])
         outar[i,4]=real(fy[i])
     end
-end
 end
