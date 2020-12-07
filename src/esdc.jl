@@ -1,9 +1,8 @@
-module OBS
-import ..Cubes: S3Cube, Dataset, Cube
-import Zarr: S3Store, zopen, aws_config
-import Dates
-import Dates: now
-
+module ESDC
+import YAXArrays.Datasets: Dataset, Cube, open_dataset
+using Zarr: S3Store, zopen, aws_config
+using Dates: Dates, now
+export esdc, esdd
 global aws, cubesdict
 
 function __init__()
@@ -19,10 +18,13 @@ function __init__()
     ("high","ts","Colombia") => ("obs-esdc-v2.0.1","Cube_2019highColombiaCube_184x120x120.zarr"),
     ("high","map","Colombia") => ("obs-esdc-v2.0.1","Cube_2019highColombiaCube_1x3360x2760.zarr"),
   )
+  if isdir("/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/")
+    YAXArrays.YAXDefaults.cubedir[] = "/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/"
+  end
 end
 
 """
-    function S3Dataset(;kwargs...)
+    function esdd(;kwargs...)
 
 Opens a datacube from the Telecom Object Storage Service as a Dataset. This works on any system, but
 might involve some latency depending on connection speed. One can either specify a `bucket`
@@ -37,16 +39,15 @@ and `store` or pick a resolution, chunking and cube region.
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
 
 """
-function S3Dataset(;bucket=nothing, store="", res="low", chunks="ts", region="global")
-  if bucket==nothing
+function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global")
+  if bucket===nothing
     bucket, store = cubesdict[(res,chunks,region)]
   end
-  Dataset(zopen(S3Store(bucket,store,2,aws)))
-  #Dataset(zopen(ConsolidatedStore(S3Store(bucket,store,2,aws))))
+  open_dataset(zopen(S3Store(bucket,store,2,aws),consolidated=true))
 end
 
 """
-    function S3Cube(;kwargs...)
+    function esdc(;kwargs...)
 
 Opens a datacube from the Telecom Object Storage Service as a Dataset. This works on any system, but
 might involve some latency depending on connection speed. One can either specify a `bucket`
@@ -61,5 +62,6 @@ and `store` or pick a resolution, chunking and cube region.
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
 
 """
-S3Cube(;kwargs...) = Cube(S3Dataset(;kwargs...))
-end
+esdc(;kwargs...) = Cube(esdd(;kwargs...))
+
+end # module
