@@ -1,10 +1,6 @@
-module TSDecomposition
-export filterTSFFT
-import ...Cubes: AbstractCubeData
-import ...DAT: mapCube, InDims, OutDims, AnyMissing
-import FFTW: plan_fft
-import Statistics: mean
-import Distributed: workers, remotecall, fetch, myid
+using FFTW: plan_fft
+using Statistics: mean
+using Distributed: workers, remotecall, fetch, myid
 
 function linreg(x,y)
   b = cov(x,y)/var(x)
@@ -27,7 +23,7 @@ end
 mirror(i,l)=l-i+2
 
 """
-    filterTSFFT(c::AbstractCubeData)
+    filterTSFFT(c)
 
 Filter each time series using a Fourier filter and return the decomposed series
 in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations)
@@ -37,7 +33,7 @@ in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations
 **Output Axes** `Time`axis, `Scale`axis
 
 """
-function filterTSFFT(c::AbstractCubeData;kwargs...)
+function filterTSFFT(c;kwargs...)
   indims = InDims(TimeAxis,filter=AnyMissing())
   outdims = OutDims(TimeAxis,(c,p)->ScaleAxis(["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
   ntime = length(getAxis("Time",c))
@@ -106,5 +102,4 @@ function filterTSFFT(outar::AbstractMatrix,y::AbstractVector, annfreq::Number,
         outar[i,2]=real(fyout[i])
         outar[i,4]=real(fy[i])
     end
-end
 end

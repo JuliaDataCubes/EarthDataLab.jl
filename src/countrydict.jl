@@ -306,7 +306,7 @@
 |ZMB|Zambia
 |ZWE|Zimbabwe
 """
-const known_regions = Dict{String,NTuple{4,Float64}}(
+known_regions = Dict{String,NTuple{4,Float64}}(
 "World"=>(-180.0,-90.0,179.999999999999,90.0),
 "Africa"=>(-17.0,-40.0,51.0,40.0),
 "Asia"=>(30.0,5.0,179.5,80.0),
@@ -885,3 +885,13 @@ const known_regions = Dict{String,NTuple{4,Float64}}(
   "Zimbabwe" => (25.219369751374444,-22.397339782252487,33.0427681886182,-15.614808044416833),
   "ZWE" => (25.219369751374444,-22.397339782252487,33.0427681886182,-15.614808044416833),
 )
+function replaceregion(kwargs)
+  if haskey(kwargs,:region)
+    reg = kwargs[:region]
+    delete!(kwargs, :region)
+    haskey(known_regions,reg) || error("Region $(reg[2]) not known.")
+    lon1,lat1,lon2,lat2 = known_regions[reg]
+    kwargs[:lon] = lon1..lon2
+    kwargs[:lat] = lat1..lat2
+  end
+end

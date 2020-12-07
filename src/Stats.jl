@@ -1,14 +1,11 @@
-module Stats
-export normalizeTS, timeVariance, timeMean, spatialMean
-import ...DAT: NValid, mapCube, mapCube, InDims, OutDims
-import ...Cubes: AbstractCubeData, findAxis, axname
-import StatsBase: pweights
-import Statistics: quantile, mean, std
-import WeightedOnlineStats: WeightedAdaptiveHist
+using StatsBase: pweights
+using Statistics: mean, std
+import Statistics: quantile
+using WeightedOnlineStats: WeightedAdaptiveHist
 
 
 """
-    normalizeTS(c::AbstractCubeData)
+    normalizeTS(c)
 
 Normalize a time series to zero mean and unit variance
 
@@ -16,7 +13,7 @@ Normalize a time series to zero mean and unit variance
 
 **Output Axes** `TimeAxis`
 """
-function normalizeTS(c::AbstractCubeData;kwargs...)
+function normalizeTS(c;kwargs...)
   mapCube(normalizeTS,c;indims=InDims("Time",filter=NValid(3)),outdims=OutDims("Time"),kwargs...)
 end
 function normalizeTS(xout::AbstractVector,xin::AbstractVector)
@@ -27,12 +24,12 @@ function normalizeTS(xout::AbstractVector,xin::AbstractVector)
 end
 
 """
-    quantile(c::AbstractCubeData,p=[0.25,0.5,0.75];by=(),nbins=100)
+    quantile(c,p=[0.25,0.5,0.75];by=(),nbins=100)
 
 Computes the quantile of a data cube based on fitting a Histogram on the data
 using an Online statistic.
 """
-function quantile(c::AbstractCubeData,p=[0.25,0.5,0.75];by=(),nbins=100)
+function quantile(c::YAXArray,p=[0.25,0.5,0.75];by=(),nbins=100)
   if any(i->isa(i,CategoricalAxis{<:Any,:Hist}),caxes(c)) && any(i->isa(i,RangeAxis{<:Any,:Bin}),caxes(c))
     if isa(p,Number)
       od = OutDims()
@@ -54,6 +51,4 @@ function cquantile(xout,xin,p)
   d = xin[nonzero,1]
   w = Float64.(xin[nonzero,2])
   xout[:] = quantile(d,pweights(w),p)
-end
-
 end

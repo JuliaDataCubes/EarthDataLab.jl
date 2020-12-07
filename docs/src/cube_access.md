@@ -74,11 +74,8 @@ cubenew  = extractLonLats(cubedata,ll)
 ## Cube Types
 
 While the `subsetcube` command returns an object of type `ZarrCube`, which represents a view into the ESDC, other cube operations will return different types of data cubes.
-The returned type will depend on the size of the returned cube. If it is small enough to fit into memory, it will be a `CubeMem`, otherwise a `ZArrayCube`. All these types of data cubes share the same interface defined by [`ESDL.AbstractCubeData`](@ref), which means you can index them, do calculation using `mapCube` or plot them using the commands described in [Plotting](@ref).
+The returned type will depend on the size of the returned cube. If it is small enough to fit into memory, it will be a `CubeMem`, otherwise a `ZArrayCube`. All these types of data cubes share the same interface defined by, which means you can index them, do calculation using `mapCube` or plot them using the commands described in [Plotting](@ref).
 
-```@docs
-ESDL.Cubes.AbstractCubeData
-```
 
 ```@docs
 ESDL.Cubes.CubeMem
