@@ -24,6 +24,7 @@ YAXArrays = "c21b50f5-aa40-41ea-b809-c0f5e47bfa5c"
 Zarr = "0a941bbe-ad1d-11e8-39d9-ab76183a1d99"
 
 [compat]
+CFTime = "0.1"
 FFTW = "1"
 GeoInterface = "0.4, 0.5"
 OnlineStats = "1"
