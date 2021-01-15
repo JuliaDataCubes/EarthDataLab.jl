@@ -49,7 +49,6 @@ function cubefromshape_fraction(shapepath,lonaxis,lataxis;labelsym=nothing, T=Fl
 
 end
 function cubefromshape_single(shapepath, lonaxis, lataxis; labelsym = nothing, T=Int32, kwargs...)
-  @show lonaxis, lataxis
   s = (length(lonaxis), length(lataxis))
   outmat = zeros(T,s)
   lon1,lon2 = get_bb(lonaxis)
@@ -95,7 +94,6 @@ stripc0x(a) = replace(a, r"[^\x20-\x7e]"=> "")
 function rasterize!(outar,shapepath;bb = (left = -180.0, right=180.0, top=90.0,bottom=-90.0),label=nothing, kwargs...)
   t = Shapefile.Table(shapepath)
   p = Shapefile.shapes(t)
-  @show kwargs
   if length(p)>1
     rasterizepoly!(outar,p,bb; kwargs...)
   else
