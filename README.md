@@ -16,5 +16,5 @@
 
 The Documentation is available [here](https://esa-esdl.github.io/ESDL.jl/latest).
 
-[ci-img]: https://github.com/meggart/Zarr.jl/workflows/CI/badge.svg
-[ci-url]: https://github.com/meggart/Zarr.jl/actions?query=workflow%3ACI
+[ci-img]: https://github.com/esa-esdl/ESDL.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/esa-esdl/ESDL.jl/actions?query=workflow%3ACI
