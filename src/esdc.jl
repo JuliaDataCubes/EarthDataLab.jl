@@ -1,13 +1,20 @@
 module ESDC
 import YAXArrays.Datasets: Dataset, Cube, open_dataset
-using Zarr: S3Store, zopen, aws_config
+using Zarr: S3Store, zopen, AWS
 using Dates: Dates, now
 export esdc, esdd
-global aws, cubesdict
+global cubesdict
+
+struct OBSConfig <: AWS.AbstractAWSConfig end
+AWS.region(c::OBSConfig) = "eu-de"
+AWS.credentials(::OBSConfig) = nothing
+function AWS.generate_service_url(::OBSConfig, ::String, resource::String)
+  return string("https://obs.eu-de.otc.t-systems.com/", resource)
+end
+
 
 function __init__()
-  global aws, cubesdict
-  aws = aws_config(creds=nothing, region="eu-de", service_name="obs", service_host="otc.t-systems.com")
+  global cubesdict
   cubesdict = Dict(
     ("low","ts","global") => ("obs-esdc-v2.0.0","esdc-8d-0.25deg-184x90x90-2.0.0.zarr"),
     ("low","map","global") => ("obs-esdc-v2.0.0","esdc-8d-0.25deg-1x720x1440-2.0.0.zarr"),
@@ -18,9 +25,6 @@ function __init__()
     ("high","ts","Colombia") => ("obs-esdc-v2.0.1","Cube_2019highColombiaCube_184x120x120.zarr"),
     ("high","map","Colombia") => ("obs-esdc-v2.0.1","Cube_2019highColombiaCube_1x3360x2760.zarr"),
   )
-  if isdir("/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/")
-    YAXArrays.YAXDefaults.cubedir[] = "/home/jovyan/work/datacube/ESDCv2.0.0/esdc-8d-0.25deg-184x90x90-2.0.0.zarr/"
-  end
 end
 
 """
@@ -43,7 +47,7 @@ function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global"
   if bucket===nothing
     bucket, store = cubesdict[(res,chunks,region)]
   end
-  open_dataset(zopen(S3Store(bucket,store,2,aws),consolidated=true))
+  open_dataset(zopen(S3Store(bucket,store,2,OBSConfig()),consolidated=true))
 end
 
 """

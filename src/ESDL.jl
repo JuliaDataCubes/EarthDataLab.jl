@@ -10,7 +10,7 @@ include("Proc.jl")
 include("countrydict.jl")
 include("esdc.jl")
 
-using YAXArrays.YAXTools: @reexport
+using YAXArrays: @reexport
 
 @reexport using Dates: Date, DateTime
 @reexport using YAXArrays: (..)
