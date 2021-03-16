@@ -1,5 +1,5 @@
-using DiskArrayTools: InterpolatedDiskArray
-using Interpolations: Linear, Flat, Constant, NoInterp
+using DiskArrayTools: InterpolatedDiskArray, DiskArrayTools
+using DiskArrayTools.Interpolations: Linear, Flat, Constant, NoInterp
 using DiskArrays: eachchunk, GridChunks
 """
   spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
