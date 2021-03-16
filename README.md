@@ -4,8 +4,7 @@
 
 | **Documentation**                                                                                                        | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://esa-esdl.github.io/ESDL.jl/latest) | [![][ci-img]][ci-url] |
-| | [![codecov][codecov-img]](https://codecov.io/github/esa-esdl/ESDL.jl?branch=master)
+| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://esa-esdl.github.io/ESDL.jl/latest) | [![][ci-img]][ci-url] [![codecov][codecov-img]](https://codecov.io/github/esa-esdl/ESDL.jl?branch=master) |
 
 [codecov-img]: https://img.shields.io/codecov/c/github/esa-esdl/ESDL.jl/master.svg?label=codecov
 # Installation
