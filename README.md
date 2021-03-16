@@ -4,7 +4,7 @@
 
 | **Documentation**                                                                                                        | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://esa-esdl.github.io/ESDL.jl/latest) | [![Build Status](https://travis-ci.org/esa-esdl/ESDL.jl.svg?branch=master)](https://travis-ci.org/esa-esdl/ESDL.jl)|
+| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://esa-esdl.github.io/ESDL.jl/latest) | [![][ci-img]][ci-url] |
 | | [![codecov][codecov-img]](https://codecov.io/github/esa-esdl/ESDL.jl?branch=master)
 
 [codecov-img]: https://img.shields.io/codecov/c/github/esa-esdl/ESDL.jl/master.svg?label=codecov
@@ -16,3 +16,6 @@
 # Documentation
 
 The Documentation is available [here](https://esa-esdl.github.io/ESDL.jl/latest).
+
+[ci-img]: https://github.com/meggart/Zarr.jl/workflows/CI/badge.svg
+[ci-url]: https://github.com/meggart/Zarr.jl/actions?query=workflow%3ACI
