@@ -34,8 +34,8 @@ in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations
 
 """
 function filterTSFFT(c;kwargs...)
-  indims = InDims(TimeAxis,filter=AnyMissing())
-  outdims = OutDims(TimeAxis,(c,p)->ScaleAxis(["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
+  indims = InDims("time",filter=AnyMissing())
+  outdims = OutDims("time",(c,p)->ScaleAxis(["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
   ntime = length(getAxis("Time",c))
   plans = map(workers()) do id
     remotecall(id,ntime,eltype(c)) do nt,et
