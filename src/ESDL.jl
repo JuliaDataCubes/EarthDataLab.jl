@@ -29,6 +29,9 @@ using YAXArrays: @reexport
 
 @reexport using .ESDC: esdc, esdd
 
+using NetCDF: NetCDF
+using Zarr: Zarr
+
 include("cubeinfo.jl")
 
 using YAXArrays: YAXDefaults
