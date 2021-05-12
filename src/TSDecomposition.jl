@@ -1,5 +1,5 @@
 using FFTW: plan_fft!
-using Statistics: mean
+using Statistics: mean, cov, var
 using Distributed: workers, remotecall, fetch, myid
 
 function linreg(x,y)
