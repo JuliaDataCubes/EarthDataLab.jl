@@ -1,4 +1,4 @@
-using FFTW: plan_fft
+using FFTW: plan_fft!
 using Statistics: mean
 using Distributed: workers, remotecall, fetch, myid
 
