@@ -1,5 +1,5 @@
-using FFTW: plan_fft
-using Statistics: mean
+using FFTW: plan_fft!
+using Statistics: mean, cov, var
 using Distributed: workers, remotecall, fetch, myid
 
 function linreg(x,y)
@@ -35,7 +35,7 @@ in 4 time windows (Trend, Long-Term Variability, Annual Cycle, Fast Oscillations
 """
 function filterTSFFT(c;kwargs...)
   indims = InDims("time",filter=AnyMissing())
-  outdims = OutDims("time",(c,p)->ScaleAxis(["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
+  outdims = OutDims("time",(c,p)->CategoricalAxis("Scale",["Trend", "Long-Term Variability", "Annual Cycle", "Fast Oscillations"]))
   ntime = length(getAxis("Time",c))
   plans = map(workers()) do id
     remotecall(id,ntime,eltype(c)) do nt,et
