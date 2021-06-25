@@ -8,37 +8,37 @@ Extracts slice arrays from a cube given a range in longitude,latitude and time.
 function getCubeSlices(dataCube::YAXArray, timeRange, lonRange, latRange;
     variable = "air_temperature_2m")
     #front face
-    cubef = datCubes[
+    cubef = dataCube[
         var  = variable,
         time = timeRange[1],
         lon  = lonRange,
         lat  = latRange].data[:,:]
     #back face
-    cubeb = datCubes[
+    cubeb = dataCube[
         var  = variable,
         time = timeRange[2],
         lon  = lonRange,
         lat  = latRange].data[:,:];
     #rigth face
-    cuber = datCubes[
+    cuber = dataCube[
         var  = variable,
         time = timeRange,
         lon  = lonRange[2],
         lat  = latRange].data[:,:];
     #left face
-    cubel = datCubes[
+    cubel = dataCube[
         var   = variable,
         time  = timeRange,
         lon   = lonRange[1],
         lat   = latRange].data[:,:];
     #top face
-    cubet = datCubes[
+    cubet = dataCube[
         var  = variable,
         time = timeRange,
         lon  = lonRange,
         lat  = latRange[2]].data[:,:];
     #bottom face
-    cubebt = datCubes[
+    cubebt = dataCube[
         var  = variable,
         time = timeRange,
         lon  = lonRange,
