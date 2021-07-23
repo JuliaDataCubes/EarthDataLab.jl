@@ -13,8 +13,8 @@ function __init__()
     ("low","map","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.25deg-1x720x1440-2.1.1.zarr"),
     ("high","ts","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.083deg-184x270x270-2.1.1.zarr"),
     ("high","map","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.083deg-1x2160x4320-2.1.1.zarr"),
-#    ("low","ts","Colombia") => ("obs-esdc-v2.0.1","Cube_2019lowColombiaCube_184x60x60.zarr"),
-#    ("low","map","Colombia") => ("obs-esdc-v2.0.1","Cube_2019lowColombiaCube_1x336x276.zarr/"),
+    ("low","ts","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019lowColombiaCube_184x60x60.zarr"),
+    ("low","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019lowColombiaCube_1x336x276.zarr/"),
     ("high","ts","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_184x120x120.zarr"),
     ("high","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_1x3360x2760.zarr"),
   )
@@ -39,7 +39,8 @@ function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global"
   if bucket===nothing
     bucket, store = cubesdict[(res,chunks,region)]
   end
-  open_dataset(zopen(S3Store(bucket,store,2,AWS.AWSConfig(creds=nothing, region="eu-central-1")),consolidated=true))
+  path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
+  open_dataset(zopen(path,consolidated=true))
 end
 
 """
