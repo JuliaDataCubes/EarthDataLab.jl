@@ -8,7 +8,7 @@ c = esdc()
 
 cgermany = c[
   region = "Germany",
-  var = ["gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "soil_moisture"],
+  var = ["gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "land_surface_temperature"],
   time = 2000:2010
 ]
 savecube(cgermany,"germanycube",

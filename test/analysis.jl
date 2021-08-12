@@ -47,7 +47,7 @@ function doTests()
   end
   # Test Mean seasonal cycle retrieval
   @testset "Seasonal cycle statistics and anomalies" begin
-  cdata=subsetcube(c,variable="soil_moisture",lon=10,lat=50.75)
+  cdata=subsetcube(c,variable="land_surface_temperature",lon=10,lat=50.75)
   d=readcubedata(cdata)
 
   x2=getMSC(d)
@@ -68,9 +68,8 @@ function doTests()
   @test !any(ismissing(cube_filled.data))
 
   # Test removal of MSC
-
   cube_anomalies=readcubedata(removeMSC(cube_filled))
-  @test isapprox(cube_anomalies.data[47:92],(cube_filled.data[47:92].-readcubedata(x2).data[1:46]))
+  @test all(i->abs(i)<0.001, cube_anomalies.data[47:92].-(cube_filled.data[47:92].-readcubedata(x2).data[1:46]))
 
 
   # Test normalization
@@ -80,12 +79,14 @@ function doTests()
   @test 1.0-1e-6 <= std(anom_normalized) <= 1.0+1e-6
 
   #Test Polynomial fitting
-  d = c[var = "soil_moisture"]
+  d = c[var = "land_surface_temperature"]
   dshort = d[time=2001:2003,lon=10.375,lat=51.125]
   dfill = gapFillMSC(dshort,complete_msc=true)
   @test all(!ismissing,dfill[:])
-  @test dfill[1:10] == [0.20832627f0, 0.21695568f0, 0.24278758f0, 0.27789998f0, 0.39543962f0, 0.4276f0, 0.33524698f0, 0.23578292f0, 0.27228776f0, 0.27020702f0]
-  @test gapfillpoly(dshort)[50:60] == [0.33521008f0, 0.32984155f0, 0.4276f0, 0.38669506f0, 0.35547495f0, 0.3271779f0, 0.30180392f0, 0.27935302f0, 0.25982517f0, 0.20553333f0, 0.22209999f0]
+  @test dfill[1:10] == [262.4602f0,266.955f0,270.04968f0,279.886f0,268.8522f0,269.4936f0,269.0274f0,270.074f0,283.9174f0,284.86874f0]
+  @test gapfillpoly(dshort)[80:90] == [283.9506f0, 285.94876f0, 284.3024f0, 282.85516f0, 282.19125f0, 276.15f0, 270.67f0, 273.86847f0, 278.861f0, 271.97f0, 271.06696f0]
+ 
+ 
   end
 
 

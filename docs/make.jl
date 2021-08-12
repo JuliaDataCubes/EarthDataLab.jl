@@ -8,7 +8,7 @@ if !isempty(ESDL.ESDLDefaults.cubedir[])
   c = S3Cube()
   csa = c[
     region = "South America",
-    var = ["country_mask","c_emissions","gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "soil_moisture"],
+    var = ["country_mask","c_emissions","gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "land_surface_temperature"],
     time = 2003:2006
   ]
   saveCube(csa,"southamericacube", chunksize=(90,90,92,1))

@@ -5,7 +5,7 @@ using IterTools
 using WeightedOnlineStats
 
 c=Cube()
-d = subsetcube(c,variable=["air_temperature_2m", "gross_primary_productivity", "soil_moisture"],lon=(30,31),lat=(50,51),
+d = subsetcube(c,variable=["air_temperature_2m", "gross_primary_productivity", "land_surface_temperature"],lon=(30,31),lat=(50,51),
               time=(Date("2002-01-01"),Date("2008-12-31")))
 mytable = CubeTable(value=d,include_axes=("lon", "lat", "time"), expandaxes=("var",))
 
@@ -29,7 +29,7 @@ end
                             by=(:variable,))
     weightedTableMeans = fittable(mytable2, WeightedMean, :data, by=(:variable,),
                                     weight=(x -> cosd(x.lat)))
-    foreach(enumerate(["air_temperature_2m", "gross_primary_productivity", "soil_moisture"])) do (i,v)
+    foreach(enumerate(["air_temperature_2m", "gross_primary_productivity", "land_surface_temperature"])) do (i,v)
       @test isapprox(value(weightedTableMeans)[(v,)], meanCube.data[i])
     end
 end
