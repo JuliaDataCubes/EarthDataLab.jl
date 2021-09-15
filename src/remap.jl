@@ -10,22 +10,36 @@ end
 spatialinterp(c,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
   spatialinterp(c,newlons.values,newlats.values;kwargs...)
 
+
+function getsteprat(newax::AbstractRange, oldax::AbstractRange)
+    step(oldax)/step(newax)
+end
+
+sorted(x,y,rev=false) = rev ? sorted(y,x,false) : x<=y ? (x,y) : (y,x)
+
+
+function getsteprat(newax, oldax)
+  val1,val2 = sorted(first(newax),last(newax))
+  rev = last(oldax) < first(oldax)
+  i1,i2 = searchsortedfirst(oldax,val1,rev=rev), searchsortedlast(oldax,val2,rev=rev)
+  return length(newax)/(i2-i1+1)
+end
+
   function expandchunksizes(c,newaxdict)
     k = collect(keys(newaxdict))
     chunkold = eachchunk(c.data)
     axold = caxes(c)
     axinds  = map(i->findAxis(i,c),k)
-    axsteps = map(i->step(axold[i].values),axinds)
-    steprats = map((i,s)->step(newaxdict[i])/s,k,axsteps)
+    steprats = map((inew,iold)->getsteprat(newaxdict[inew], axold[iold].values),k,axinds)
     newcs = ntuple(ndims(c)) do i
-          ii = findfirst(isequal(i),axinds)
-          round(Int,chunkold.chunksize[i] * (ii==nothing ? 1 : steprats[ii]))
-      end
-      newco = ntuple(ndims(c)) do i
-          ii = findfirst(isequal(i),axinds)
-          round(Int,chunkold.offset[i] * (ii==nothing ? 1 : steprats[ii]))
-      end
-    newchunks = GridChunks(size(c),newcs, offset = newco)
+        ii = findfirst(isequal(i),axinds)
+        round(Int,chunkold.chunksize[i] * (ii==nothing ? 1 : steprats[ii]))
+    end
+    newco = ntuple(ndims(c)) do i
+        ii = findfirst(isequal(i),axinds)
+        round(Int,chunkold.offset[i] * (ii==nothing ? 1 : steprats[ii]))
+    end
+    return GridChunks(size(c),newcs, offset = newco)
   end
 
 function interpolatecube(c,
@@ -41,7 +55,7 @@ function interpolatecube(c,
     else
       oldvals = caxes(c)[i].values
       newvals = newaxes[ii[ai][1]]
-      getinterpinds(oldvals, newvals),get(order,ai[1],Constant()),newvals
+      getinterpinds(oldvals, newvals),get(order,ii[ai][1],Constant()),newvals
     end
   end
   newinds = getindex.(oo,1)

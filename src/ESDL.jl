@@ -22,7 +22,7 @@ using YAXArrays: @reexport
 @reexport using YAXArrays: mapCube, getAxis, InDims, OutDims, Dataset,
       CubeTable, cubefittable, fittable, savecube, Cube, open_dataset #From DAT module
 @reexport using .Proc: removeMSC, gapFillMSC,normalizeTS,
-  getMSC, filterTSFFT, getNpY,
+  getMSC, filterTSFFT, getNpY,interpolatecube,
   getMedSC, extractLonLats, cubefromshape,
   gapfillpoly, spatialinterp #From Proc module
 @reexport using YAXArrays: @loadOrGenerate # from ESDL Tools
