@@ -5,7 +5,7 @@ using DiskArrays: eachchunk, GridChunks
   spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
 """
 function spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
-  interpolatecube(c,Dict("Lon"=>newlons, "Lat"=>newlats), order = Dict("Lon"=>Linear(),"Lat"=>Linear()))
+  interpolatecube(c,Dict("Lon"=>newlons, "Lat"=>newlats), order = Dict("Lon"=>order,"Lat"=>order))
 end
 spatialinterp(c,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
   spatialinterp(c,newlons.values,newlats.values;kwargs...)
@@ -60,6 +60,7 @@ function interpolatecube(c,
   end
   newinds = getindex.(oo,1)
   intorder = getindex.(oo,2)
+  @show intorder
   ar = InterpolatedDiskArray(c.data,newchunks,newinds..., order = intorder)
   newvals = getindex.(oo,3)
   newax = map(caxes(c),newvals) do ax,val
