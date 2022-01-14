@@ -48,7 +48,7 @@ We therefore overload the method `mapslices` for data cubes.
 The main difference to the function exported in Base is that the dimensions to be sliced over are given by name and not by dimension index. For example,
 
 ```julia
-mapslices(mean, cube, ("Lon","Lat"))
+mapslices(mean, cube, dims=("Lon","Lat"))
 ```
 
 will compute the mean over each spatial map contained in the data cube. Please note that the `mapslices` function will execute the function once with random number input to determine the shape of the returned values and then pre-allocate the output array. Keep this in mind when your function has some side-effects. Although the `mapslices` function should *work* in most cases, it is advised to read about the [`mapCube`](@ref) function in [Applying custom functions](@ref) which gives you much more detailed control over the mapping operation.
