@@ -20,36 +20,28 @@ This returns a `Cube` object that contains some basics information about the cub
 
 ## Getting a data handle
 
-```@setup 1
+```julia
 using ESDL
 c=Cube()
 ```
 
-```@example 1
+```julia
 var=["c_emissions","air_temperature_2m"]
 time=(Date("2003-01-01"),Date("2003-12-31"))
 cubedata = subsetcube(c,lon=(30,31),lat=(50,51),time=time,variable=var)
 ```
 
 This returns a view into the Data Cube, on which further calculations can be applied.
-All keyword arguments default to the full range, so calling `subsetcube` without
-keyword arguments will return a view into the whole data cube.
-
-```@docs
-ESDL.Cubes.subsetcube
-```
-
 
 No data is read yet. In case you want to load some data into memory and store it in a Julia array, just use square-bracket indexing. For example, to read the first time step  of the first variable as a Lon-Lat array, just do
 
-```@example 1
+```julia
 cubedata[:,:,1,1]
 ```
 
 Here you can start to do some calculations on your sub-cube, see either
 [Analysis](@ref) for a list of methods provided by this framework or
-[Applying custom functions](@ref) to apply your own functions on the cube. If you just
-want to visualize the cube see this section [Plotting](@ref).
+[Applying custom functions](@ref) to apply your own functions on the cube.
 
 ## Extracting a list of lon/lat coordinates from a data cube
 
@@ -58,12 +50,12 @@ needed for the analysis. One can extract such a list by first creating a cube vi
 containing all the needed variables and then apply the `extractLonLats` function.
 
 ```@docs
-ESDL.Proc.CubeIO.extractLonLats
+    ESDL.Proc.extractLonLats
 ```
 
 Here is an example how to apply the function:
 
-```@example 1
+```julia
 cubedata = subsetcube(c,lon=(30,31),lat=(50,51),time=time,variable=var)
 ll       = [30.1 50.2;
             30.5 51.1;
@@ -74,20 +66,7 @@ cubenew  = extractLonLats(cubedata,ll)
 ## Cube Types
 
 While the `subsetcube` command returns an object of type `ZarrCube`, which represents a view into the ESDC, other cube operations will return different types of data cubes.
-The returned type will depend on the size of the returned cube. If it is small enough to fit into memory, it will be a `CubeMem`, otherwise a `ZArrayCube`. All these types of data cubes share the same interface defined by, which means you can index them, do calculation using `mapCube` or plot them using the commands described in [Plotting](@ref).
-
-
-```@docs
-ESDL.Cubes.CubeMem
-```
-
-```@docs
-ESDL.Cubes.ESDLZarr.ZArrayCube
-```
-
-```@docs
-ESDL.Cubes.OBS.S3Cube
-```
+The returned type will depend on the size of the returned cube. If it is small enough to fit into memory, it will be a `CubeMem`, otherwise a `ZArrayCube`. All these types of data cubes share the same interface defined by, which means you can index them, do calculation using `mapCube` or plot them.
 
 
 ## Cube Dimensions
@@ -98,30 +77,8 @@ field `values` representing the chosen latitudes. Similarly, a `VariableAxis` wi
 Variable names. Axes types are divided in categorical axes and axes represented by ranges. All of them
 are subtypes of the abstract type `CubeAxis`.
 
-```@docs
-ESDL.Cubes.Axes.CubeAxis
-```
-
-```@docs
-ESDL.Cubes.Axes.CategoricalAxis
-```
-
-```@docs
-ESDL.Cubes.Axes.RangeAxis
-```
-
-
-## Opening cloud-hosted Data Cubes
-
-When you
-
-```@docs
-S3Cube
-```
-
-
 ## List of known regions
 
 ```@docs
-ESDL.Cubes.ESDLZarr.known_regions
+    ESDL.known_regions
 ```

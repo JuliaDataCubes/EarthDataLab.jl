@@ -9,6 +9,7 @@ module ESDL
 include("Proc.jl")
 include("countrydict.jl")
 include("esdc.jl")
+include("ESDLTools.jl")
 
 using YAXArrays: @reexport
 
