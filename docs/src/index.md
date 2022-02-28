@@ -20,7 +20,6 @@ You can find some example Jupyter Notebooks using *ESDL.jl* [here](https://githu
 ```@contents
 Pages = [
     "cube_access.md",
-    "plotting.md",
     "analysis.md",
     "iotools.md",
 ]
@@ -31,8 +30,3 @@ Depth = 3
 
 The development of this package was funded by ESA STSE and implemented by
 the Max-Planck-Institute for Biogeochemistry.
-
-## Index
-
-```@index
-```
