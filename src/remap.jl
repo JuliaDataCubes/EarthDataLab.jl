@@ -1,6 +1,6 @@
 using DiskArrayTools: InterpolatedDiskArray, DiskArrayTools
 using DiskArrayTools.Interpolations: Linear, Flat, Constant, NoInterp
-using DiskArrays: eachchunk, GridChunks
+using DiskArrays: eachchunk, GridChunks, approx_chunksize, grid_offset
 """
   spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
 """
@@ -33,11 +33,11 @@ end
     steprats = map((inew,iold)->getsteprat(newaxdict[inew], axold[iold].values),k,axinds)
     newcs = ntuple(ndims(c)) do i
         ii = findfirst(isequal(i),axinds)
-        round(Int,chunkold.chunksize[i] * (ii==nothing ? 1 : steprats[ii]))
+        round(Int,approx_chunksize(chunkold.chunks[i]) * (ii==nothing ? 1 : steprats[ii]))
     end
     newco = ntuple(ndims(c)) do i
         ii = findfirst(isequal(i),axinds)
-        round(Int,chunkold.offset[i] * (ii==nothing ? 1 : steprats[ii]))
+        round(Int,grid_offset(chunkold.chunks[i]) * (ii==nothing ? 1 : steprats[ii]))
     end
     return GridChunks(size(c),newcs, offset = newco)
   end

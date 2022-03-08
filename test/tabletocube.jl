@@ -14,11 +14,13 @@ mytable2 = CubeTable(data=d,include_axes=("lon", "lat", "time", "variable"))
 @testset "cubefittable and WeightedCovMatrix fittable" begin
     covmCube = cubefittable(mytable, WeightedCovMatrix, :value, weight=(x->cosd(x.lat)),showprog=false)
     covmVal = WeightedCovMatrix()
-    for row in mytable
-        obs = row.value
-        obslat = row.lat
-        if !any(ismissing.(obs))
-            fit!(covmVal, obs, cosd(obslat))
+    for t in mytable
+        for row in t
+            obs = row.value
+            obslat = row.lat
+            if !any(ismissing.(obs))
+                fit!(covmVal, obs, cosd(obslat))
+            end
         end
     end
     @test all(isapprox.(covmCube.data, value(covmVal)))
