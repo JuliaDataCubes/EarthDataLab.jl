@@ -36,7 +36,7 @@ Shapefile = "0.6, 0.7"
 StatsBase = "0.32, 0.33"
 Tables = "0.2, 1.0"
 WeightedOnlineStats = "0.5"
-YAXArrays = "0.1.2"
+YAXArrays = "0.1.2, 0.2"
 Zarr = "0.6.2, 0.7"
 julia = "1.3"
 
