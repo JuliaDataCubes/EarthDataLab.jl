@@ -23,6 +23,6 @@ makedocs(
 )
 
 deploydocs(
-    repo   = "github.com/esa-esdl/ESDL.jl.git",
+    repo   = "github.com/JuliaDataCubes/ESDL.jl.git",
     push_preview = true
 )
