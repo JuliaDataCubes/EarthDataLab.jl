@@ -10,12 +10,13 @@ makedocs(
     pages    = [ 
         "Home" => "index.md",
         "Examples" => Any[
-            "examples/time_mean.md",
+            "Time Mean" => "examples/time_mean.md",
+            "Distributed Computations" => "examples/distributed.md",
         ],
         "API Documentation" => Any[
             "Index" => "API/api_index.md",
             "Accessing the Data Cube" => "API/cube_access.md",
-            "Analisys" => "API/analysis.md",
+            "Analysis" => "API/analysis.md",
             "Loading and Saving Results" => "API/iotools.md"
         ],
         "Other functions" => "lib/misc.md"
