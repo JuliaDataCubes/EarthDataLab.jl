@@ -1,47 +1,29 @@
-using ImageMagick, Documenter, ESDL, ESDLPlots, Cairo
-
-
-newcubedir = mktempdir()
-ESDLdir(newcubedir)
-# Download Cube subset
-if !isempty(ESDL.ESDLDefaults.cubedir[])
-  c = S3Cube()
-  csa = c[
-    region = "South America",
-    var = ["country_mask","c_emissions","gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "land_surface_temperature"],
-    time = 2003:2006
-  ]
-  saveCube(csa,"southamericacube", chunksize=(90,90,92,1))
-  ESDL.ESDLDefaults.cubedir[] = joinpath(newcubedir,"southamericacube")
-end
-
-exampledir = joinpath(@__DIR__,"src","examples")
-allex = map(readdir(exampledir)) do fname
-  n = splitext(fname)[1]
-  n => joinpath("examples",fname)
-end
-
+using Documenter, ESDL
 
 makedocs(
-    modules = [ESDL, ESDLPlots],
-    clean   = true,
+    modules  = [ESDL],
+    clean    = true,
+    doctest  = false,
     format   = Documenter.HTML(),
     sitename = "ESDL.jl",
-    authors = "Fabian Gans",
-    pages    = [ # Compat: `Any` for 0.4 compat
+    authors  = "Fabian Gans",
+    pages    = [ 
         "Home" => "index.md",
-        "Examples" => allex,
-        "Manual" => Any[
-            "cube_access.md",
-            "analysis.md",
-            "plotting.md",
-            "iotools.md"
+        "Examples" => Any[
+            "Time Mean" => "examples/time_mean.md",
+            "Distributed Computations" => "examples/distributed.md",
         ],
-        "Other functions" => "./lib/misc.md"
+        "API Documentation" => Any[
+            "Index" => "API/api_index.md",
+            "Accessing the Data Cube" => "API/cube_access.md",
+            "Analysis" => "API/analysis.md",
+            "Loading and Saving Results" => "API/iotools.md"
+        ],
+        "Other functions" => "lib/misc.md"
         ]
 )
 
 deploydocs(
-    #deps   = Deps.pip("mkdocs", "python-markdown-math"),
-    repo   = "github.com/esa-esdl/ESDL.jl.git",
+    repo   = "github.com/JuliaDataCubes/ESDL.jl.git",
+    push_preview = true
 )
