@@ -1,4 +1,4 @@
-# ESDL.jl
+# EarthDataLab.jl
 
 *A package to explore and analyze the Earth System Data Cube*
 
@@ -13,7 +13,7 @@ for more information.
 
 ## Example Jupyter Notebooks
 
-You can find some example Jupyter Notebooks using *ESDL.jl* [here](https://github.com/esa-esdl/esdl-shared/tree/master/notebooks)
+You can find some example Jupyter Notebooks using *ESDL.jl* [here](https://github.com/juliadatacubes/esdl-shared/tree/master/notebooks)
 
 ## Manual Outline
 
