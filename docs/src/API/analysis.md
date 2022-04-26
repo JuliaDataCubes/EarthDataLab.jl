@@ -1,6 +1,6 @@
 # Analysis
 
-The ESDL package comes with a list of predefined methods for statistical analysis.
+The EarthDataLab package comes with a list of predefined methods for statistical analysis.
 The functions are defined to work on specific axes. For example a function that removes the
 mean annual cycle, will always extract one time series after the other from a cube, process them, store the results and concatenate the resulting time series to a new output cube. It does not matter which other axes are defined
 in the input cube, the function will simply iterate over these.
@@ -19,11 +19,11 @@ that might be of interest to a broader community, please feel free to open a pul
 All of these functions take a data cube as an argument, process the **input axis** and replace it with the **output axis**.
 
 ```docs
-    ESDL.Proc.removeMSC
-    ESDL.Proc.gapFillMSC
-    ESDL.Proc.gapfillpoly!
-    ESDL.Proc.getMSC
-    ESDL.Proc.getMedSC
+    EarthDataLab.Proc.removeMSC
+    EarthDataLab.Proc.gapFillMSC
+    EarthDataLab.Proc.gapfillpoly!
+    EarthDataLab.Proc.getMSC
+    EarthDataLab.Proc.getMedSC
 ```
 
 ### Time series decomposition
@@ -31,7 +31,7 @@ All of these functions take a data cube as an argument, process the **input axis
 This function takes a data cube as an argument. It adds an additional dimension to the cube and returns it. Every variable, time step and location will have a set of four values in the new dimension instead of just one.
 
 ```docs
-    ESDL.Proc.filterTSFFT
+    EarthDataLab.Proc.filterTSFFT
 ```
 
 ## Simple Statistics
@@ -54,8 +54,8 @@ call one of the [(Weighted-)OnlineStats](@ref) methods.
 An additional simple statistic function is:
 
 ```@docs
-    ESDL.Proc.normalizeTS
-    ESDL.Proc.quantile
+    EarthDataLab.Proc.normalizeTS
+    EarthDataLab.Proc.quantile
 ```
 
 ## (Weighted-)OnlineStats
@@ -166,7 +166,7 @@ In order to understand how these principles are applied, let us walk through a v
 2. So the function will have to accept two arguments, which will be called `xin` for the input time series and `xout` for the output time series. Such a function can be defined like this:
 
 ```julia
-using ESDL
+using EarthDataLab
 
 function mynorm(xout, xin)
 
@@ -302,13 +302,13 @@ In some cases one needs to have access to the value of an axis. For example when
 are important to determine grid cell weights. To do this, one can pass a cube axis to mapCube as if it was a cube having only one dimension. The values will then correspond to the axis values (the latitudes in degrees in this case).
 
 ```julia
-using ESDL # hide
+using EarthDataLab # hide
 function spatialAggregation(xout::Array{T,0}, xin::Matrix, latitudes::AbstractVector) where T
   #code goes here
 end
 
 #Extract the latitude axis
-latitudecube = ESDL.getAxis("Lat",cube)
+latitudecube = EarthDataLab.getAxis("Lat",cube)
 
 indims_map = InDims(LonAxis, LatAxis)
 indims_lat = InDims(LatAxis)
@@ -345,7 +345,7 @@ So far in our examples we always re-used axes from the input cube as output cube
 So for each pixel we want to do the polynomial regression on the two variables and then return a vector of coefficients. We define the function that does the calculation as:
 
 ```julia
-using ESDL
+using EarthDataLab
 using Polynomials
 function fit_npoly(xout, var1, var2, n)
   p = polyfit(var1, var2, n)
@@ -409,4 +409,4 @@ Total size: 320.0 bytes
 ```
 
 
-This is exactly the way the built-in functions in [Analysis](@ref) were generated. So in case you want to contribute some functionality that you feel would benefit this package, please open a pull request at https://github.com/esa-esdl/ESDL.jl
+This is exactly the way the built-in functions in [Analysis](@ref) were generated. So in case you want to contribute some functionality that you feel would benefit this package, please open a pull request at https://github.com/juliadatacubes/EarthDataLab.jl

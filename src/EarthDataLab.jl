@@ -4,7 +4,7 @@
 
 Some info on the project...
 """
-module ESDL
+module EarthDataLab
 
 include("Proc.jl")
 include("countrydict.jl")

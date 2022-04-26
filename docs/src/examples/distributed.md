@@ -10,7 +10,7 @@ addprocs(2)
 
 @everywhere using Pkg
 @everywhere Pkg.activate(".")
-@everywhere using ESDL
+@everywhere using EarthDataLab
 @everywhere using Statistics
 
 @everywhere function mymean(output, pixel)
@@ -45,7 +45,7 @@ addprocs(SlurmManager(10))
 
 @everywhere using Pkg
 @everywhere Pkg.activate(".")
-@everywhere using ESDL
+@everywhere using EarthDataLab
 @everywhere using Statistics
 
 inpath="zg1000_AERday_CanESM5_esm-hist_r6i1p1f1_gn_18500101-20141231.nc"

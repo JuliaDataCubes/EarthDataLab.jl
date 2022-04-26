@@ -1,4 +1,4 @@
-using ESDL, NetCDF, YAXArrays
+using EarthDataLab, NetCDF, YAXArrays
 using Test
 
 newcubedir = mktempdir()

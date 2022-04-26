@@ -1,4 +1,4 @@
-using ESDL
+using EarthDataLab
 using Test
 using Dates
 using IterTools

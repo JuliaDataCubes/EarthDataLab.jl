@@ -1,11 +1,11 @@
-using Documenter, ESDL
+using Documenter, EarthDataLab
 
 makedocs(
-    modules  = [ESDL],
+    modules  = [EarthDataLab],
     clean    = true,
     doctest  = false,
     format   = Documenter.HTML(),
-    sitename = "ESDL.jl",
+    sitename = "EarthDataLab.jl",
     authors  = "Fabian Gans",
     pages    = [ 
         "Home" => "index.md",
@@ -24,6 +24,6 @@ makedocs(
 )
 
 deploydocs(
-    repo   = "github.com/JuliaDataCubes/ESDL.jl.git",
+    repo   = "github.com/JuliaDataCubes/EarthDataLab.jl.git",
     push_preview = true
 )

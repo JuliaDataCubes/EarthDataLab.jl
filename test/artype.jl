@@ -1,4 +1,4 @@
-using ESDL
+using EarthDataLab
 using Test
 import DataFrames: DataFrame,aggregate
 import Dates: year

@@ -1,11 +1,11 @@
-using ESDL
+using EarthDataLab
 using Test
 using Dates
 import Base.Iterators
 using Distributed
 using Statistics
 addprocs(2)
-@everywhere using ESDL, Statistics, NetCDF
+@everywhere using EarthDataLab, Statistics, NetCDF
 
 @everywhere function sub_and_return_mean(xout1,xout2,xin)
     m=mean(skipmissing(xin))

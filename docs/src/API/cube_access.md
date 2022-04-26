@@ -6,11 +6,11 @@ Before one can read data from a cube, it has to be opened. To open a data cube
 which is accesible through the file system, use the `Cube` constructor:
 
  ```julia
-using ESDL
+using EarthDataLab
 c = Cube("/patch/to/cube")
 ```
 ```
-ESDL data cube at /Net/Groups/BGI/scratch/DataCube/v0.2.0/high-res/
+EarthDataLab data cube at /Net/Groups/BGI/scratch/DataCube/v0.2.0/high-res/
 Spatial resolution:  4320x2160 at 0.083333 degrees.
 Temporal resolution: 2001-01-01T00:00:00 to 2012-01-01T00:00:00 at 8daily time steps
 Variables:           aerosol_optical_thickness_1610 aerosol_optical_thickness_550 aerosol_optical_thickness_555 aerosol_optical_thickness_659 aerosol_optical_thickness_865 air_temperature_2m bare_soil_evaporation black_sky_albedo burnt_area c_emissions country_mask evaporation evaporative_stress fractional_snow_cover gross_primary_productivity interception_loss land_surface_temperature latent_energy net_ecosystem_exchange open_water_evaporation ozone potential_evaporation precipitation root_moisture sensible_heat snow_sublimation snow_water_equivalent soil_moisture surface_moisture terrestrial_ecosystem_respiration transpiration water_mask water_vapour white_sky_albedo
@@ -21,7 +21,7 @@ This returns a `Cube` object that contains some basics information about the cub
 ## Getting a data handle
 
 ```julia
-using ESDL
+using EarthDataLab
 c=Cube()
 ```
 
@@ -50,7 +50,7 @@ needed for the analysis. One can extract such a list by first creating a cube vi
 containing all the needed variables and then apply the `extractLonLats` function.
 
 ```@docs
-    ESDL.Proc.extractLonLats
+    EarthDataLab.Proc.extractLonLats
 ```
 
 Here is an example how to apply the function:
@@ -71,7 +71,7 @@ The returned type will depend on the size of the returned cube. If it is small e
 
 ## Cube Dimensions
 
-Dimensions are an essential part of each Cube in ESDL. Every dimension that a cube has is associated
+Dimensions are an essential part of each Cube in EarthDataLab. Every dimension that a cube has is associated
 with an axis that stores the values of the dimension. For example, a `LatAxis` will contain a
 field `values` representing the chosen latitudes. Similarly, a `VariableAxis` will contain a list of
 Variable names. Axes types are divided in categorical axes and axes represented by ranges. All of them
@@ -80,5 +80,5 @@ are subtypes of the abstract type `CubeAxis`.
 ## List of known regions
 
 ```@docs
-    ESDL.known_regions
+    EarthDataLab.known_regions
 ```
