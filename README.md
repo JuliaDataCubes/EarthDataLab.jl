@@ -4,9 +4,9 @@
 
 | **Documentation**                                                                                                        | **Build Status**                                                                                |
 |:-------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------:|
-| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliadatacubes.github.io/EarthDataLab.jl/latest/) | [![][ci-img]][ci-url] [![codecov][codecov-img]](https://codecov.io/github/esa-EarthDataLab/EarthDataLab.jl?branch=master) |
+| [![](https://img.shields.io/badge/docs-latest-blue.svg)](https://juliadatacubes.github.io/EarthDataLab.jl/latest/) | [![][ci-img]][ci-url] [![codecov][codecov-img]](https://codecov.io/github/JuliaDataCubes/EarthDataLab.jl?branch=master) |
 
-[codecov-img]: https://img.shields.io/codecov/c/github/esa-EarthDataLab/EarthDataLab.jl/master.svg?label=codecov
+[codecov-img]: https://img.shields.io/codecov/c/github/JuliaDataCubes/EarthDataLab.jl/master.svg?label=codecov
 # Installation
 
 - Add the EarthDataLab package
