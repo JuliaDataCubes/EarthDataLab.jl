@@ -10,9 +10,11 @@
 # Installation
 
 - Add the EarthDataLab package
-`Pkg.add(PackageSpec(url="https://github.com/juliadatacubes/EarthDataLab.jl"))`
 
-# Documentation
+```julia
+julia>]
+pkg> add EarthDataLab
+```
 
 The Documentation is available [here](https://juliadatacubes.github.io/EarthDataLab.jl/latest/).
 
