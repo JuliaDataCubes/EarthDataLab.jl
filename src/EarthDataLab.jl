@@ -25,8 +25,7 @@ using YAXArrays: @reexport
 @reexport using .Proc: removeMSC, gapFillMSC,normalizeTS,
   getMSC, filterTSFFT, getNpY,interpolatecube,
   getMedSC, extractLonLats, cubefromshape,
-  gapfillpoly, spatialinterp #From Proc module
-@reexport using YAXArrays: @loadOrGenerate # from ESDL Tools
+  gapfillpoly, spatialinterp #From Proc module # from ESDL Tools
 
 @reexport using .ESDC: esdc, esdd
 
