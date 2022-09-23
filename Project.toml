@@ -1,7 +1,7 @@
 name = "EarthDataLab"
 uuid = "359177bc-a543-11e8-11b7-bb015dba3358"
 authors = ["Fabian Gans <fgans@bgc-jena.mpg.de>"]
-version = "0.9.3"
+version = "0.10.0"
 
 [deps]
 CFTime = "179af706-886a-5703-950a-314cd64e0468"
