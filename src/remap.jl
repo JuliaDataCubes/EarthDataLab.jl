@@ -45,24 +45,25 @@ end
 function interpolatecube(c,
   newaxes::Dict,
   newchunks = expandchunksizes(c,newaxes);
-  order=Dict()
+  order=Dict(),
+  bc = Dict(),
   )
   ii = map(axn->(axn,findAxis(axn,c)),collect(keys(newaxes)))
   oo = ntuple(ndims(c)) do i
     ai = findfirst(j->j[2]==i,ii)
     if ai === nothing
-      nothing,NoInterp(),nothing
+      nothing,NoInterp(),nothing,nothing
     else
       oldvals = caxes(c)[i].values
       newvals = newaxes[ii[ai][1]]
-      getinterpinds(oldvals, newvals),get(order,ii[ai][1],Constant()),newvals
+      getinterpinds(oldvals, newvals),get(order,ii[ai][1],Constant()),get(bc,ii[ai][1],Flat()),newvals
     end
   end
   newinds = getindex.(oo,1)
   intorder = getindex.(oo,2)
-  @show intorder
-  ar = InterpolatedDiskArray(c.data,newchunks,newinds..., order = intorder)
-  newvals = getindex.(oo,3)
+  bc = getindex.(oo,3)
+  ar = InterpolatedDiskArray(c.data,newchunks,newinds..., order = intorder, bc = bc)
+  newvals = getindex.(oo,4)
   newax = map(caxes(c),newvals) do ax,val
     if val === nothing
       ax
