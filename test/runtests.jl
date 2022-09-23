@@ -11,8 +11,8 @@ cgermany = c[
   var = ["gross", "net_ecosystem", "air_temperature_2m", "terrestrial_ecosystem", "land_surface_temperature"],
   time = 2000:2010
 ]
-savecube(cgermany,"germanycube",
-  chunksize=Dict("lon"=>20,"lat"=>20,"time"=>92))
+cgermany = setchunks(cgermany,Dict("lon"=>20,"lat"=>20,"time"=>92))
+savecube(cgermany,"germanycube")
 YAXArrays.YAXDefaults.cubedir[] = joinpath(newcubedir,"germanycube")
 include("access.jl")
 include("analysis.jl")

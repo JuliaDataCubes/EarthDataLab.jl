@@ -87,36 +87,24 @@ using DiskArrayTools: DiskArrayStack
   data1=readcubedata(d)
   #Test saving cubes
   dire=tempname()
-  YAXdir(dire)
-  savecube(data1,"mySavedCube")
+  savecube(data1,dire)
 
 
-  data3=readcubedata(loadcube("mySavedCube"))
+  data3=readcubedata(Cube(dire))
   @test data1.axes==data3.axes
   @test data1.data==data3.data
 
   # Test loadOrGenerate macro
   d=subsetcube(c,time=Date(2001)..Date(2005),lon=(10,11),lat=(50,51),variable=["gross_primary_productivity","net_ecosystem_exchange"])
 
-  rmcube("Anomalies")
-  @loadOrGenerate danom=>"Anomalies" begin
-      danom = removeMSC(d)
-  end
-
-  @test danom.data isa Array
-
-  @loadOrGenerate danom=>"Anomalies" begin
-      error("This should never execute")
-  end;
-  @test danom.data isa DiskArrayStack
+  danom = removeMSC(d)
 
   zp = tempname()
   savecube(danom, zp, overwrite=true)
 
-  @test danom.data isa DiskArrayStack
 
   danom=readcubedata(danom)
-  danom2=readcubedata(loadcube(zp))
+  danom2=readcubedata(Cube(zp))
 
   @test danom.axes==danom2.axes
   @test all(map(isequal,danom.data,danom2.data))
