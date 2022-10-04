@@ -1,5 +1,8 @@
 using EarthDataLab, NetCDF, YAXArrays
 using Test
+using TestItemRunner
+
+@run_package_tests
 
 newcubedir = mktempdir()
 YAXdir(newcubedir)
@@ -19,4 +22,5 @@ include("analysis.jl")
 #include("artype.jl")
 include("transform.jl")
 include("remap.jl")
+include("shapes.jl")
 include("tabletocube.jl")
