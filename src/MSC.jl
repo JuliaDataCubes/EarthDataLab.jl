@@ -188,7 +188,7 @@ function getMedSC(aout::AbstractVector{Union{T,Missing}},ain::AbstractVector) wh
     for doy=1:NpY
         empty!(yvec)
         for i=doy:NpY:length(ain)
-            ismissing(ain[i]) || push!(yvec,ain[i])
+            ismissing(ain[i]) || isnan(ain[i]) || push!(yvec,ain[i])
         end
         aout[doy] = isempty(yvec) ? missing : quantile!(yvec,q)[1]
     end

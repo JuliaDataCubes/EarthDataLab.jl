@@ -1,6 +1,6 @@
 module ESDC
 import YAXArrays.Datasets: Dataset, Cube, open_dataset
-using Zarr: S3Store, zopen, AWS
+using Zarr: S3Store, zopen
 using Dates: Dates, now
 export esdc, esdd
 global cubesdict
@@ -35,12 +35,16 @@ and `store` or pick a resolution, chunking and cube region.
   * `chunks="ts"` choose a chunking (`"ts"` for time series access or `"map"` for spatial analyses)
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
 """
-function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global")
-  if bucket===nothing
-    bucket, store = cubesdict[(res,chunks,region)]
+function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global", version=2)
+  if version == 2
+    if bucket===nothing
+      bucket, store = cubesdict[(res,chunks,region)]
+    end
+    path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
+    open_dataset(zopen(path,consolidated=true,fill_as_missing=true))
+  elseif version == 3
+    error("Not yet implemented")
   end
-  path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
-  open_dataset(zopen(path,consolidated=true))
 end
 
 """
