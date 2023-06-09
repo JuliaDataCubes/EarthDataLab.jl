@@ -7,7 +7,7 @@ global cubesdict
 
 
 function __init__()
-  global cubesdict
+  global cubesdict, cubesdict3
   cubesdict = Dict(
     ("low","ts","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.25deg-184x90x90-2.1.1.zarr"),
     ("low","map","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.25deg-1x720x1440-2.1.1.zarr"),
@@ -17,6 +17,11 @@ function __init__()
     ("low","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019lowColombiaCube_1x336x276.zarr/"),
     ("high","ts","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_184x120x120.zarr"),
     ("high","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_1x3360x2760.zarr"),
+  )
+  cubesdict3 = Dict(
+    "ts" => "esdc-8d-0.25deg-256x128x128-3.0.2.zarr",
+    "map" => "esdc-8d-0.25deg-1x720x1440-3.0.2.zarr",
+    "tiny" => "esdc-16d-2.5deg-46x72x1440-3.0.2.zarr",
   )
 end
 
@@ -40,11 +45,18 @@ function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global"
     if bucket===nothing
       bucket, store = cubesdict[(res,chunks,region)]
     end
-    path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
-    open_dataset(zopen(path,consolidated=true,fill_as_missing=true))
   elseif version == 3
-    error("Not yet implemented")
+    if bucket===nothing
+      bucket = "esdl-esdc-v3.0.2"
+      if res=="tiny"
+        store = cubesdict3[res]
+      else
+        store = cubesdict3[chunks]
+      end
+    end
   end
+  path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
+  open_dataset(zopen(path,consolidated=true,fill_as_missing=true))
 end
 
 """
