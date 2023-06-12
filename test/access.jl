@@ -13,6 +13,8 @@ d.data.v.indices==(18:21, 17:20, 93:414)
 @test d.axes[2] == RangeAxis("lat", 50.875:-0.25:50.125)
 end
 
+
+
 @testset "Access multiple variables" begin
 d2 = subsetcube(c,variable=["air_temperature_2m","gross_primary_productivity"],lon=(10,11),lat=(50,51),
                 time=(Date("2002-01-01"),Date("2008-12-31")))
@@ -125,4 +127,13 @@ using DiskArrayTools: DiskArrayStack
   @test all(isequal.(ncread(ncf,"net_ecosystem_exchange")[:,:,:],neear))
   cnc = Cube(ncf)
   @test all(cnc.data[:,:,:,:] .== danom.data[:,:,:,:])
+end
+
+@testset "ESDC v3" begin
+  c = esdd(res="low")
+  d = c.gross_primary_productivity[time=Date(2005)][443:444,139:140]
+  d == Float32[3.1673577 3.7342484; 3.3267372 4.0305696]
+
+  c = esdd(res="tiny")
+  c.gross_primary_productivity[time=Date(2005)][44,14] == 2.3713999f0
 end

@@ -36,11 +36,12 @@ and `store` or pick a resolution, chunking and cube region.
 
   * `bucket=nothing` specify an OBS bucket for example "obs-esdc-v2.0.0"
   * `store=""` specify the root path of the cube, for example "esdc-8d-0.25deg-184x90x90-2.0.0.zarr"
-  * `res="low"` pick a datacube resolution (`"low"` or `"high"`)
+  * `res="low"` pick a datacube resolution (`"low"` or `"high"` for v2 or `"low"` or `"tiny"` for v3)
   * `chunks="ts"` choose a chunking (`"ts"` for time series access or `"map"` for spatial analyses)
-  * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
+  * `region="global"` choose a datacube (either `"global"` or `"Colombia"`), works only for esdc v2
+  * `version=3`
 """
-function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global", version=2)
+function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global", version=3)
   if version == 2
     if bucket===nothing
       bucket, store = cubesdict[(res,chunks,region)]
