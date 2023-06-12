@@ -4,7 +4,7 @@ using Test
 newcubedir = mktempdir()
 YAXdir(newcubedir)
 # Download Cube subset
-c = esdc()
+c = esdc(version=2)
 
 cgermany = c[
   region = "Germany",
