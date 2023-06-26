@@ -1,4 +1,4 @@
-The DataCubeReader.jl package is licensed under the MIT "Expat" License:
+The EarthDataLab.jl package is licensed under the MIT "Expat" License:
 
 > Copyright (c) 2015: Fabian Gans.
 >
