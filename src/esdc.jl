@@ -76,6 +76,6 @@ and `store` or pick a resolution, chunking and cube region.
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
 
 """
-esdc(;kwargs...) = Cube(esdd(;kwargs...))
+esdc(;kwargs...) = Cube(esdd(;kwargs...),target_type = Union{Float32,Missing})
 
 end # module
