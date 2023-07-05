@@ -6,16 +6,14 @@ using Statistics
 c=Cube()
 
 @testset "ConcatCubes" begin
-d1 = subsetcube(c,variable="air_temperature_2m",lon=(10,11),lat=(50,51),
-                time=(Date("2002-01-01"),Date("2008-12-31")))
-d2 = subsetcube(c,variable="gross_primary_productivity",lon=(10,11),lat=(50,51),
-                time=(Date("2002-01-01"),Date("2008-12-31")))
-d3 = subsetcube(c,variable="net_ecosystem_exchange",lon=(10,11),lat=(50,51),
-                time=(Date("2002-01-01"),Date("2007-12-31")))
-conccube = concatenatecubes([d1,d2],CategoricalAxis("NewAxis",["v1","v2"]))
+    c2 = c[lon=10..11,lat=50..51,time=Date("2002-01-01")..Date("2008-12-31")]
+    d1 = c2[variable=DD.At("air_temperature_2m")]
+    d2 = c2[variable=DD.At("gross_primary_productivity")]
+    d3 = c[variable=DD.At("net_ecosystem_exchange")]
+conccube = concatenatecubes([d1,d2],DD.Dim{:NewAxis}(["v1","v2"]))
 @test size(conccube)==(4,4,322,2)
 @test EarthDataLab.caxes(conccube)[1:3]==EarthDataLab.caxes(d1)
-@test EarthDataLab.caxes(conccube)[4]==CategoricalAxis("NewAxis",["v1","v2"])
+@test EarthDataLab.caxes(conccube)[4]==DD.Dim{:NewAxis}(["v1","v2"])
 @test_throws ErrorException concatenatecubes([d1,d3],CategoricalAxis("NewAxis",["v1","v2"]))
 dd1 = readcubedata(d1)
 dd2 = readcubedata(d2)
