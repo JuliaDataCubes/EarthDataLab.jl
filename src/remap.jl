@@ -1,13 +1,14 @@
 using DiskArrayTools: InterpolatedDiskArray, DiskArrayTools
 using DiskArrayTools.Interpolations: Linear, Flat, Constant, NoInterp
 using DiskArrays: eachchunk, GridChunks, approx_chunksize, grid_offset
+import DimensionalData as DD
 """
   spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
 """
 function spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
   interpolatecube(c,Dict("Lon"=>newlons, "Lat"=>newlats), order = Dict("Lon"=>order,"Lat"=>order))
 end
-spatialinterp(c,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
+spatialinterp(c,newlons::DD.Dim,newlats::DD.Dim;kwargs...)=
   spatialinterp(c,newlons.values,newlats.values;kwargs...)
 
 

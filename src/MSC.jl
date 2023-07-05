@@ -124,7 +124,7 @@ Returns the mean annual cycle from each time series.
 """
 function getMSC(c;kwargs...)
   N = getNpY(c)
-  outdims = OutDims(RangeAxis("MSC",DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)), 
+  outdims = OutDims(DD.Dim{:MSC}(DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)), 
   outtype = mscouttype(eltype(c)))
   indims = InDims("Time")
   mapCube(getMSC,c,getNpY(c);indims=indims,outdims=outdims,kwargs...)
@@ -174,7 +174,7 @@ Returns the median annual cycle from each time series.
 """
 function getMedSC(c;kwargs...)
   N = getNpY(c)
-  outdims = OutDims(RangeAxis("MSC",DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)), 
+  outdims = OutDims(DD.Dim{:MSC}(DateTime(1900):Day(ceil(Int,366/N)):DateTime(1900,12,31,23,59,59)), 
   outtype = mscouttype(eltype(c)))
   indims = InDims("Time")
   mapCube(getMedSC,c;indims=indims,outdims=outdims,kwargs...)

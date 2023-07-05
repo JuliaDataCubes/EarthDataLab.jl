@@ -24,12 +24,11 @@ function doTests()
   # Test simple Stats first
   c=Cube()
 
-  d = subsetcube(c,variable="air_temperature_2m",lon=(10,11),lat=(50,51),
-                time=(Date("2002-01-01"),Date("2008-12-31")))
+  d = c[variable=DD.At("air_temperature_2m"),lon=(10..11),lat=(50..51),
+                time=(Date("2002-01-01")..Date("2008-12-31"))]
 
-  dmem=readcubedata(d)
 
-  @testset "Simple statistics using mapslices" begin
+@testset "Simple statistics using mapslices" begin
   # Basic statistics
   m=mapslices(mean∘skipmissing,d,dims = "Time")
 
@@ -39,15 +38,14 @@ function doTests()
     281.92462 281.12613 281.50513 282.4352])
 
   #Test Spatial meann along laitutde axis
-  d1=subsetcube(c,variable="gross_primary_productivity",time=(Date("2002-01-01"),Date("2002-01-01")),lon=(30,30))
+  d1=c[variable=DD.At("gross_primary_productivity"),time=(Date("2002-01-01")..Date("2002-01-15")),lon=6..6.5]
 
-  dmem=readcubedata(d1)
-  mtime=mapslices(mean∘skipmissing,dmem,dims = ("lon","lat"))
+  mtime=mapslices(mean∘skipmissing,d1,dims = ("lon","lat"))
 
   end
   # Test Mean seasonal cycle retrieval
   @testset "Seasonal cycle statistics and anomalies" begin
-  cdata=subsetcube(c,variable="land_surface_temperature",lon=10,lat=50.75)
+    cdata=c[variable=DD.At("land_surface_temperature"),lon=DD.Near(10),lat=DD.Near(50.75)]
   d=readcubedata(cdata)
 
   x2=getMSC(d)
@@ -79,13 +77,12 @@ function doTests()
   @test 1.0-1e-6 <= std(anom_normalized) <= 1.0+1e-6
 
   #Test Polynomial fitting
-  d = c[var = "land_surface_temperature"]
-  dshort = d[time=2001:2003,lon=10.375,lat=51.125]
+  d = c[var = DD.At("land_surface_temperature")]
+  dshort = d[time=2001:2003,lon=DD.At(10.375),lat=DD.At(51.125)]
   dfill = gapFillMSC(dshort,complete_msc=true)
   @test all(!ismissing,dfill[:])
   @test dfill[1:10] == [262.4602f0,266.955f0,270.04968f0,279.886f0,268.8522f0,269.4936f0,269.0274f0,270.074f0,283.9174f0,284.86874f0]
   @test gapfillpoly(dshort)[80:90] == [283.9506f0, 285.94876f0, 284.3024f0, 282.85516f0, 282.19125f0, 276.15f0, 270.67f0, 273.86847f0, 278.861f0, 271.97f0, 271.06696f0]
- 
  
   end
 
@@ -95,15 +92,14 @@ function doTests()
 
 
   @testset "Multiple output cubes" begin
-  #Test onvolving multiple output cubes
-  c1=subsetcube(c,variable="gross_primary_productivity",lon=(10,11),lat=(50,51),time=Date(2001)..Date(2010))
+    c1=c[variable=DD.At("gross_primary_productivity"),lon=(10..11),lat=(50..51),time=Date(2001)..Date(2010)]
 
   c2=readcubedata(c1)
 
   cube_wo_mean,cube_means=sub_and_return_mean(c2)
 
-  @test isapprox(permutedims(c2[:,:,:].-mean(c2[:,:,:],dims=3),(3,1,2)),readcubedata(cube_wo_mean)[:,:,:])
-  @test isapprox(mean(c2[:,:,:],dims=3)[:,:,1],cube_means[:,:])
+  @test isapprox(permutedims(c2.data[:,:,:].-mean(c2.data[:,:,:],dims=3),(3,1,2)),cube_wo_mean.data[:,:,:])
+  @test isapprox(mean(c2.data[:,:,:],dims=3)[:,:,1],cube_means.data[:,:])
   end
 end
 
