@@ -86,11 +86,6 @@ function doTests()
  
   end
 
-
-  d1=subsetcube(c,variable=["gross_primary_productivity","net_ecosystem_exchange"],lon=(10,10),lat=(50,50))
-  d2=subsetcube(c,variable=["gross_primary_productivity","air_temperature_2m"],lon=(10,10),lat=(50,50))
-
-
   @testset "Multiple output cubes" begin
     c1=c[variable=DD.At("gross_primary_productivity"),lon=(10..11),lat=(50..51),time=Date(2001)..Date(2010)]
 

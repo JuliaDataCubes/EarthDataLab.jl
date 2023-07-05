@@ -121,9 +121,9 @@ end
 
 @testset "ESDC v3" begin
   c = esdd(res="low")
-  d = c.gross_primary_productivity[time=DD.At(Date(2005))].data[443:444,139:140]
+  d = c.gross_primary_productivity[time=DD.Near(DateTime(2005))].data[443:444,139:140]
   d == Float32[3.1673577 3.7342484; 3.3267372 4.0305696]
 
   c = esdd(res="tiny")
-  c.gross_primary_productivity[time=DD.At(Date(2005))].data[44,14] == 2.3713999f0
+  c.gross_primary_productivity[time=DD.Near(DateTime(2005))].data[44,14] == 2.3713999f0
 end
