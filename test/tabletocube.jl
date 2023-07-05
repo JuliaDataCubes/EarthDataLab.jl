@@ -6,8 +6,9 @@ using WeightedOnlineStats
 using Tables
 
 c=Cube()
-d = subsetcube(c,variable=["air_temperature_2m", "gross_primary_productivity", "land_surface_temperature"],lon=(30,31),lat=(50,51),
-              time=(Date("2002-01-01"),Date("2008-12-31")))
+d = c[variable=DD.At(["air_temperature_2m", "gross_primary_productivity", "land_surface_temperature"]),lon=(10..11),lat=(50..51),
+time=(Date("2002-01-01")..Date("2008-12-31"))]
+
 mytable = CubeTable(value=d, expandaxes=("var",))
 
 mytable2 = CubeTable(data=d)
