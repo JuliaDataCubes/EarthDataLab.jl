@@ -1,14 +1,16 @@
 using DiskArrayTools: InterpolatedDiskArray, DiskArrayTools
 using DiskArrayTools.Interpolations: Linear, Flat, Constant, NoInterp
 using DiskArrays: eachchunk, GridChunks, approx_chunksize, grid_offset
+using YAXArrays: findAxis, getAxis
+import DimensionalData as DD
 """
   spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
 """
 function spatialinterp(c,newlons::AbstractRange,newlats::AbstractRange;order=Linear(),bc = Flat())
   interpolatecube(c,Dict("Lon"=>newlons, "Lat"=>newlats), order = Dict("Lon"=>order,"Lat"=>order))
 end
-spatialinterp(c,newlons::CubeAxis,newlats::CubeAxis;kwargs...)=
-  spatialinterp(c,newlons.values,newlats.values;kwargs...)
+spatialinterp(c,newlons::DD.Dim,newlats::DD.Dim;kwargs...)=
+  spatialinterp(c,newlons.val.data,newlats.val.data;kwargs...)
 
 
 function getsteprat(newax::AbstractRange, oldax::AbstractRange)
@@ -30,7 +32,7 @@ end
     chunkold = eachchunk(c.data)
     axold = caxes(c)
     axinds  = map(i->findAxis(i,c),k)
-    steprats = map((inew,iold)->getsteprat(newaxdict[inew], axold[iold].values),k,axinds)
+    steprats = map((inew,iold)->getsteprat(newaxdict[inew], axold[iold].val.data),k,axinds)
     newcs = ntuple(ndims(c)) do i
         ii = findfirst(isequal(i),axinds)
         round(Int,approx_chunksize(chunkold.chunks[i]) * (ii==nothing ? 1 : steprats[ii]))
@@ -54,7 +56,7 @@ function interpolatecube(c,
     if ai === nothing
       nothing,NoInterp(),nothing,nothing
     else
-      oldvals = caxes(c)[i].values
+      oldvals = caxes(c)[i].val.data
       newvals = newaxes[ii[ai][1]]
       getinterpinds(oldvals, newvals),get(order,ii[ai][1],Constant()),get(bc,ii[ai][1],Flat()),newvals
     end
@@ -68,7 +70,7 @@ function interpolatecube(c,
     if val === nothing
       ax
     else
-      RangeAxis(axname(ax),val)
+      DD.rebuild(ax,val)
     end
   end
   YAXArray(newax,ar,c.properties, cleaner = c.cleaner)
