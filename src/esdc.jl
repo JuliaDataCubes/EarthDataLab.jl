@@ -43,7 +43,11 @@ function esdd(; bucket = nothing, store = nothing, res = "low", chunks = "ts", r
 
   if version === nothing
     if region == "global"
-      version = 3
+      if res == "high"
+        version = 2
+      else
+        version = 3
+      end
     elseif region == "Colombia"
       version = 2
     end
@@ -53,12 +57,12 @@ function esdd(; bucket = nothing, store = nothing, res = "low", chunks = "ts", r
 
   # give a sensible error if key does not exist
   if !haskey(cubesdict, k)
-    @info "possible keys are" keys(cubesdict)
-    error("key $(k) does not exist")
+      @info "possible keys are" keys(cubesdict)
+      error("key $(k) does not exist")
   end
+  b, s = cubesdict[k]
 
   # switch out defaults
-  b, s = cubesdict[k]
   if bucket === nothing
     bucket = b
   end
