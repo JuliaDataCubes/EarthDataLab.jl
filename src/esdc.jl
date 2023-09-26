@@ -33,11 +33,11 @@ and `store` or pick a resolution, chunking and cube region.
 ### Keyword arguments
 
   * `bucket=nothing` specify an OBS bucket for example "obs-esdc-v2.0.0"
-  * `store=""` specify the root path of the cube, for example "esdc-8d-0.25deg-184x90x90-2.0.0.zarr"
+  * `store=nothing` specify the root path of the cube, for example "esdc-8d-0.25deg-184x90x90-2.0.0.zarr"
   * `res="low"` pick a datacube resolution (`"low"` or `"high"` for v2 or `"low"` or `"tiny"` for v3)
   * `chunks="ts"` choose a chunking (`"ts"` for time series access or `"map"` for spatial analyses)
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`), works only for esdc v2
-  * `version=3`
+  * `version=nothing`
 """
 function esdd(; bucket = nothing, store = nothing, res = "low", chunks = "ts", region = "global", version = nothing)
 
@@ -84,10 +84,11 @@ and `store` or pick a resolution, chunking and cube region.
 ### Keyword arguments
 
   * `bucket=nothing` specify an OBS bucket for example "obs-esdc-v2.0.0"
-  * `store=""` specify the root path of the cube, for example "esdc-8d-0.25deg-184x90x90-2.0.0.zarr"
+  * `store=nothing` specify the root path of the cube, for example "esdc-8d-0.25deg-184x90x90-2.0.0.zarr"
   * `res="low"` pick a datacube resolution (`"low"` or `"high"`)
   * `chunks="ts"` choose a chunking (`"ts"` for time series access or `"map"` for spatial analyses)
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`)
+  * `version=nothing`
 
 """
 esdc(;kwargs...) = Cube(esdd(;kwargs...),target_type = Union{Float32,Missing})
