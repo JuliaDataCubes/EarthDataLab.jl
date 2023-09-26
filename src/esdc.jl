@@ -7,21 +7,19 @@ global cubesdict
 
 
 function __init__()
-  global cubesdict, cubesdict3
+  global cubesdict
   cubesdict = Dict(
-    ("low","ts","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.25deg-184x90x90-2.1.1.zarr"),
-    ("low","map","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.25deg-1x720x1440-2.1.1.zarr"),
-    ("high","ts","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.083deg-184x270x270-2.1.1.zarr"),
-    ("high","map","global") => ("esdl-esdc-v2.1.1","esdc-8d-0.083deg-1x2160x4320-2.1.1.zarr"),
-    ("low","ts","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019lowColombiaCube_184x60x60.zarr"),
-    ("low","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019lowColombiaCube_1x336x276.zarr/"),
-    ("high","ts","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_184x120x120.zarr"),
-    ("high","map","Colombia") => ("esdl-esdc-v2.0.1","Cube_2019highColombiaCube_1x3360x2760.zarr"),
-  )
-  cubesdict3 = Dict(
-    "ts" => "esdc-8d-0.25deg-256x128x128-3.0.2.zarr",
-    "map" => "esdc-8d-0.25deg-1x720x1440-3.0.2.zarr",
-    "tiny" => "esdc-16d-2.5deg-46x72x1440-3.0.2.zarr",
+    ("low",  "ts",  "global",   2) => ("esdl-esdc-v2.1.1", "esdc-8d-0.25deg-184x90x90-2.1.1.zarr"),
+    ("low",  "map", "global",   2) => ("esdl-esdc-v2.1.1", "esdc-8d-0.25deg-1x720x1440-2.1.1.zarr"),
+    ("high", "ts",  "global",   2) => ("esdl-esdc-v2.1.1", "esdc-8d-0.083deg-184x270x270-2.1.1.zarr"),
+    ("high", "map", "global",   2) => ("esdl-esdc-v2.1.1", "esdc-8d-0.083deg-1x2160x4320-2.1.1.zarr"),
+    ("low",  "ts",  "Colombia", 2) => ("esdl-esdc-v2.0.1", "Cube_2019lowColombiaCube_184x60x60.zarr"),
+    ("low",  "map", "Colombia", 2) => ("esdl-esdc-v2.0.1", "Cube_2019lowColombiaCube_1x336x276.zarr"),
+    ("high", "ts",  "Colombia", 2) => ("esdl-esdc-v2.0.1", "Cube_2019highColombiaCube_184x120x120.zarr"),
+    ("high", "map", "Colombia", 2) => ("esdl-esdc-v2.0.1", "Cube_2019highColombiaCube_1x3360x2760.zarr"),
+    ("low",  "ts",  "global",   3) => ("esdl-esdc-v3.0.2", "esdc-8d-0.25deg-256x128x128-3.0.2.zarr"),
+    ("low",  "map", "global",   3) => ("esdl-esdc-v3.0.2", "esdc-8d-0.25deg-1x720x1440-3.0.2.zarr"),
+    ("tiny", "ts",  "global",   3) => ("esdl-esdc-v3.0.2", "esdc-16d-2.5deg-46x72x1440-3.0.2.zarr")
   )
 end
 
@@ -41,23 +39,35 @@ and `store` or pick a resolution, chunking and cube region.
   * `region="global"` choose a datacube (either `"global"` or `"Colombia"`), works only for esdc v2
   * `version=3`
 """
-function esdd(;bucket=nothing, store="", res="low", chunks="ts", region="global", version=3)
-  if version == 2
-    if bucket===nothing
-      bucket, store = cubesdict[(res,chunks,region)]
-    end
-  elseif version == 3
-    if bucket===nothing
-      bucket = "esdl-esdc-v3.0.2"
-      if res=="tiny"
-        store = cubesdict3[res]
-      else
-        store = cubesdict3[chunks]
-      end
+function esdd(; bucket = nothing, store = nothing, res = "low", chunks = "ts", region = "global", version = nothing)
+
+  if version === nothing
+    if region == "global"
+      version = 3
+    elseif region == "Colombia"
+      version = 2
     end
   end
+
+  k = (res, chunks, region, version)
+
+  # give a sensible error if key does not exist
+  if !haskey(cubesdict, k)
+    @info "possible keys are" keys(cubesdict)
+    error("key $(k) does not exist")
+  end
+
+  # switch out defaults
+  b, s = cubesdict[k]
+  if bucket === nothing
+    bucket = b
+  end
+  if store === nothing
+    store = s
+  end
+
   path = "https://s3.bgc-jena.mpg.de:9000/" * bucket * "/" * store
-  open_dataset(zopen(path,consolidated=true,fill_as_missing=true))
+  open_dataset(zopen(path, consolidated = true, fill_as_missing = true))
 end
 
 """
