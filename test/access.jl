@@ -1,4 +1,5 @@
 using Dates
+import DimensionalData
 
 c=Cube()
 
@@ -126,4 +127,22 @@ end
 
   c = esdd(res="tiny")
   c.gross_primary_productivity[time=DD.Near(DateTime(2005))].data[44,14] == 2.3713999f0
+end
+
+@testset "esdd smarts" begin
+    c1 = esdc(region = "Colombia")
+    @test DimensionalData.bounds(c1, :lon) == (-82.9587215, -60.0421465)
+    @test DimensionalData.bounds(c1, :lat) == (-13.957917500000002, 13.9586375)
+
+    c2 = esdc() # global low resolution
+    @test DimensionalData.bounds(c2, :lon) == (-179.875, 179.875)
+    @test DimensionalData.span(c2, :lon).step == 0.25
+
+    c3 = esdc(res = "high") # global high resolution
+    @test DimensionalData.bounds(c3, :lon) == (-179.95833333333331, 179.95833333333331)
+    @test DimensionalData.span(c3, :lon).step == 0.08333333333333333
+
+    c4 = esdc(res = "tiny") # global tiny cube
+    @test DimensionalData.span(c4, :lon).step == 2.5
+    @test DimensionalData.bounds(c4, :lon) == (-178.75, 178.75)
 end
