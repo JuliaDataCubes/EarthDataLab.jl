@@ -4,6 +4,7 @@ using Statistics: quantile!
 function removeMSC(aout,ain,NpY::Integer)
     #Start loop through all other variables
     tmsc, tnmsc = zeros(Union{Float64,Missing},NpY),zeros(Int,NpY)
+    @show "and nor I here"
     fillmsc(1,tmsc,tnmsc,ain,NpY)
     subtractMSC(tmsc,ain,aout,NpY)
     nothing
