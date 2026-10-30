@@ -1,7 +1,7 @@
 name = "EarthDataLab"
 uuid = "359177bc-a543-11e8-11b7-bb015dba3358"
-authors = ["Fabian Gans <fgans@bgc-jena.mpg.de>"]
 version = "0.13.0"
+authors = ["Fabian Gans <fgans@bgc-jena.mpg.de>"]
 
 [deps]
 CFTime = "179af706-886a-5703-950a-314cd64e0468"
@@ -35,7 +35,7 @@ StatsBase = "0.32, 0.33, 0.34"
 Tables = "0.2, 1.0"
 WeightedOnlineStats = "0.5, 0.6"
 YAXArrays = "0.5"
-Zarr = "0.9"
+Zarr = "0.9, 0.11"
 julia = "1.8"
 
 [extras]
